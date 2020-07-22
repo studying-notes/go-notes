@@ -6,6 +6,7 @@
     - 日志
         - [Log 标准库](io/log/log.md)
         - [Logrus 日志库](io/log/logrus.md)
+        - [Zap 日志库](io/log/zap.md)
 
 - [加密与解密](encrypt/README.md)
 
