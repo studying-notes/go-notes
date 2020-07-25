@@ -5,6 +5,7 @@
 - 基础知识
     - [Go 语言数组](base/array.md)
     - [Go 语言字符串](base/string.md)
+    - [Go 语言切片](base/slice.md)
 
 - 输入与输出
     - 日志
