@@ -10,6 +10,7 @@
     - [Go 语言方法](base/method.md)
     - [Go 语言接口](base/interface.md)
     - [Goroutine 内存模型](base/goroutine.md)
+    - [常见的并发模式](base/concurrent.md)
 
 - 输入与输出
     - 日志
