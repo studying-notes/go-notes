@@ -6,6 +6,10 @@
     - [Go 语言数组](base/array.md)
     - [Go 语言字符串](base/string.md)
     - [Go 语言切片](base/slice.md)
+    - [Go 语言函数](base/func.md)
+    - [Go 语言方法](base/method.md)
+    - [Go 语言接口](base/interface.md)
+    - [Goroutine 内存模型](base/goroutine.md)
 
 - 输入与输出
     - 日志
