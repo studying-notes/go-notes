@@ -12,6 +12,7 @@
     - [Goroutine 内存模型](base/goroutine.md)
     - [常见的并发模式](base/concurrent.md)
     - [错误和异常](base/error.md)
+    - [断言与类型转换](base/assert.md)
     - [Go 语言常见的坑](base/note.md)
 
 - 输入与输出
@@ -35,7 +36,7 @@
         - [go-sqlcipher 基本用法](database/sqlite3/sqlcipher/usage.md)
 
 - 网络编程
-    - [Message Queue](web/mq/nsq/README.md)
+    - [Message Queue](web/mq/README.md)
         - [NSQ](web/mq/nsq/README.md) - Go 语言编写的一个开源的实时分布式内存消息队列
     - Websocket
         - [通过命令行对话](web/websocket/c2s/README.md)
