@@ -42,6 +42,8 @@
 - 网络编程
     - [Message Queue](web/mq/README.md)
         - [NSQ](web/mq/nsq/README.md) - Go 语言编写的一个开源的实时分布式内存消息队列
+        - [RabbitMQ](web/mq/rabbitmq/README.md) - Erlang 语言编写，一个重量级，适合于企业级的开发
+        - [Kafka](web/mq/kafka/README.md) - Jave 语言编写，一个高性能跨语言分布式发布/订阅消息队列系统
     - Websocket
         - [通过命令行对话](web/websocket/c2s/README.md)
         - [文件修改监视器](web/websocket/watch/README.md)
