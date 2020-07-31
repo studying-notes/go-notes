@@ -15,6 +15,9 @@
     - [断言与类型转换](base/assert.md)
     - [Go 语言常见的坑](base/note.md)
 
+- [算法与数据结构](algorithm/README.md)
+  - [链表](algorithm/struct/link/README.md)
+
 - 输入与输出
     - 日志
         - [Log 标准库](io/log/log.md)
