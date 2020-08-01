@@ -17,6 +17,7 @@
 
 - [算法与数据结构](algorithm/README.md)
   - [链表](algorithm/struct/link/README.md)
+  - [栈](algorithm/struct/stack/README.md)
 
 - 输入与输出
     - 日志

@@ -10,9 +10,9 @@
 - 组织结构
 	- 集合结构
 	- 线性结构
-    	- [链表(Linked List)](struct/link/README.md)
+    	- [链表 Linked List](struct/link/README.md)
+		- [栈 Stack](struct/stack/README.md)
 		- 线性表(Linear List)
-		- 栈(StackList)
 		- 队列(Queue)
 		- 数组(Array)
 		- 串(String)
