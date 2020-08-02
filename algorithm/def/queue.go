@@ -5,7 +5,7 @@ import "errors"
 // ----- 队列 -----
 
 // 基于 Go 切片数据结构的实现
-type Queue []int
+type Queue []interface{}
 
 // 判断是否为空
 func (q Queue) IsEmpty() bool {
@@ -13,17 +13,17 @@ func (q Queue) IsEmpty() bool {
 }
 
 // 把新元素加入队列尾
-func (q *Queue) EnQueue(val int) {
+func (q *Queue) EnQueue(val interface{}) {
 	*q = append(*q, val)
 }
 
 // 把新元素加入队列首
-func (q *Queue) EnQueueLeft(val int) {
+func (q *Queue) EnQueueLeft(val interface{}) {
 	*q = append(Queue{val}, *q...)
 }
 
 // 弹出队列头元素
-func (q *Queue) DeQueue() int {
+func (q *Queue) DeQueue() interface{} {
 	if q.IsEmpty() {
 		panic("empty queue")
 	}
@@ -33,7 +33,7 @@ func (q *Queue) DeQueue() int {
 }
 
 // 获取队列头元素的值
-func (q Queue) First() int {
+func (q Queue) First() interface{} {
 	if q.IsEmpty() {
 		panic("empty queue")
 	}
@@ -41,7 +41,7 @@ func (q Queue) First() int {
 }
 
 // 弹出队列尾元素
-func (q *Queue) Pop() int {
+func (q *Queue) Pop() interface{} {
 	if q.IsEmpty() {
 		panic("empty queue")
 	}
@@ -51,7 +51,7 @@ func (q *Queue) Pop() int {
 }
 
 // 根据值删除唯一元素
-func (q *Queue) Remove(val int) {
+func (q *Queue) Remove(val interface{}) {
 	for k, v := range *q {
 		if v == val {
 			*q = append((*q)[:k], (*q)[k+1:]...)
