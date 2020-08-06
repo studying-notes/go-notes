@@ -15,9 +15,12 @@
     - [断言与类型转换](base/assert.md)
     - [Go 语言常见的坑](base/note.md)
 
+- [CGO 编程](cgo/README.md)
+
 - [算法与数据结构](algorithm/README.md)
   - [链表](algorithm/struct/link/README.md)
   - [栈](algorithm/struct/stack/README.md)
+  - [队列](algorithm/struct/queue/README.md)
 
 - 输入与输出
     - 日志
