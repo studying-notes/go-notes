@@ -30,6 +30,9 @@
         - [Logrus 日志库](io/log/logrus.md)
         - [Zap 日志库](io/log/zap.md)
 
+- 数据存储与序列化
+    - [Go 语言 JSON 技巧](storage/json/README.md)
+
 - 文本操作
     - 字符串
         - [strconv](strings/strconv.md) - 字符串与其他类型相互转换
