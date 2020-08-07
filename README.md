@@ -16,6 +16,8 @@
     - [Go 语言常见的坑](base/note.md)
 
 - [CGO 编程](cgo/README.md)
+  - [快速开始 CGO 编程](cgo/quick/README.md)
+  - [C 与 Go 类型转换](cgo/type/README.md)
 
 - [算法与数据结构](algorithm/README.md)
   - [链表](algorithm/struct/link/README.md)
