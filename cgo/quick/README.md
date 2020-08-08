@@ -2,6 +2,7 @@
 
 - [快速开始](#快速开始)
 	- [基于 C 标准库函数输出字符串](#基于-c-标准库函数输出字符串)
+		- [手动释放资源](#手动释放资源)
 	- [用自己定义的 C 函数](#用自己定义的-c-函数)
 		- [额外的 C 语言源文件](#额外的-c-语言源文件)
 	- [C 代码的模块化](#c-代码的模块化)
@@ -14,18 +15,40 @@
 package main
 
 //#include <stdio.h>
-import "C"
+import "C" // 必须单独一行
 
 func main() {
 	C.puts(C.CString("Hello, World\n"))
 }
 ```
 
-通过 `import "C"` 语句启用 CGO 特性，同时包含 C 语言的 `<stdio.h>` 头文件。然后通过 CGO 包的 `C.CString` 函数将 Go 语言字符串转为 C 语言字符串，最后调用 CGO 包的 `C.puts` 函数向标准输出窗口打印转换后的 C 字符串。
+通过 `import "C"` 语句启用 CGO 特性，同时包含 C 语言的 `<stdio.h>` 头文件。然后通过 CGO 包的 `C.CString` 函数将 Go 语言字符串转为 C 语言字符串，最后调用 CGO 包的 `C.puts` 函数向标准输出窗口打印转换后的 C 字符串。另外，`import "C"` 必须单独一行，且与上面的 C 代码之间**不可以有未注释掉的空行**。
 
 我们没有在程序退出前释放 `C.CString` 创建的 C 语言字符串；还有我们改用 `puts` 函数直接向标准输出打印，之前是采用 `fputs` 向标准输出打印。
 
 没有释放使用 `C.CString` 创建的 C 语言字符串会导致内存泄漏。但是对于这个小程序来说，这样是没有问题的，因为程序退出后操作系统会自动回收程序的所有资源。
+
+### 手动释放资源
+
+```go
+package main
+// #include <stdio.h>
+// #include <stdlib.h>
+/*
+void print(char *str) {
+    printf("%s\n", str);
+}
+*/
+import "C"
+import "unsafe"
+
+func main() {
+	cs := C.CString("hello")
+	// 释放资源
+    defer C.free(unsafe.Pointer(cs))
+    C.print(cs)
+}
+```
 
 ## 用自己定义的 C 函数
 
