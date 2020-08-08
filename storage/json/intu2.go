@@ -10,13 +10,17 @@ func main() {
 	var m1 = make(map[string]interface{}, 1)
 	m1["count"] = 1
 	buf, _ := json.Marshal(m1)
-	fmt.Printf("%s\n", buf)  // {"count":1}
+	fmt.Printf("%s\n", buf) // {"count":1}
 
 	var m2 map[string]interface{}
 	decoder := json.NewDecoder(bytes.NewBuffer(buf))
+	// as a interface{} instead of as a float64
 	decoder.UseNumber()
+
 	_ = decoder.Decode(&m2)
-	fmt.Printf("%T\n", m2["count"])  // json.Number
+	fmt.Printf("%T\n", m2["count"]) // json.Number
+
+	// 类型转换
 	count, _ := m2["count"].(json.Number).Int64()
-	fmt.Printf("%T\n", int(count))  // int
+	fmt.Printf("%T\n", int(count)) // int
 }

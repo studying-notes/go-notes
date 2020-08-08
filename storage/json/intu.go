@@ -1,9 +1,9 @@
 /*
 	Go 语言中的 json 包在序列化空接口存放的数字类
 	型（整型、浮点型等）都序列化成 float64 类型;
-	
+
 	在 JSON 协议中是没有整型和浮点型之分的，它
-	们统称为 number。JSON 字符串中的数字经过 Go 
+	们统称为 number。JSON 字符串中的数字经过 Go
 	语言中的 JSON 包反序列化之后都会成为 float64 类型。
 */
 package main

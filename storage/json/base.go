@@ -5,8 +5,6 @@ import (
 	"fmt"
 )
 
-
-
 type Box struct {
 	Length  string  `json:"length"`
 	Width   int64   `json:"width,omitempty"`
