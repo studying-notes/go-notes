@@ -12,21 +12,21 @@
 	- 线性结构
     	- [链表 Linked List](struct/link/README.md)
 		- [栈 Stack](struct/stack/README.md)
+		- [队列 Queue](struct/queue/README.md)
 		- 线性表(Linear List)
-		- 队列(Queue)
 		- 数组(Array)
 		- 串(String)
 		- 广义表(General List)
 		- 跳跃表
 	- 树型结构
-		- 树(Tree)
+		- 树 Tree
+			- [二叉树](struct/tree/README.md)
+			- [Trie 树](struct/tree/README.md#Trie-树)
 			- 胜者树
 			- 左偏树
-			- 二项树
 			- 线段树
 			- 后缀树
 			- 哈夫曼树
-			- trie树(静态建树、动态建树)
 			- 静态二叉检索树
 			- RMQ
 		- 堆(Heap)

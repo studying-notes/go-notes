@@ -23,6 +23,7 @@
   - [链表](algorithm/struct/link/README.md)
   - [栈](algorithm/struct/stack/README.md)
   - [队列](algorithm/struct/queue/README.md)
+  - [二叉树](algorithm/struct/tree/README.md)
 
 - 输入与输出
     - 日志
