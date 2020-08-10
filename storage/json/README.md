@@ -3,6 +3,7 @@
 - [Go 语言 JSON 技巧](#go-语言-json-技巧)
 	- [Go 和 JSON 转换关系](#go-和-json-转换关系)
 	- [基本的序列化](#基本的序列化)
+	- [嵌套结构体的序列化](#嵌套结构体的序列化)
 	- [解析不知道格式的数据](#解析不知道格式的数据)
 	- [结构体标签](#结构体标签)
 		- [指定字段名](#指定字段名)
@@ -57,6 +58,41 @@ func main() {
 ```
 {"Length":"120","Width":75,"Height":4}
 {Length:120 Width:75 Height:4}
+```
+
+## 嵌套结构体的序列化
+
+```go
+func main() {
+	type Thing struct {
+		Length int `json:"length"`
+		Width  int `json:"width"`
+		Height int `json:"height"`
+	}
+	
+	type Person struct {
+		Name    string   `json:"name"`
+		Age     int      `json:"age"`
+		Parents []string `json:"parents"`
+		Thing   `json:"thing"`
+	}
+	
+	person := Person{Name: "Wetness", Age: 18,
+		Parents: []string{"Gomez", "Morita"},
+		// 类型字段也可以用于赋值，不用定义变量
+		Thing: Thing{2, 2, 2}}
+
+	fmt.Printf("%#v\n\n", person)
+
+	buf, _ := json.Marshal(person)
+	fmt.Printf("%s\n", buf)
+}
+```
+
+```
+main.Person{Name:"Wetness", Age:18, Parents:[]string{"Gomez", "Morita"}, Thing:main.Thing{Length:2, Width:2, Height:2}}
+
+{"name":"Wetness","age":18,"parents":["Gomez","Morita"],"thing":{"length":2,"width":2,"height":2}}
 ```
 
 ## 解析不知道格式的数据
@@ -141,7 +177,7 @@ type Box struct {
 
 ### 忽略空值字段
 
-当 struct 中的字段没有值时，` json.Marshal()` 序列化的时候不会忽略这些字段，而是默认输出字段的类型零值。如果想要在序列序列化时忽略这些没有值的字段时，可以在对应字段添加 `omitempty tag`。
+当 struct 中的**字段没有值时**，` json.Marshal()` 序列化的时候不会忽略这些字段，而是**默认输出字段的类型零值**。如果想要在序列序列化时忽略这些没有值的字段时，可以在对应字段添加 `omitempty` 标签。
 
 ```go
 type Box struct {
@@ -188,7 +224,7 @@ func main() {
 }
 ```
 
-匿名嵌套结构体序列化后的 JSON 串为单层的：
+**匿名嵌套结构体**序列化后的 JSON 串为**单层**：
 
 ```
 {"length":"120","width":75,"weight":null,"logo":""}
