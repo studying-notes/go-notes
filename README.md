@@ -38,6 +38,9 @@
     - 字符串
         - [strconv](strings/strconv.md) - 字符串与其他类型相互转换
 
+- 音视频处理
+  - [ffmpeg 学习笔记](video/ffmpeg/README.md) - 通过 Go 调用合并多个 MP4 文件
+
 - [加密与解密](encrypt/README.md)
 
 - 数据库操作
@@ -63,3 +66,6 @@
         - [网页聊天室](web/websocket/chatroom/README.md)
         - [时间回显](web/websocket/echo/README.md)
     - [gRPC](web/grpc/README.md)
+
+- 测试
+    - [性能测试](test/benchmark/README.md)
