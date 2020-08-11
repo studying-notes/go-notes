@@ -7,6 +7,9 @@
     - [分离音频流](#分离音频流)
   - [格式转换](#格式转换)
   - [音视频合成](#音视频合成)
+    - [不保留原声，替换音频](#不保留原声替换音频)
+    - [保留原声，添加背景音乐](#保留原声添加背景音乐)
+  - [截取音乐片段](#截取音乐片段)
   - [视频合并](#视频合并)
     - [将多个 MP4 文件合并为 1 个](#将多个-mp4-文件合并为-1-个)
   - [视频转码](#视频转码)
@@ -76,6 +79,8 @@ ffmpeg -i 1.mp4 -c:v libx265 1.avi
 
 ## 音视频合成
 
+### 不保留原声，替换音频
+
 1. 去掉源文件里的音频
 
 ```shell
@@ -91,7 +96,19 @@ ffmpeg -i 1.mp4 -vcodec copy -an 1_an.mp4
 ffmpeg -i 1_an.mp4 -ss 30 -t 52 -i 1.mp3 -vcodec copy 1_merge.mp4
 ```
 
-`-ss 30 -t 52` 截取 1.mp3 文件的第 30 秒往后的 52 秒与视频合成。
+`-ss 30 -t 52` 截取 1.mp3 文件的第 30 秒到 52 秒与视频合成。
+
+### 保留原声，添加背景音乐
+
+```shell
+ffmpeg -i 1.mp3 -i 1.mp4 -threads 2 -filter_complex amix=inputs=2:duration=first:dropout_transition=0 1_merge.mp4 -y
+```
+
+## 截取音乐片段
+
+```shell
+ffmpeg -i 1.mp3 -ss 00:00:01 -t 00:00:30 -acodec copy 1_part.mp3
+```
 
 ## 视频合并
 
