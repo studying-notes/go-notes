@@ -4,26 +4,11 @@ import "testing"
 
 var err error
 
-// go test -run TestConcatVideos
-func TestConcatVideos(t *testing.T) {
-	err = ConcatVideos("mp4/merge.mp4", "mp4/1.mp4",
-		"mp4/2.mp4", "mp4/3.mp4", "mp4/4.mp4", "mp4/5.mp4")
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-// go test -run TestExtractVideo
-func TestExtractVideo(t *testing.T) {
-	err = ExtractVideo("mp4/merge.mp4")
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-// go test -run TestExtractAudio
-func TestExtractAudio(t *testing.T) {
-	err = ExtractAudio("mp4/merge.mp4")
+// 视频与背景音乐混合
+// go test -run TestMixBackgroundMusic
+func TestMixBackgroundMusic(t *testing.T) {
+	err = MixBackgroundMusic("mp4/merge.mp4",
+		"mp4/1.mp3", "mp4/merge_bgm.mp4")
 	if err != nil {
 		t.Error(err)
 	}
@@ -65,15 +50,6 @@ func TestReplaceOriginAudio(t *testing.T) {
 	}
 }
 
-// go test -run TestMix2Audios
-func TestMix2Audios(t *testing.T) {
-	err = Mix2Audios("mp4/1.mp3",
-		"mp4/merge_audio.mp3", "mp4/mix_audio.mp3")
-	if err != nil {
-		t.Error(err)
-	}
-}
-
 // go test -run TestMergeVideoAudio
 func TestMergeVideoAudio(t *testing.T) {
 	err = MergeVideoAudio("mp4/merge_noaudio.mp4",
@@ -86,15 +62,6 @@ func TestMergeVideoAudio(t *testing.T) {
 // go test -run TestExtractVideoAudio
 func TestExtractVideoAudio(t *testing.T) {
 	err = ExtractVideoAudio("mp4/merge.mp4")
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-// go test -run TestMixBackgroundMusic
-func TestMixBackgroundMusic(t *testing.T) {
-	err = MixBackgroundMusic("mp4/merge.mp4",
-		"mp4/1.mp3", "mp4/merge_bgm.mp4")
 	if err != nil {
 		t.Error(err)
 	}
