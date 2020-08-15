@@ -9,7 +9,14 @@ import (
 	"strings"
 )
 
-// Command 命令执行入口
+// CombinedOutput 获取输出结果
+func CombinedOutput(s string) ([]byte, error) {
+	args := strings.Split(s, " ")
+	c := exec.Command("ffmpeg", args...)
+	return c.CombinedOutput()
+}
+
+// Command 一般命令执行入口，显示输出但不处理
 func Command(s string) (err error) {
 
 	// 必须分割命令参数，否则无法运行

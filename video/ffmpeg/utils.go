@@ -4,12 +4,30 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 )
 
-// ConvertSecond 将秒转换成时分秒 10:20:30 形式
-func ConvertSecond(second int) string {
-	return fmt.Sprintf("%02d:%02d:%02d",
-		second/3600, second%3600/60, second%3600%60)
+// ConvertSecond 将秒转换成时分秒
+func ConvertSecond(second float32) string {
+	hour := int(second) / 3600
+	minute := int(second) % 3600 / 60
+	second = second - float32(hour*3600+minute*60)
+	return fmt.Sprintf("%02d:%02d:%.2f", hour, minute, second)
+}
+
+// ConvertString 将时分秒转换成秒
+func ConvertString(s string) float32 {
+	ts := strings.Split(s, ":")
+	hour, _ := strconv.ParseFloat(ts[0], 32)
+	minute, _ := strconv.ParseFloat(ts[1], 32)
+	second, _ := strconv.ParseFloat(ts[2], 32)
+	return float32(hour*3600 + minute*60 + second)
+}
+
+// TruncateSecond 截断到秒，丢弃小数
+func TruncateSecond(s string) string {
+	return s[:len(s)-3]
 }
 
 // IsExist 判断文件/目录是否存在

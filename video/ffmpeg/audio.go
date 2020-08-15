@@ -38,7 +38,7 @@ func Mix2Audios(x, y, dst string) (err error) {
 }
 
 // CutAudio 截取音频片段，开始位置和截取长度
-func CutAudio(src, dst string, start, length int) (err error) {
+func CutAudio(src, dst string, start, length float32) (err error) {
 	if !IsExist(src) || !IsExist(filepath.Dir(dst)) {
 		return errors.New(fmt.Sprintf("%s or %s/ isn't exist", src, filepath.Dir(dst)))
 	}

@@ -2,6 +2,24 @@ package ffmpeg
 
 import "testing"
 
+// go test -run TestConcatVideosApplyFade
+func TestConcatVideosApplyFade(t *testing.T) {
+	err = ConcatVideosApplyFade("mp4/merge_fade.mp4", "mp4/1.mp4",
+		"mp4/2.mp4", "mp4/3.mp4", "mp4/4.mp4", "mp4/5.mp4")
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+// go test -run TestApplyFadeSecond
+func TestApplyFadeSecond(t *testing.T) {
+	err = ApplyFadeSecond("mp4/input.mp4",
+		"mp4/input_fade.mp4", 0, 3, 10, 3)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 // go test -run TestExtractVideo
 func TestExtractVideo(t *testing.T) {
 	err = ExtractVideo("mp4/merge.mp4")

@@ -66,3 +66,11 @@ func TestExtractVideoAudio(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// go test -run TestShowStream
+func TestShowStream(t *testing.T) {
+	err = ExtractVideoAudio("mp4/merge.mp4")
+	if err != nil {
+		t.Error(err)
+	}
+}
