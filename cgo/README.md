@@ -13,6 +13,13 @@ CGO 的原理其实就是由编译器识别出 `import "C"` 的位置，然后�
 	- [用 Go 重新实现 C 函数](quick/README.md#用-go-重新实现-c-函数)
 	- [面向 C 接口的 Go 编程](quick/README.md#面向-c-接口的-go-编程)
 
+## CGO 入门
+
+- [CGO 入门](base/README.md)
+  - [`import "C"` 语句](base/README.md#import-c-语句)
+  - [`#cgo` 语句](base/README.md#cgo-语句)
+  - [build tag 条件编译](base/README.md#build-tag-条件编译)
+
 ## 类型转换
 
 - [类型转换](type/README.md)
@@ -32,11 +39,13 @@ CGO 的原理其实就是由编译器识别出 `import "C"` 的位置，然后�
 
 # 函数调用
 
-- [函数调用](#函数调用)
-  - [Go 调用 C 函数](#go-调用-c-函数)
-  - [C 函数的返回值](#c-函数的返回值)
-    - [数值型返回值](#数值型返回值)
-    - [错误返回值](#错误返回值)
-    - [void 返回值](#void-返回值)
-    - [字符串型返回值](#字符串型返回值)
-  - [C 调用 Go 导出函数](#c-调用-go-导出函数)
+- [函数调用](func/README.md)
+  - [Go 调用 C 函数](func/README.md#go-调用-c-函数)
+  - [C 函数的返回值](func/README.md#c-函数的返回值)
+    - [数值型返回值](func/README.md#数值型返回值)
+    - [错误返回值](func/README.md#错误返回值)
+    - [void 返回值](func/README.md#void-返回值)
+    - [字符串型返回值](func/README.md#字符串型返回值)
+    - [字符串型返回值及其长度](func/README.md#字符串型返回值及其长度)
+    - [结构体型返回值](func/README.md#结构体型返回值)
+  - [C 调用 Go 导出函数](func/README.md#c-调用-go-导出函数)

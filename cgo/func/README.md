@@ -7,6 +7,8 @@
     - [错误返回值](#错误返回值)
     - [void 返回值](#void-返回值)
     - [字符串型返回值](#字符串型返回值)
+    - [字符串型返回值及其长度](#字符串型返回值及其长度)
+    - [结构体型返回值](#结构体型返回值)
   - [C 调用 Go 导出函数](#c-调用-go-导出函数)
 
 ## Go 调用 C 函数
@@ -118,7 +120,7 @@ func C.div(a, b C.int) (C.int, [error])
 
 ### void 返回值
 
-C 语言函数还有一种没有返回值类型的函数，用 `void` 表示返回值类型。一般情况下，我们无法获取 void 类型函数的返回值，因为没有返回值可以获取。
+C 语言函数还有一种没有返回值类型的函数，用 `void` 表示返回值类型。一般情况下，我们无法获取 `void` 类型函数的返回值，因为没有返回值可以获取。
 
 前面的例子中提到，cgo 对 `errno` 做了特殊处理，可以通过第二个返回值来获取 C 语言的错误状态。对于 `void` 类型函数，这个特性依然有效。
 
@@ -137,7 +139,7 @@ func main() {
 
 此时，我们忽略了第一个返回值，只获取第二个返回值对应的错误码。
 
-我们也可以尝试获取第一个返回值，它对应的是 C 语言的 void 对应的 Go 语言类型：
+我们也可以尝试获取第一个返回值，它对应的是 C 语言的 `void` 对应的 Go 语言类型：
 
 ```go
 //static void noreturn() {}
@@ -156,7 +158,7 @@ func main() {
 main._Ctype_void{}
 ```
 
-我们可以看出 C 语言的 `void` 类型对应的是当前的 `main` 包中的 `_Ctype_void` 类型。其实也将 C 语言的 `noreturn` 函数看作是返回 `_Ctype_void` 类型的函数，这样就可以直接获取 void 类型函数的返回值：
+我们可以看出 C 语言的 `void` 类型对应的是当前的 `main` 包中的 `_Ctype_void` 类型。其实也将 C 语言的 `noreturn` 函数看作是返回 `_Ctype_void` 类型的函数，这样就可以直接获取 `void` 类型函数的返回值：
 
 ```go
 //static void noreturn() {}
@@ -207,6 +209,90 @@ func main() {
 	// 释放内存，防止泄漏
 	C.free(unsafe.Pointer(cs))
 	C.free(unsafe.Pointer(ret))
+}
+```
+
+### 字符串型返回值及其长度
+
+```go
+package main
+
+/*
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// 返回字符串型及其长度
+char *RetStringInt(int len, int *rLen) {
+    static const char *s = "0123456789";
+    char *p = malloc(len);
+    if (len <= strlen(s)) {
+        memcpy(p, s, len);
+    } else {
+        memset(p, 'a', len);
+    }
+    *rLen = len;
+    return p;
+}
+*/
+import "C"
+import (
+	"fmt"
+	"unsafe"
+)
+
+func main() {
+	// 获取字符串型返回值及其长度
+	rLen := C.int(0)
+	cStr := C.RetStringInt(C.int(10), &rLen)
+	defer C.free(unsafe.Pointer(cStr))
+	goStr := C.GoStringN(cStr, rLen)
+	fmt.Printf("%v %v\n", rLen, goStr)
+}
+```
+
+### 结构体型返回值
+
+```go
+package main
+
+/*
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct StringInfo {
+    char *s;
+    int len;
+};
+
+// 返回自定义结构体
+struct StringInfo RetStruct(int len) {
+    static const char *s = "0123456789";
+    char *p = malloc(len);
+    if (len <= strlen(s)) {
+        memcpy(p, s, len);
+    } else {
+        memset(p, 'a', len);
+    }
+    struct StringInfo str;
+    str.s = p;
+    str.len = len;
+    return str;
+}
+*/
+import "C"
+import (
+	"fmt"
+	"unsafe"
+)
+
+func main() {
+	// 获取结构体型返回值
+	cStruct := C.RetStruct(C.int(10))
+	defer C.free(unsafe.Pointer(cStruct.s))
+	str := C.GoStringN(cStruct.s, cStruct.len)
+	fmt.Printf("%v %v\n", cStruct.len, str)
 }
 ```
 
