@@ -49,3 +49,28 @@ CGO 的原理其实就是由编译器识别出 `import "C"` 的位置，然后�
     - [字符串型返回值及其长度](func/README.md#字符串型返回值及其长度)
     - [结构体型返回值](func/README.md#结构体型返回值)
   - [C 调用 Go 导出函数](func/README.md#c-调用-go-导出函数)
+
+# Go 调用 DLL
+
+- [Go 调用 DLL](dll/README.md)
+	- [简单 CGO 程序](dll/README.md#简单-cgo-程序)
+	- [Go 程序编译成动态库](dll/README.md#go-程序编译成动态库)
+		- [Windows](dll/README.md#windows)
+		- [Linux/Unix/macOS](dll/README.md#linuxunixmacos)
+	- [Go 调用 Windows DLL](dll/README.md#go-调用-windows-dll)
+		- [syscall.Syscall 系列方法](dll/README.md#syscallsyscall-系列方法)
+		- [调用 user32.dll 试验](dll/README.md#调用-user32dll-试验)
+	- [调用自己编译的 DLL](dll/README.md#调用自己编译的-dll)
+		- [准备文件](dll/README.md#准备文件)
+		- [编译成 DLL 文件](dll/README.md#编译成-dll-文件)
+		- [在 Go 中载入 DLL](dll/README.md#在-go-中载入-dll)
+
+# Go 程序链接 C 库
+
+- [Go 程序链接 C 库](link/README.md)
+  - [链接 C 静态库](link/README.md#链接-c-静态库)
+  - [链接 C 动态库](link/README.md#链接-c-动态库)
+    - [Linux](link/README.md#linux)
+    - [Windows](link/README.md#windows)
+  - [Go 导出 C 静态库](link/README.md#go-导出-c-静态库)
+  - [Go 导出 C 动态库](link/README.md#go-导出-c-动态库)
