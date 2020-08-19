@@ -3,6 +3,7 @@
 - [CGO 入门](#cgo-入门)
   - [`import "C"` 语句](#import-c-语句)
   - [`#cgo` 语句](#cgo-语句)
+  - [pkg-config](#pkg-config)
   - [build tag 条件编译](#build-tag-条件编译)
 
 对于开发环境，首先必备 C/C++ 构建工具链，然后设置 `CGO_ENABLED` 为 1，表示 CGO 是被启用的状态。在本地构建时 `CGO_ENABLED` 默认是启用的，当交叉构建时 CGO 默认是禁止的。通过 `import "C"` 语句启用 CGO 特性。
@@ -88,7 +89,7 @@ import "C"
 - CFLAGS 部分，`-D` 部分定义了宏 PNG_DEBUG，值为 1；`-I`定义了头文件包含的检索目录。
 - LDFLAGS部分，`-L` 指定了链接时库文件检索目录，`-l` 指定了链接时需要链接 png 库。
 
-因为 C/C++ 遗留的问题，C 头文件检索目录可以是相对目录，但是库文件检索目录则需要绝对路径。在库文件的检索目录中可以通过 `${SRCDIR}` 变量表示当前包目录的绝对路径：
+因为 C/C++ 遗留的问题，C 头文件检索目录可以是相对目录，但是**库文件检索目录则需要绝对路径**。在库文件的检索目录中可以通过 `${SRCDIR}` 变量表示当前包目录的绝对路径：
 
 ```go
 // #cgo LDFLAGS: -L${SRCDIR}/libs -lfoo
@@ -139,6 +140,12 @@ func main() {
 ```
 
 这样我们就可以用 C 语言中常用的技术来处理不同平台之间的差异代码。
+
+## pkg-config
+
+为不同 C/C++ 库提供编译和链接参数是一项非常繁琐的工作，因此 cgo 提供了对应 `pkg-config` 工具的支持。 我们可以通过 `#cgo pkg-config xxx` 命令来生成 xxx 库需要的编译和链接参数，其底层通过调用 `pkg-config xxx --cflags` 生成编译参数，通过 `pkg-config xxx --libs` 命令生成链接参数。 需要注意的是 `pkg-config` 工具生成的编译和链接参数是 C/C++ 公用的，无法做更细的区分。
+
+`pkg-config` 工具虽然方便，但是有很多非标准的 C/C++ 库并没有实现对其支持。 这时候我们可以手工为 `pkg-config` 工具创建对应库的编译和链接参数实现支持。
 
 ## build tag 条件编译
 
