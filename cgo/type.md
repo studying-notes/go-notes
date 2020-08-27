@@ -473,7 +473,7 @@ p = (*X)(unsafe.Pointer(q)) // *Y => *X
 
 为了实现 X 类型指针到 Y 类型指针的转换，我们需要借助 `unsafe.Pointer` 作为中间桥接类型实现不同类型指针之间的转换。`unsafe.Pointer` 指针类型类似 C 语言中的 `void*` 类型的指针。
 
-![](imgs/x-ptr-to-y-ptr.png)
+![](../../imgs/x-ptr-to-y-ptr.png)
 
 任何类型的指针都可以通过强制转换为 `unsafe.Pointer` 指针类型去掉原有的类型信息，然后再重新赋予新的指针类型而达到指针间的转换的目的。
 
@@ -483,7 +483,7 @@ p = (*X)(unsafe.Pointer(q)) // *Y => *X
 
 下面流程图演示了如何实现 `int32` 类型到 C 语言的 `char*` 字符串指针类型的相互转换：
 
-![](imgs/int32-to-char-ptr.png)
+![](../../imgs/int32-to-char-ptr.png)
 
 转换分为几个阶段，：首先是 `int32` 到 `uintptr` 类型，然后是 `uintptr` 到 `unsafe.Pointr` 指针类型，最后是 `unsafe.Pointr` 指针类型到 `*C.char` 类型。
 
@@ -507,4 +507,4 @@ pHdr.Cap = qHdr.Cap * unsafe.Sizeof(q[0]) / unsafe.Sizeof(p[0])
 
 不同切片类型之间转换的思路是先构造一个空的目标切片，然后用原有的切片底层数据填充目标切片。如果 X 和 Y 类型的大小不同，需要重新设置 Len 和 Cap 属性。需要注意的是，如果 X 或 Y 是空类型，上述代码中可能导致除 0 错误，实际代码需要根据情况酌情处理。
 
-![](imgs/x-slice-to-y-slice.png)
+![](../../imgs/x-slice-to-y-slice.png)
