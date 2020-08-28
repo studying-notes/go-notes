@@ -2,10 +2,9 @@
 
 用 GORM 实现创建、查询、更新和删除操作。现在 v2 版本已经在测试了，不过这里暂时只写一下 v1 版本。
 
-
 ```shell
 # v1
-go get -u github.com/jinzhu/gorm
+go get -u github.com/bill/gorm
 
 # v2
 go get gorm.io/gorm
@@ -21,15 +20,15 @@ go get gorm.io/gorm
 		- [PostgreSQL](#postgresql)
 		- [SQLite3](#sqlite3)
 		- [SQL Server](#sql-server)
-	- [声明模型](#声明模型)
+	- [声明数据表模型](#声明数据表模型)
 		- [支持的结构体标签](#支持的结构体标签)
-	- [约定](#约定)
+	- [gorm 中的默认设置](#gorm-中的默认设置)
 		- [gorm.Model](#gormmodel)
 		- [默认 ID 作为 Primary Key](#默认-id-作为-primary-key)
-		- [多元化表名](#多元化表名)
-		- [指定表名](#指定表名)
-		- [更改默认表名](#更改默认表名)
-		- [下划线式列名](#下划线式列名)
+		- [自定义表名而非结构体名](#自定义表名而非结构体名)
+		- [在执行语句时指定表名](#在执行语句时指定表名)
+		- [更改 grom 默认表名设置方式](#更改-grom-默认表名设置方式)
+		- [默认列名为字段的下划线式](#默认列名为字段的下划线式)
 	- [常用功能](#常用功能)
 		- [自动迁移](#自动迁移)
 		- [检查表](#检查表)
@@ -39,7 +38,30 @@ go get gorm.io/gorm
 		- [基本查询](#基本查询)
 		- [结构体方式查询](#结构体方式查询)
 		- [Where 条件查询](#where-条件查询)
-	- [更多资料](#更多资料)
+		- [Not 条件查询](#not-条件查询)
+		- [Or 条件查询](#or-条件查询)
+		- [FirstOrCreate](#firstorcreate)
+		- [子查询](#子查询)
+		- [字段查询 Select](#字段查询-select)
+		- [排序 Order](#排序-order)
+		- [限制输出数量 LIMIT](#限制输出数量-limit)
+		- [统计数量 COUNT](#统计数量-count)
+		- [分组 Group & Having](#分组-group--having)
+		- [连接查询](#连接查询)
+		- [Pluck 查询](#pluck-查询)
+		- [Scan 扫描](#scan-扫描)
+	- [更新](#更新)
+		- [更新所有字段 Save](#更新所有字段-save)
+		- [更新修改字段 Update](#更新修改字段-update)
+		- [更新或者忽略某些字段](#更新或者忽略某些字段)
+		- [无 HOOK 更新](#无-hook-更新)
+		- [批量更新](#批量更新)
+		- [使用 SQL 计算表达式](#使用-sql-计算表达式)
+	- [删除](#删除)
+		- [删除记录](#删除记录)
+		- [批量删除](#批量删除)
+		- [软删除](#软删除)
+		- [物理删除](#物理删除)
 
 ## 功能预览
 
@@ -48,8 +70,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/bill/gorm"
+	_ "github.com/bill/gorm/dialects/sqlite"
 	"log"
 	"time"
 )
@@ -100,6 +122,7 @@ func main() {
 	//fmt.Printf("%+v\n", products)
 
 	// Update - update product's price to 2000
+	// 结构体的字段名，而非表的字段名
 	db.Model(&product).Update("Price", 2000)
 	// product price 字段同步更新
 	fmt.Printf("%+v\n", product)
@@ -119,10 +142,10 @@ func main() {
 **官方**
 
 ```go
-import _ "github.com/jinzhu/gorm/dialects/mysql"
-// import _ "github.com/jinzhu/gorm/dialects/postgres"
-// import _ "github.com/jinzhu/gorm/dialects/sqlite"
-// import _ "github.com/jinzhu/gorm/dialects/mssql"
+import _ "github.com/bill/gorm/dialects/mysql"
+// import _ "github.com/bill/gorm/dialects/postgres"
+// import _ "github.com/bill/gorm/dialects/sqlite"
+// import _ "github.com/bill/gorm/dialects/mssql"
 ```
 
 **三方**
@@ -149,8 +172,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/bill/gorm"
+	_ "github.com/bill/gorm/dialects/mysql"
 	"log"
 	"time"
 )
@@ -225,7 +248,7 @@ gorm.Open("sqlite3", "gorm.db")
 gorm.Open("mssql", "sqlserver://username:password@localhost:1433?database=dbname")
 ```
 
-## 声明模型
+## 声明数据表模型
 
 ```go
 type User struct {
@@ -266,7 +289,7 @@ type User struct {
 | EMBEDDED_PREFIX | 设置嵌入式结构的前缀名称 |
 | - | 忽略字段 |
 
-## 约定
+## gorm 中的默认设置
 
 ### gorm.Model
 
@@ -310,17 +333,18 @@ type Animal struct {
 }
 ```
 
-### 多元化表名
+### 自定义表名而非结构体名
 
 ```go
-// default table name is `users`
+// 默认表名为 `users`
 type User struct {} 
 
-// Set User's table name to be `profiles`
+// 设置结构体 User 的表名为 `profiles`
 func (User) TableName() string {
   return "profiles"
 }
 
+// 根据条件切换表名
 func (u User) TableName() string {
   if u.Role == "admin" {
     return "admin_users"
@@ -329,12 +353,11 @@ func (u User) TableName() string {
   }
 }
 
-// Disable table name's pluralization, if set to
-// true, `User`'s table name will be `user`
+// 启用单数表名 user 而非默认的复数 users
 db.SingularTable(true)
 ```
 
-### 指定表名
+### 在执行语句时指定表名
 
 ```go
 // Create `deleted_users` table with struct User's definition
@@ -344,11 +367,11 @@ var deleted_users []User
 db.Table("deleted_users").Find(&deleted_users)
 //// SELECT * FROM deleted_users;
 
-db.Table("deleted_users").Where("name = ?", "jinzhu").Delete()
-//// DELETE FROM deleted_users WHERE name = 'jinzhu';
+db.Table("deleted_users").Where("name = ?", "bill").Delete()
+//// DELETE FROM deleted_users WHERE name = 'bill';
 ```
 
-### 更改默认表名
+### 更改 grom 默认表名设置方式
 
 ```go
 gorm.DefaultTableNameHandler = func (db *gorm.DB, defaultTableName string) string  {
@@ -356,7 +379,7 @@ gorm.DefaultTableNameHandler = func (db *gorm.DB, defaultTableName string) strin
 }
 ```
 
-### 下划线式列名
+### 默认列名为字段的下划线式
 
 ```go
 type User struct {
@@ -365,7 +388,11 @@ type User struct {
   Birthday  time.Time // column name is `birthday`
   CreatedAt time.Time // column name is `created_at`
 }
+```
 
+未指定情况下，grom 自动转换结构体字段名称为下划线式作为表的列名。
+
+```go
 // Overriding Column Name
 type Animal struct {
   AnimalId    int64     `gorm:"column:beast_id"`         // set column name to `beast_id`
@@ -488,12 +515,12 @@ db.First(&user, 10)
 
 ```go
 // 结构体方式
-// select * from users where name = 'bgbiao.top'
-db.Where(&User{Name: "bgbiao.top"}).First(&user)
+// select * from users where name = 'grom'
+db.Where(&User{Name: "grom"}).First(&user)
 
 // Map 方式
-// select * from users where name = 'bgbiao.top' and age = 20;
-db.Where(map[string]interface{}{"name": "bgbiao.top", "age": 20}).Find(&users)
+// select * from users where name = 'grom' and age = 20;
+db.Where(map[string]interface{}{"name": "grom", "age": 20}).Find(&users)
 
 // 主键的切片
 // select * from users where id in (20,21,22);
@@ -504,22 +531,22 @@ db.Where([]int64{20, 21, 22}).Find(&users)
 
 ```go
 // 使用条件获取一条记录 First() 方法
-db.Where("name = ?", "bgbiao.top").First(&user)
+db.Where("name = ?", "grom").First(&user)
 
 // 获取全部记录 Find() 方法
-db.Where("name = ?", "jinzhu").Find(&users)
+db.Where("name = ?", "bill").Find(&users)
 
-// 不等于
-db.Where("name <> ?", "jinzhu").Find(&users)
+// 不等于 !=
+db.Where("name <> ?", "bill").Find(&users)
 
 // IN
-db.Where("name IN (?)", []string{"jinzhu", "bgbiao.top"}).Find(&users)
+db.Where("name IN (?)", []string{"bill", "grom"}).Find(&users)
 
 // LIKE
-db.Where("name LIKE ?", "%jin%").Find(&users)
+db.Where("name LIKE ?", "%bill%").Find(&users)
 
 // AND
-db.Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
+db.Where("name = ? AND age >= ?", "bill", "22").Find(&users)
 
 // Time
 // select * from users where updated_at > '2020-03-06 00:00:00'
@@ -530,10 +557,346 @@ db.Where("updated_at > ?", lastWeek).Find(&users)
 db.Where("created_at BETWEEN ? AND ?", lastWeek, today).Find(&users)
 ```
 
-## 更多资料
+### Not 条件查询
+
+```go
+// select * from users where name != 'grom';
+db.Not("name", "bill").First(&user)
+
+// select * from users where name not in ("bill","grom");
+db.Not("name", []string{"bill", "grom"}).Find(&users)
+
+// select * from users where id not in (1,2,3)
+db.Not([]int64{1,2,3}).First(&user)
+
+// select * from users;
+db.Not([]int64{}).First(&user)
+
+// 原生 SQL
+// select * from users where not(name = 'grom');
+db.Not("name = ?", "grom").First(&user)
+
+// struct 方式查询
+// select * from users where name != 'grom'
+db.Not(User{Name: "grom"}).First(&user)
+```
+
+### Or 条件查询
+
+```go
+// SELECT * FROM users WHERE role = 'admin' OR role = 'super_admin';
+db.Where("role = ?", "admin").Or("role = ?", "super_admin").Find(&users)
+
+// struct 方式
+// SELECT * FROM users WHERE name = 'bill' OR name = 'grom';
+db.Where("name = 'bill'").Or(User{Name: "grom"}).Find(&users)
+
+// Map 方式
+// SELECT * FROM users WHERE name = 'bill' OR name = 'grom';
+db.Where("name = 'bill'").Or(map[string]interface{}{"name": "grom"}).Find(&users)
+```
+
+### FirstOrCreate
+
+获取匹配的第一条记录，否则根据给定的条件创建一个新的记录（仅支持 struct 和 map 条件）。
+
+```go
+// 未找到,就插入记录
+// if select * from users where name = 'non_existing') is null; insert into users(name) values("non_existing")
+db.FirstOrCreate(&user, User{Name: "non_existing"})
+
+// select * from users where name = 'grom'
+db.Where(User{Name: "grom"}).FirstOrCreate(&user)
+
+// Attrs 参数：如果记录未找到，将使用参数创建 struct 和记录
+db.Where(User{Name: "non_existing"}).Attrs(User{Age: 20}).FirstOrCreate(&user)
+
+db.Where(User{Name: "grom"}).Attrs(User{Age: 30}).FirstOrCreate(&user)
+
+// Assign 参数：不管记录是否找到，都将参数赋值给 struct 并保存至数据库
+db.Where(User{Name: "non_existing"}).Assign(User{Age: 20}).FirstOrCreate(&user)
+```
+
+### 子查询
+
+```go
+// SELECT * FROM "orders"  WHERE "orders"."deleted_at" IS NULL AND (amount > (SELECT AVG(amount) FROM "orders"  WHERE (state = 'paid')));
+db.Where("amount > ?", DB.Table("orders").Select("AVG(amount)").Where("state = ?", "paid").QueryExpr()).Find(&orders)
+```
+
+### 字段查询 Select
+
+通常情况下，我们只想选择几个字段进行查询，指定你想从数据库中检索出的字段，默认会选择全部字段。
+
+```go
+// SELECT name, age FROM users;
+db.Select("name, age").Find(&users)
+
+// SELECT name, age FROM users;
+db.Select([]string{"name", "age"}).Find(&users)
+
+// SELECT COALESCE(age,'42') FROM users;
+db.Table("users").Select("COALESCE(age,?)", 42).Rows()
+```
+
+### 排序 Order
+
+```go
+// SELECT * FROM users ORDER BY age desc, name;
+db.Order("age desc, name").Find(&users)
+
+// 多字段排序
+// SELECT * FROM users ORDER BY age desc, name;
+db.Order("age desc").Order("name").Find(&users)
+
+// 覆盖排序
+db.Order("age desc").Find(&users1).Order("age", true).Find(&users2)
+```
+
+### 限制输出数量 LIMIT
+
+```go
+// SELECT * FROM users LIMIT 3;
+db.Limit(3).Find(&users)
+
+// 设置 -1 取消 Limit 条件
+// SELECT * FROM users LIMIT 10;
+// SELECT * FROM users;
+db.Limit(10).Find(&users1).Limit(-1).Find(&users2)
+```
+
+### 统计数量 COUNT
+
+```go
+// SELECT count(*) from USERS WHERE name = 'bill' OR name = 'grom';
+db.Where("name = ?", "bill").Or("name = ?", "grom").Find(&users).Count(&count)
+
+// select count(*) from users where name = 'grom'
+db.Model(&User{}).Where("name = ?", "grom").Count(&count)
+
+// SELECT count(*) FROM deleted_users;
+db.Table("deleted_users").Count(&count)
+
+// SELECT count( distinct(name) ) FROM deleted_users;
+db.Table("deleted_users").Select("count(distinct(name))").Count(&count)
+```
+
+### 分组 Group & Having
+
+```go
+rows, err := db.Table("orders").Select("date(created_at) as date, sum(amount) as total").Group("date(created_at)").Rows()
+for rows.Next() {
+  ...
+}
+
+rows, err := db.Table("orders").Select("date(created_at) as date, sum(amount) as total").Group("date(created_at)").Having("sum(amount) > ?", 100).Rows()
+for rows.Next() {
+  ...
+}
+
+type Result struct {
+  Date  time.Time
+  Total int64
+}
+db.Table("orders").Select("date(created_at) as date, sum(amount) as total").Group("date(created_at)").Having("sum(amount) > ?", 100).Scan(&results)
+```
+
+### 连接查询
+
+```go
+rows, err := db.Table("users").Select("users.name, emails.email").Joins("left join emails on emails.user_id = users.id").Rows()
+for rows.Next() {
+  ...
+}
+
+db.Table("users").Select("users.name, emails.email").Joins("left join emails on emails.user_id = users.id").Scan(&results)
+
+// 多连接及参数
+db.Joins("JOIN emails ON emails.user_id = users.id AND emails.email = ?", "bill@example.org").Joins("JOIN credit_cards ON credit_cards.user_id = users.id").Where("credit_cards.number = ?", "411111111111").Find(&user)
+```
+
+### Pluck 查询
+
+Pluck，查询 model 中的一个列作为切片，如果您想要查询多个列，您应该使用 Scan。
+
+```go
+var ages []int64
+db.Find(&users).Pluck("age", &ages)
+
+var names []string
+db.Model(&User{}).Pluck("name", &names)
+
+db.Table("deleted_users").Pluck("name", &names)
+```
+
+### Scan 扫描
+
+```go
+type Result struct {
+  Name string
+  Age  int
+}
+
+var result Result
+db.Table("users").Select("name, age").Where("name = ?", "Antonio").Scan(&result)
+
+// 原生 SQL
+db.Raw("SELECT name, age FROM users WHERE name = ?", "Antonio").Scan(&result)
+```
+
+## 更新
+
+### 更新所有字段 Save
+
+```go
+db.First(&user)
+
+user.Name = "grom"
+user.Age = 100
+
+// update users set name = 'grom',age=100 where id = user.id
+db.Save(&user)
+```
+
+### 更新修改字段 Update
+
+```go
+// 更新单个属性，如果它有变化
+// update users set name = 'hello' where id = user.id
+db.Model(&user).Update("name", "hello")
+
+// 根据给定的条件更新单个属性
+// update users set name = 'hello' where active = true
+db.Model(&user).Where("active = ?", true).Update("name", "hello")
+
+// 使用 map 更新多个属性，只会更新其中有变化的属性
+// update users set name = 'hello',age=18,actived=false where id = user.id
+db.Model(&user).Updates(map[string]interface{}{"name": "hello", "age": 18, "actived": false})
+
+// 使用 struct 更新多个属性，只会更新其中有变化且为非零值的字段
+db.Model(&user).Updates(User{Name: "hello", Age: 18})
+
+// 当使用 struct 更新时，GORM 只会更新那些非零值的字段
+// 对于下面的操作，不会发生任何更新，"", 0, false 都是其类型的零值
+db.Model(&user).Updates(User{Name: "", Age: 0, Actived: false})
+```
+
+### 更新或者忽略某些字段
+
+```go
+// update users set name = 'hello' where id = user.id;
+db.Model(&user).Select("name").Updates(map[string]interface{}{"name": "hello", "age": 18, "actived": false})
+
+// Omit() 方法用来忽略字段
+// update users set age=18,actived=false where id = user.id
+db.Model(&user).Omit("name").Updates(map[string]interface{}{"name": "hello", "age": 18, "actived": false})
+```
+
+### 无 HOOK 更新
+
+上面的更新操作会自动运行 model 的 `BeforeUpdate`，`AfterUpdate` 方法，来更新一些类似 `UpdatedAt` 的字段在更新时保存其 `Associations`，如果不想调用这些方法，可以使用 `UpdateColumn`，`UpdateColumns`。
+
+```go
+// 更新单个属性，类似于 `Update`
+// update users set name = 'hello' where id = user.id;
+db.Model(&user).UpdateColumn("name", "hello")
+
+// 更新多个属性，类似于 `Updates`
+// update users set name = 'hello',age=18 where id = user.id;
+db.Model(&user).UpdateColumns(User{Name: "hello", Age: 18})
+```
+
+### 批量更新
+
+```go
+// update users set name = 'hello',age=18 where id in (10,11)
+db.Table("users").Where("id IN (?)", []int{10, 11}).Updates(map[string]interface{}{"name": "hello", "age": 18})
+
+// 使用 struct 更新时，只会更新非零值字段，若想更新所有字段，请用 map[string]interface{}
+db.Model(User{}).Updates(User{Name: "hello", Age: 18})
+
+// 使用 `RowsAffected` 获取更新记录总数
+db.Model(User{}).Updates(User{Name: "hello", Age: 18}).RowsAffected
+```
+
+### 使用 SQL 计算表达式
+
+```go
+// update products set price = price*2+100 where id = product.id
+DB.Model(&product).Update("price", gorm.Expr("price * ? + ?", 2, 100))
+
+// update products set price = price*2+100 where id = product.id;
+DB.Model(&product).Updates(map[string]interface{}{"price": gorm.Expr("price * ? + ?", 2, 100)})
+
+// update products set quantity = quantity-1 where id = product.id;
+DB.Model(&product).UpdateColumn("quantity", gorm.Expr("quantity - ?", 1))
+
+// update products set quantity = quantity -1 where id = product.id and quantity > 1
+DB.Model(&product).Where("quantity > 1").UpdateColumn("quantity", gorm.Expr("quantity - ?", 1))
+```
+
+## 删除
+
+### 删除记录
+
+删除记录时，请确保主键字段有值，GORM 会通过主键去删除记录，如果主键为空，GORM 会删除该 model 的所有记录。
+
+```go
+// 删除现有记录
+// delete from emails where id = email.id;
+db.Delete(&email)
+
+// 为删除 SQL 添加额外的 SQL 操作
+// delete from emails where id = email.id OPTION (OPTIMIZE FOR UNKNOWN)
+db.Set("gorm:delete_option", "OPTION (OPTIMIZE FOR UNKNOWN)").Delete(&email)
+```
+
+### 批量删除
+
+```go
+// delete from emails where email like '%bill%'
+db.Where("email LIKE ?", "%bill%").Delete(Email{})
+
+db.Delete(Email{}, "email LIKE ?", "%bill%")
+```
+
+### 软删除
+
+如果一个 model 有 DeletedAt 字段，将自动获得软删除的功能。当调用 Delete 方法时， 记录不会真正的从数据库中被删除，只会将 DeletedAt 字段的值会被设置为当前时间。
+
+在之前，我们可能会使用 isDelete 之类的字段来标记记录删除，不过在 gorm 中内置了 DeletedAt 字段，并且有相关 HOOK 来保证软删除。
+
+```go
+// UPDATE users SET deleted_at="2020-03-13 10:23" WHERE id = user.id;
+db.Delete(&user)
+
+// 批量删除
+// 软删除的批量删除其实就是把 deleted_at 改成当前时间
+// 并且在查询时无法查到，所以底层用的是 update 的 sql
+db.Where("age = ?", 20).Delete(&User{})
+
+// 查询记录时会忽略被软删除的记录
+// SELECT * FROM users WHERE age = 20 AND deleted_at IS NULL;
+db.Where("age = 20").Find(&user)
+
+// Unscoped 方法可以查询被软删除的记录
+// SELECT * FROM users WHERE age = 20;
+db.Unscoped().Where("age = 20").Find(&users)
+```
+
+### 物理删除
+
+使用 `Unscoped().Delete()` 方法才是真正执行 SQL 中的 `delete` 语句.
+
+```go
+// Unscoped 方法可以物理删除记录
+// DELETE FROM orders WHERE id=10;
+db.Unscoped().Delete(&order)
+```
 
 ```
-https://zhuanlan.zhihu.com/p/113251066
+## 官网资料
 
+```
 https://gorm.io/docs/query.html
 ```
