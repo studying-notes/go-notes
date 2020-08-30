@@ -3,6 +3,7 @@
 - [Go 语言 JSON 技巧](#go-语言-json-技巧)
 	- [Go 和 JSON 转换关系](#go-和-json-转换关系)
 	- [基本的序列化](#基本的序列化)
+	- [基本的反序列化](#基本的反序列化)
 	- [嵌套结构体的序列化](#嵌套结构体的序列化)
 	- [解析不知道格式的数据](#解析不知道格式的数据)
 	- [结构体标签](#结构体标签)
@@ -46,6 +47,7 @@ func main() {
 		Width:  75,
 		Height: 4,
 	}
+	// b1 可以是指针
 	buf, _ := json.Marshal(b1)
 	fmt.Printf("%s\n", buf)
 
@@ -59,6 +61,10 @@ func main() {
 {"Length":"120","Width":75,"Height":4}
 {Length:120 Width:75 Height:4}
 ```
+
+## 基本的反序列化
+
+结构体和 JSON 中单方面存在的字段都自动忽略。
 
 ## 嵌套结构体的序列化
 
@@ -147,11 +153,11 @@ func main() {
 
 标签 Tag 是结构体的元信息，可以在运行的时候通过反射的机制读取出来。 Tag 在结构体字段的后方定义，由一对反引号包裹起来，格式如下：
 
-```go
+```
 `key1:"value1" key2:"value2"`
 ```
 
-结构体 tag 由一个或多个键值对组成。键与值使用冒号分隔，值用双引号括起来。同一个结构体字段可以设置多个键值对 tag，不同的键值对之间使用空格分隔。
+结构体 tag 由一个或多个键值对组成。**键与值使用冒号分隔**，**值用双引号括起来**。同一个结构体字段可以设置多个键值对 tag，**不同的键值对之间使用空格分隔**。
 
 ### 指定字段名
 
@@ -159,8 +165,8 @@ func main() {
 
 ```go
 type Box struct {
-	Length string `json:"length"`
-	Width  int64
+  Length string `json:"length" db:"length"`
+	Width  int64  `json:"width"`
 	Height float64
 }
 ```
