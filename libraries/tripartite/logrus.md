@@ -80,9 +80,7 @@ func main() {
 }
 ```
 
-## 进阶示例
-
-记录到多个位置：
+## 记录到多个位置
 
 ```go
 package main
@@ -204,7 +202,7 @@ func init() {
 
 ## 格式化
 
-logrus内置以下两种日志格式化程序：
+logrus 内置以下两种日志格式化程序：
 
 ```
 logrus.TextFormatter
