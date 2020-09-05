@@ -1,5 +1,19 @@
 # Zap 日志库
 
+- [Zap 日志库](#zap-日志库)
+	- [介绍](#介绍)
+	- [Zap Logger](#zap-logger)
+		- [Logger](#logger)
+		- [Sugared Logger](#sugared-logger)
+	- [定制 Logger](#定制-logger)
+		- [将日志写入文件而不是终端](#将日志写入文件而不是终端)
+		- [将 JSON Encoder 更改为普通的 Log Encoder](#将-json-encoder-更改为普通的-log-encoder)
+		- [更改时间编码/添加调用者详细信息](#更改时间编码添加调用者详细信息)
+	- [用 Lumberjack 根据文件大小进行日志切割归档](#用-lumberjack-根据文件大小进行日志切割归档)
+		- [加入 Lumberjack](#加入-lumberjack)
+		- [完整示例](#完整示例)
+	- [用 file-foratelogs 根据文件大小进行日志切割归档](#用-file-foratelogs-根据文件大小进行日志切割归档)
+
 ## 介绍
 
 一个优秀的日志记录器能够提供下面这些功能：
