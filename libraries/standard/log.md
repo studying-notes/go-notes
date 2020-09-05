@@ -10,6 +10,19 @@ func main() {
 	// 中断程序
 	log.Panicln("A Panicln() log.")
 }
+
+// Fatal is equivalent to Print() followed by a call to os.Exit(1).
+func Fatal(v ...interface{}) {
+	std.Output(2, fmt.Sprint(v...))
+	os.Exit(1)
+}
+
+// Panic is equivalent to Print() followed by a call to panic().
+func Panic(v ...interface{}) {
+	s := fmt.Sprint(v...)
+	std.Output(2, s)
+	panic(s)
+}
 ```
 
 - Logger 会打印每条日志信息的日期时间，默认输出到系统的标准错误；
@@ -84,9 +97,9 @@ func init() {
 }
 ```
 
-### 创建 logger
+### 创建新 Logger 对象
 
-Log 标准库中还提供了一个创建新 logger 对象的构造函数。
+Log 标准库中还提供了一个创建新 Logger 对象的构造函数。
 
 ```go
 func New(out io.Writer, prefix string, flag int) *Logger
