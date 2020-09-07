@@ -1,6 +1,6 @@
-# Go 调用 DLL
+# Go 调用 DLL 动态库
 
-- [Go 调用 DLL](#go-调用-dll)
+- [Go 调用 DLL 动态库](#go-调用-dll-动态库)
 	- [简单 CGO 程序](#简单-cgo-程序)
 	- [Go 程序编译成动态库](#go-程序编译成动态库)
 		- [Windows](#windows)
