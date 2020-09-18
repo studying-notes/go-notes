@@ -1,19 +1,21 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
-	_ "github.com/xeodou/go-sqlcipher"
+	_ "github.com/fujiawei-dev/go-sqlcipher"
+	//"database/sql"
+	sql "github.com/jmoiron/sqlx"
 	"log"
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "users.db?_key=123456")
+	db, err := sql.Open("sqlite3", "users.db?_key=LGaMU5RdVImAL9CN")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
+	// 必须写入一个数据，否则仅仅只是创建了一个未加密的空白文件
 	c := "CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER PRIMARY KEY, `name` char, `password` chart, UNIQUE(`name`));"
 	_, err = db.Exec(c)
 	if err != nil {
@@ -26,16 +28,19 @@ func main() {
 		fmt.Println(err)
 	}
 
-	e := "select name, password from users where name='py';"
+	e := "select name, password from users;"
 	rows, err := db.Query(e)
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer rows.Close()
+
+	var (
+		name     string
+		password string
+	)
 	for rows.Next() {
-		var name string
-		var password string
-		rows.Scan(&name, &password)
+		_ = rows.Scan(&name, &password)
 		fmt.Print("{\"name\":\"" + name + "\", \"password\": \"" + password + "\"}")
 	}
 	rows.Close()

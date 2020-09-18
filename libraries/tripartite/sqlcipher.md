@@ -1,8 +1,22 @@
-# Windows 10 64x 安装 go-sqlcipher
+# 用 SQLCipher 加密 SQLite
+
+Windows 下加密 SQLite 的准备工作相当繁琐。
+
+- [用 SQLCipher 加密 SQLite](#用-sqlcipher-加密-sqlite)
+	- [预准备](#预准备)
+		- [安装 Perl 64bit](#安装-perl-64bit)
+		- [安装 GCC 64bit](#安装-gcc-64bit)
+		- [安装 MSYS](#安装-msys)
+		- [安装 Make](#安装-make)
+	- [编译 OpenSSL 64bit](#编译-openssl-64bit)
+	- [安装 Go-SQLCipher 库](#安装-go-sqlcipher-库)
+		- [附个人 fork 修改版](#附个人-fork-修改版)
+	- [创建加密数据库](#创建加密数据库)
+	- [打开加密数据库](#打开加密数据库)
 
 ## 预准备
 
-1. 安装 Perl 64bit
+### 安装 Perl 64bit
 
 有不同的发行版本，随便选一个即可，比如：
 
@@ -12,7 +26,7 @@ http://strawberryperl.com/download/5.30.2.1/strawberry-perl-5.30.2.1-64bit.msi
 
 安装到默认或者指定路径，然后添加 `bin` 目录到 `PATH` 中。
 
-2. 安装 GCC 64bit
+### 安装 GCC 64bit
 
 也有很多选择，比如 TDM-GCC-64：
 
@@ -20,7 +34,7 @@ http://strawberryperl.com/download/5.30.2.1/strawberry-perl-5.30.2.1-64bit.msi
 https://jmeubank.github.io/tdm-gcc/
 ```
 
-3. 安装 MSYS
+### 安装 MSYS
 
 ```
 http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe
@@ -28,7 +42,7 @@ http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe
 
 不可缺少，缺了，一些命令无法在 Windows 下无法运行。
 
-4. 安装 Make
+### 安装 Make
 
 无论如何搞定，最后可以提供 `make` 命令即可，`Powershell` 下可以以管理员身份执行以下命令安装：
 
@@ -84,9 +98,9 @@ https://www.openssl.org/source/openssl-1.0.2k.tar.gz
 
 编译完成后，将 `openssl-1.0.2k` 目录下的以下两个文件 `libcrypto.a`、`libcrypto.pc` 复制到 `TDM-GCC-64\lib` 目录下，然后将 `openssl-1.0.2k\include\openssl` 这个文件夹复制到 `TDM-GCC-64\x86_64-w64-mingw32\include` 下。
 
-## 安装 go-sqlcipher
+## 安装 Go-SQLCipher 库
 
-1. 下载源码
+1. 首先下载源码
 
 ```powershell
 > go get github.com/xeodou/go-sqlcipher
@@ -102,13 +116,9 @@ GOPATH\pkg\mod\github.com\xeodou
 
 2. 修改 `sqlite3_windows.go` 文件
 
-打开一级目录下的  `sqlite3_windows.go` 文件，将开始部分改成以下内容：
+打开一级目录下的  `sqlite3_windows.go` 文件，改成以下内容：
 
 ```go
-// Copyright (C) 2014 Yasuhiro Matsumoto <mattn.jp@gmail.com>.
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file.
 // +build windows
 
 package sqlite3
@@ -121,10 +131,47 @@ package sqlite3
 import "C"
 ```
 
-3. 再次安装
+3. 最后再次安装
 
 ```powershell
 > go install -v .
 ```
 
 完成！
+
+### 附个人 fork 修改版
+
+上面的方法在 Windows 下过于麻烦，因此我把改好的 fork 仓库上传了，这样就不用每次都修改文件了。
+
+```powershell
+go get github.com/fujiawei-dev/go-sqlcipher 
+```
+
+## 创建加密数据库
+
+```go
+package main
+
+import (
+	"database/sql"
+	_ "github.com/fujiawei-dev/go-sqlcipher"
+)
+
+func func main() {
+    sql.Open("sqlite3", databasefile +"?_key=password")
+}
+```
+
+经测试，现在只支持自定义密钥 `key`，其他设置了都无效，最终都会变成默认设置。
+
+## 打开加密数据库
+
+折腾半天，走了很多错误的方向，一是 Windows 平台找不到编译好的最新版本，找了个旧版本（当时还没发现这个问题），怎么也打不开生成的文件；二是根据 StackOverflow 的回答找了一个专门打开 SQLite 的可视化工具（SQLiteStudio），然而必须自己输除密钥外的其他设置，怎么输都错。于是我搜索寻找默认设置，然而从官方文档到源代码，只找到一丝眉目。
+
+几近绝望，最终在一篇讲微信加密数据库的博客里发现了一款工具：
+
+```
+https://download.sqlitebrowser.org/DB.Browser.for.SQLite-3.12.0-win64.msi
+```
+
+提供了新旧版本的默认设置，问题解决了。
