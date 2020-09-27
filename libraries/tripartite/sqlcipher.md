@@ -44,6 +44,12 @@ http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe
 
 ### 安装 Make
 
+官网
+
+```
+https://cmake.org
+```
+
 无论如何搞定，最后可以提供 `make` 命令即可，`Powershell` 下可以以管理员身份执行以下命令安装：
 
 ```powershell
@@ -96,7 +102,7 @@ https://www.openssl.org/source/openssl-1.0.2k.tar.gz
 
 编译过程大概十几分钟。
 
-编译完成后，将 `openssl-1.0.2k` 目录下的以下两个文件 `libcrypto.a`、`libcrypto.pc` 复制到 `TDM-GCC-64\lib` 目录下，然后将 `openssl-1.0.2k\include\openssl` 这个文件夹复制到 `TDM-GCC-64\x86_64-w64-mingw32\include` 下。
+编译完成后，将 `openssl-1.0.2k` 目录下的两个文件 `libcrypto.a`、`libcrypto.pc` 复制到 `TDM-GCC-64\lib` 目录下，然后将 `openssl-1.0.2k\include\openssl` 这个文件夹复制到 `TDM-GCC-64\x86_64-w64-mingw32\include` 下。
 
 ## 安装 Go-SQLCipher 库
 
@@ -170,8 +176,12 @@ func func main() {
 
 几近绝望，最终在一篇讲微信加密数据库的博客里发现了一款工具：
 
-```
+```shell
+# 官网
 https://download.sqlitebrowser.org/DB.Browser.for.SQLite-3.12.0-win64.msi
+
+# 蓝奏云
+https://wwa.lanzous.com/itiH8gqi0pa
 ```
 
 提供了新旧版本的默认设置，问题解决了。
