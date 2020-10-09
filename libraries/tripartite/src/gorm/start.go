@@ -5,16 +5,15 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"log"
-	"time"
 )
 
 // gorm.Model 官方定义的通用模型
-type Model struct {
-	ID        uint `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time `sql:"index"`
-}
+//type Model struct {
+//	ID        uint `gorm:"primary_key"`
+//	CreatedAt time.Time
+//	UpdatedAt time.Time
+//	DeletedAt *time.Time `sql:"index"`
+//}
 
 type Product struct {
 	gorm.Model // 官方定义的通用模型
