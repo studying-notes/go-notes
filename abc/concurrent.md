@@ -1,25 +1,23 @@
-# 常见的并发模式
+---
+date: 2020-07-26T21:06:02+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
 
-- [常见的并发模式](#常见的并发模式)
-  - [Hello, World](#hello-world)
-    - [sync.Mutex](#syncmutex)
-    - [无缓存通道](#无缓存通道)
-    - [带缓存的通道](#带缓存的通道)
-    - [sync.WaitGroup](#syncwaitgroup)
-  - [生产者消费者模型](#生产者消费者模型)
-  - [发布/订阅模型](#发布订阅模型)
-  - [控制并发数](#控制并发数)
-  - [素数筛](#素数筛)
-  - [并发的安全退出](#并发的安全退出)
-    - [select 关键字](#select-关键字)
-      - [超时判断](#超时判断)
-      - [非阻塞的通道发送或接收操作](#非阻塞的通道发送或接收操作)
-      - [阻止 `main()` 函数退出](#阻止-main-函数退出)
-      - [生成随机数序列](#生成随机数序列)
-    - [停止一个 Goroutine](#停止一个-goroutine)
-    - [停止多个 Goroutine](#停止多个-goroutine)
-  - [Context 标准库](#context-标准库)
-    - [改进的素数筛实现](#改进的素数筛实现)
+# 文章
+title: "Go 并发模式与控制"  # 文章标题
+description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
+url:  "posts/go/abc/concurrent"  # 设置网页永久链接
+tags: [ "go", "concurrent" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
 
 Go 语言并发体系的理论是 C.A.R Hoare 在1978年提出的通信顺序进程（Communicating Sequential Process，CSP）。CSP 有着精确的数学模型。作为 Go 并发编程核心的 CSP 理论的核心概念只有一个：同步通信。
 

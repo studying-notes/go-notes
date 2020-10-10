@@ -1,15 +1,23 @@
-# Goroutine 并发模型
+---
+date: 2020-07-26T21:06:02+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
 
-- [Goroutine 并发模型](#goroutine-并发模型)
-  - [Goroutine 和系统线程](#goroutine-和系统线程)
-  - [原子操作](#原子操作)
-    - [sync.Mutex](#syncmutex)
-    - [sync/atomic](#syncatomic)
-  - [顺序一致性内存模型](#顺序一致性内存模型)
-  - [初始化顺序](#初始化顺序)
-  - [Goroutine 的创建](#goroutine-的创建)
-  - [基于通道的通信](#基于通道的通信)
-  - [不靠谱的同步](#不靠谱的同步)
+# 文章
+title: "Go 并发模型"  # 文章标题
+description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
+url:  "posts/go/abc/goroutine"  # 设置网页永久链接
+tags: [ "go", "goroutine" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
 
 常见的并行编程有多种模型，主要有多线程、消息传递等。从理论上来看，**多线程和基于消息的并发编程是等价的**。由于**多线程并发模型**可以自然对应到多核的处理器，主流的操作系统因此也都提供了系统级的多线程支持，同时从概念上讲多线程似乎也更直观，因此多线程编程模型逐步被吸纳到主流的编程语言特性或语言扩展库中。
 

@@ -1,18 +1,23 @@
-# Go 语言字符串
+---
+date: 2020-07-26T21:06:02+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
 
-- [Go 语言字符串](#go-语言字符串)
-	- [底层数据结构](#底层数据结构)
-	- [内存布局](#内存布局)
-	- [切片操作](#切片操作)
-	- [遍历与打印](#遍历与打印)
-		- [遍历原始的字节码](#遍历原始的字节码)
-	- [字符串和 `[]rune` 类型的相互转换](#字符串和-rune-类型的相互转换)
-	- [字符串内置操作模拟](#字符串内置操作模拟)
-		- [`for range` 遍历模拟](#for-range-遍历模拟)
-		- [`[]byte(s)` 转换模拟](#bytes-转换模拟)
-		- [`string(bytes)` 转换模拟](#stringbytes-转换模拟)
-		- [`[]rune(s)` 转换模拟](#runes-转换模拟)
-		- [`string(runes)` 转换模拟](#stringrunes-转换模拟)
+# 文章
+title: "Go 语言字符串"  # 文章标题
+description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
+url:  "posts/go/abc/string"  # 设置网页永久链接
+tags: [ "go", "string" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
 
 ## 底层数据结构
 
@@ -47,7 +52,7 @@ type StringHeader struct {
 
 字符串 `hello, world` 对应的内存结构：
 
-![字符串内存结构](imgs/string.png)
+![06NZGR.png](https://s1.ax1x.com/2020/10/10/06NZGR.png)
 
 分析可以发现，`hello, world` 字符串底层数据和以下数组是完全一致的：
 
@@ -107,7 +112,7 @@ fmt.Println("\xe7\x95\x8c") // 打印“界”
 
 “hello, 世界” 字符串的内存结构布局：
 
-![](imgs/string2.png)
+![06NeR1.png](https://s1.ax1x.com/2020/10/10/06NeR1.png)
 
 一个中文字符占了 3 个字节。
 
