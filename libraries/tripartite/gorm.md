@@ -56,6 +56,7 @@ toc: false  # 是否自动生成目录
 		- [根据主键获取指定的某条记录，仅当主键为整型时可用](#根据主键获取指定的某条记录仅当主键为整型时可用)
 		- [根据主键获取最后一条记录](#根据主键获取最后一条记录)
 		- [随机获取一条记录](#随机获取一条记录)
+	- [查询结果分析](#查询结果分析)
 		- [获取所有的记录](#获取所有的记录)
 	- [条件查询](#条件查询)
 		- [通过 结构体 / Map 查询](#通过-结构体--map-查询)
@@ -584,6 +585,23 @@ db.Last(&user)
 ```go
 // SELECT * FROM users LIMIT 1;
 db.Take(&user)
+```
+
+### 查询结果分析
+
+```go
+var user Model
+gm := db.First(&user)
+
+fmt.Println(gm.RowsAffected)
+fmt.Println(gm.Error)
+```
+
+```
+[2020-10-10 11:06:59]  [22.01ms]  SELECT * FROM `users`  WHERE `users`.`deleted_at` IS NULL ORDER BY `users`.`id` ASC LIMIT 1  
+[1 rows affected or returned ] 
+1
+<nil>
 ```
 
 #### 获取所有的记录

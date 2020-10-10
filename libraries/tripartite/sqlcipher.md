@@ -1,18 +1,23 @@
-# 用 SQLCipher 加密 SQLite
+---
+date: 2020-09-19T21:39:18+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
 
-Windows 下加密 SQLite 的准备工作相当繁琐。
+# 文章
+title: "用 SQLCipher 加密 SQLite"  # 文章标题
+description: "Windows 下加密 SQLite 的准备工作相当繁琐"
+url:  "posts/go/libraries/tripartite/sqlcipher"  # 设置网页链接，默认使用文件名
+tags: [ "go", "sqlcipher", "sqlite"]  # 自定义标签
+series: [ "Go 学习笔记"]  # 文章主题/文章系列
+categories: [ "学习笔记"]  # 文章分类
 
-- [用 SQLCipher 加密 SQLite](#用-sqlcipher-加密-sqlite)
-	- [预准备](#预准备)
-		- [安装 Perl 64bit](#安装-perl-64bit)
-		- [安装 GCC 64bit](#安装-gcc-64bit)
-		- [安装 MSYS](#安装-msys)
-		- [安装 Make](#安装-make)
-	- [编译 OpenSSL 64bit](#编译-openssl-64bit)
-	- [安装 Go-SQLCipher 库](#安装-go-sqlcipher-库)
-		- [附个人 fork 修改版](#附个人-fork-修改版)
-	- [创建加密数据库](#创建加密数据库)
-	- [打开加密数据库](#打开加密数据库)
+# 章节
+weight: 20 # 文章在章节中的排序优先级，正序排序
+chapter: false  # 将页面设置为章节
+
+index: true  # 文章是否可以被索引
+draft: false  # 草稿
+toc: true  # 是否自动生成目录
+---
 
 ## 预准备
 
@@ -42,6 +47,8 @@ http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe
 
 不可缺少，缺了，一些命令无法在 Windows 下无法运行。
 
+> 建议改用 MSYS2，MSYS2 是 MSYS 的一个升级版, 准确的说是集成了 pacman 和 MinGW-w64 的 Cygwin 升级版, 提供了 bash shell 等 Linux 环境、版本控制软件和 MinGW-w64 工具链等。
+
 ### 安装 Make
 
 官网
@@ -53,24 +60,26 @@ https://cmake.org
 无论如何搞定，最后可以提供 `make` 命令即可，`Powershell` 下可以以管理员身份执行以下命令安装：
 
 ```powershell
-> choco install make
+choco install make
 ```
 
 另一种：
 
 ```powershell
-> copy mingw32-make.exe make.exe
+copy mingw32-make.exe make.exe
+
+copy c:/developer/tdm64-gcc/bin/mingw32-make.exe c:/developer/tdm64-gcc/bin/make.exe
 ```
 
 启动一个终端，运行以下命令，都可以正确显示就表明准备工作就绪了：
 
 ```powershell
-> perl -v
-> gcc -v
-> make -v
+perl -v
+gcc -v
+make -v
 ```
 
-## 编译 OpenSSL 64bit
+## 编译 OpenSSL 64bit && 32bit
 
 1. 下载 OpenSSL
 
@@ -87,7 +96,7 @@ https://www.openssl.org/source/openssl-1.0.2k.tar.gz
 2. 解压
 
 ```powershell
-> tar -xvzf openssl-1.0.2k.tar.gz
+tar -xvzf openssl-1.0.2k.tar.gz
 ```
 
 用 360 解压缩这一类工具也没问题。
@@ -95,9 +104,18 @@ https://www.openssl.org/source/openssl-1.0.2k.tar.gz
 3. 编译
 
 ```powershell
-> cd openssl-1.0.2k
-> perl configure mingw64 no-shared no-asm
-> make
+cd openssl-1.0.2k
+
+# x64
+perl configure mingw64 no-shared no-asm
+
+# x86 
+perl configure mingw no-shared no-asm
+
+# 在 Makefile 中添加参数
+# CFLAGS = -m32
+# LDFLAGS = -m32
+make
 ```
 
 编译过程大概十几分钟。
@@ -109,7 +127,7 @@ https://www.openssl.org/source/openssl-1.0.2k.tar.gz
 1. 首先下载源码
 
 ```powershell
-> go get github.com/xeodou/go-sqlcipher
+go get github.com/xeodou/go-sqlcipher
 ```
 
 不出意外，安装报错，但源码已经下载下来了，找到所在目录，一般在：
@@ -140,7 +158,7 @@ import "C"
 3. 最后再次安装
 
 ```powershell
-> go install -v .
+go install -v .
 ```
 
 完成！
@@ -151,6 +169,12 @@ import "C"
 
 ```powershell
 go get github.com/fujiawei-dev/go-sqlcipher 
+```
+
+## 启用 CGO
+
+```
+GOARCH=386;CGO_ENABLED=1
 ```
 
 ## 创建加密数据库
