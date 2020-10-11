@@ -1,6 +1,7 @@
 # Kafka
 
 - [Kafka](#kafka)
+	- [快捷启动](#快捷启动)
 	- [Windows 安装 Kafka](#windows-安装-kafka)
 	- [命令行操作](#命令行操作)
 		- [创建主题](#创建主题)
@@ -17,6 +18,44 @@
 			- [Managing Commits](#managing-commits)
 		- [Writer](#writer)
 		- [TLS Support](#tls-support)
+
+## 快捷启动
+
+1. 启动 Zookeeper
+
+```powershell
+zkserver
+```
+
+2. 运行 Kafka
+
+```shell
+kafka-server-start "c:/developer/kafka_2.13-2.5.0/config/server.properties"
+```
+
+3. 创建主题
+
+```shell
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+```
+
+4. 查看主题
+
+```shell
+kafka-topics --list --zookeeper localhost:2181
+```
+
+5. 创建生产者
+
+```shell
+kafka-console-producer --broker-list localhost:9092 --topic test
+```
+
+6. 创建消费者
+
+```
+kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning
+```
 
 ## Windows 安装 Kafka
 
@@ -84,10 +123,11 @@ zookeeper.connect=localhost:2181
 8. 运行 Kafka
 
 ```shell
-> kafka-server-start config\server.properties
+> cd C:/Developer/kafka_2.13-2.5.0
+> kafka-server-start config/server.properties
 ```
 
-- `config\server.properties` 必须指定配置文件，运行后窗口不退出。
+- `config/server.properties` 必须指定配置文件，运行后窗口不退出。
 
 ## 命令行操作
 

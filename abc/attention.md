@@ -186,3 +186,29 @@ func main() {
     }
 }
 ```
+
+```go
+package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+/*
+	因为指针始终是相同的，列表里添加的
+	都是同一个指针，最后的值也必然是相同的
+*/
+func main() {
+	var stringsList []*string
+	var s string
+	for i := 0; i < 10; i++ {
+		s = fmt.Sprintf("#%s", strconv.Itoa(i))
+		fmt.Println(s)
+		stringsList = append(stringsList, &s)
+	}
+	for _, n := range stringsList {
+		fmt.Printf("%s\n", *n)
+	}
+}
+```
