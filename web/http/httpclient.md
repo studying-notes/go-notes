@@ -1,4 +1,23 @@
-# 标准库 net/http
+---
+date: 2020-09-19T21:06:02+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
+
+# 文章
+title: "标准库 net/http"  # 文章标题
+description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
+url:  "posts/go/web/http/httpclient"  # 设置网页永久链接
+tags: [ "go", "http", "web" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: false  # 是否自动生成目录
+draft: false  # 草稿
+---
 
 ## HTTP 客户端
 

@@ -87,6 +87,7 @@ draft: false  # 草稿
 
 ### 文件读写
 
+{{<card src="posts/go/libraries/tripartite/fsnotify">}}
 {{<card src="posts/go/io/excel">}}
 
 ### 序列化
@@ -106,7 +107,7 @@ draft: false  # 草稿
 ## 并发编程
 
 {{<card src="posts/go/libraries/standard/sync/pool">}}
-
+{{<card src="posts/go/libraries/standard/context">}}
 
 ## 系统
 
@@ -122,11 +123,19 @@ draft: false  # 草稿
 
 {{<card src="posts/go/libraries/standard/time">}}
 
-
-{{<card src="posts/go/libraries/tripartite/fsnotify">}}
-
 ## 网络编程
 
+{{<card src="posts/go/web/http/cookie">}}
+{{<card src="posts/go/web/http/httpclient">}}
+{{<card src="posts/go/web/grpc">}}
+{{<card src="posts/go/web/mqtt/intro">}}
+
+### 消息队列
+
+{{<card src="posts/go/web/mq/intro">}}
+{{<card src="posts/go/web/mq/kafka">}}
+{{<card src="posts/go/web/mq/nsq">}}
+{{<card src="posts/go/web/mq/rabbitmq">}}
 
 ## 测试与性能
 

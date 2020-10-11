@@ -1,4 +1,25 @@
-# Cookie 和 Session
+---
+date: 2020-09-19T21:06:02+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
+
+# 文章
+title: "Cookie 和 Session"  # 文章标题
+description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
+url:  "posts/go/web/http/cookie"  # 设置网页永久链接
+tags: [ "go", "http", "cookie" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: false  # 是否自动生成目录
+draft: false  # 草稿
+---
+
+## Cookie 的定义
 
 标准库 `net/http` 中定义了 `Cookie`，它代表一个出现在 HTTP 响应头中 `Set-Cookie` 的值里或者 HTTP 请求头中 Cookie 的值的 `HTTP Cookie`。
 
