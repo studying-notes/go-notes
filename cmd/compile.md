@@ -1,17 +1,23 @@
-# Go 编译命令
+---
+date: 2020-08-30T21:06:02+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
 
-- [Go 编译命令](#go-编译命令)
-  - [编译子命令](#编译子命令)
-    - [go run](#go-run)
-    - [go build](#go-build)
-    - [go install](#go-install)
-  - [编译参数](#编译参数)
-  - [交叉编译](#交叉编译)
-    - [常用参数](#常用参数)
-    - [进行交叉编译](#进行交叉编译)
-    - [编译缓存](#编译缓存)
-    - [缩小编译文件大小](#缩小编译文件大小)
-    - [编译信息写入](#编译信息写入)
+# 文章
+title: "Go 编译相关的命令参数"  # 文章标题
+description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
+url:  "posts/go/cmd/compile"  # 设置网页永久链接
+tags: [ "go" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
 
 ## 编译子命令
 
@@ -23,14 +29,14 @@
 
 编译器执行了绝大部分编译相关的工作，过程如下：
 
-![](../imgs/go-complie-flow.png)
+![06tX5j.png](https://s1.ax1x.com/2020/10/10/06tX5j.png)
 
 - 创建编译依赖所需的临时目录。Go 编译器会设置一个临时环境变量 WORK，用于在此工作区编译应用程序，执行编译后的二进制文件，其默认值为系统的临时文件目录路径。可以通过设置 GOTMPDIR 来调整其执行目录。
 - 编译和生成编译所需要的依赖。该阶段将会编译和生成标准库中的依赖（如 flag.a、log.a、net/http等）、应用程序中的外部依赖（如 gin-gonic/gin 等），以及应用程序自身的代码，然后生成、链接对应归档文件（.a 文件）和编译配置文件。
 - 创建并进入编译二进制文件所需的临时目录。即创建 exe 目录。
 - 生成可执行文件。这里主要用到的是 link 工具，该工具读取依赖文件的 Go 归档文件或对象及其依赖项，最终将它们组合为可执行的二进制文件。
 
-![](../imgs/go-complie.png)
+![06tOaQ.png](https://s1.ax1x.com/2020/10/10/06tOaQ.png)
 
 - 执行可执行文件。到先前指定的目录 $WORK/b001/exe/main 下执行生成的二进制文件。
 
@@ -52,7 +58,7 @@ go install 命令在编译后，会将生成的二进制文件移到 bin 目录�
 
 ## 编译参数
 
-![](../imgs/go-complie-args.png)
+![06txGn.png](https://s1.ax1x.com/2020/10/10/06txGn.png)
 
 ## 交叉编译
 
@@ -60,7 +66,7 @@ go install 命令在编译后，会将生成的二进制文件移到 bin 目录�
 
 ### 常用参数
 
-![](../imgs/go-complie-cross-args.png)
+![06tvPs.png](https://s1.ax1x.com/2020/10/10/06tvPs.png)
 
 ### 进行交叉编译
 
@@ -94,7 +100,7 @@ go env GOCACHE
 go build -ldflags="-w -s"
 ```
 
-![](../imgs/ldflags.png)
+![06NCrT.png](https://s1.ax1x.com/2020/10/10/06NCrT.png)
 
 upx 工具对可执行文件进行压缩：
 
