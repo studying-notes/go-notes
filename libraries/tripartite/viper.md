@@ -1,4 +1,24 @@
-# Viper 中文教程
+---
+date: 2020-10-10T14:33:53+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
+
+# 文章
+title: "Viper 中文教程"  # 文章标题
+url:  "posts/go/libraries/tripartite/viper"  # 设置网页链接，默认使用文件名
+tags: [ "go", "viper" ]  # 自定义标签
+series: [ "Go 学习笔记"]  # 文章主题/文章系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
+
+## 简介
 
 Viper 是适用于 Go 应用程序的完整配置解决方案。它被设计用于在应用程序中工作，并且可以处理所有类型的配置需求和格式。它支持以下特性：
 
@@ -80,6 +100,8 @@ viper.OnConfigChange(func(e fsnotify.Event) {
 })
 ```
 
+如果某个对象只在初始化时读取一次设置，那就起不到热更新的作用。
+
 ## 从 io.Reader 读取配置
 
 Viper 预先定义了许多配置源，如文件、环境变量、标志和远程 K/V 存储，还可以实现自己所需的配置源并将其提供给 viper。
@@ -132,6 +154,6 @@ viper.GetBool("verbose") // true
 
 用到再说
 
-```go
+```
 https://zhuanlan.zhihu.com/p/138691244
 ```

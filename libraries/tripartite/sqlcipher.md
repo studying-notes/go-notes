@@ -1,5 +1,5 @@
 ---
-date: 2020-09-19T21:39:18+08:00  # 创建日期
+date: 2020-07-20T21:39:18+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
@@ -173,7 +173,7 @@ go get github.com/fujiawei-dev/go-sqlcipher
 
 ## 启用 CGO
 
-```
+```shell
 GOARCH=386;CGO_ENABLED=1
 ```
 

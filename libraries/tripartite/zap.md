@@ -1,18 +1,22 @@
-# Zap 日志库
+---
+date: 2020-10-10T14:33:53+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
 
-- [Zap 日志库](#zap-日志库)
-	- [介绍](#介绍)
-	- [Zap Logger](#zap-logger)
-		- [Logger](#logger)
-		- [Sugared Logger](#sugared-logger)
-	- [定制 Logger](#定制-logger)
-		- [将日志写入文件而不是终端](#将日志写入文件而不是终端)
-		- [将 JSON Encoder 更改为普通的 Log Encoder](#将-json-encoder-更改为普通的-log-encoder)
-		- [更改时间编码/添加调用者详细信息](#更改时间编码添加调用者详细信息)
-	- [用 Lumberjack 根据文件大小进行日志切割归档](#用-lumberjack-根据文件大小进行日志切割归档)
-		- [加入 Lumberjack](#加入-lumberjack)
-		- [完整示例](#完整示例)
-	- [用 file-foratelogs 根据文件大小进行日志切割归档](#用-file-foratelogs-根据文件大小进行日志切割归档)
+# 文章
+title: "Zap 日志库"  # 文章标题
+url:  "posts/go/libraries/tripartite/zap"  # 设置网页链接，默认使用文件名
+tags: [ "go", "zap", "log", "logger" ]  # 自定义标签
+series: [ "Go 学习笔记"]  # 文章主题/文章系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
 
 ## 介绍
 
@@ -255,6 +259,17 @@ return zapcore.NewConsoleEncoder(zap.NewProductionEncoderConfig())
 1.5953766628423553e+09	error	Error fetching URL baidu.com : Error = Get baidu.com: unsupported protocol scheme ""
 1.5953766628423553e+09	debug	Try to hit GET request for http://www.baidu.com
 1.595376662882778e+09	info	Success! status = 200 OK for URL http://www.baidu.com
+```
+
+### 输出带颜色
+
+```go
+func getEncoder() zapcore.Encoder {
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder // 添加颜色
+	return zapcore.NewConsoleEncoder(encoderConfig)
+}
 ```
 
 ### 更改时间编码/添加调用者详细信息
