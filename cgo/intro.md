@@ -1,13 +1,23 @@
-# CGO 入门
+---
+date: 2020-08-07T21:06:02+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
 
-- [CGO 入门](#cgo-入门)
-  - [`import "C"` 语句](#import-c-语句)
-    - [不同包的引用问题](#不同包的引用问题)
-  - [`#cgo` 语句](#cgo-语句)
-    - [编译和链接参数](#编译和链接参数)
-    - [不同平台间的差异](#不同平台间的差异)
-  - [pkg-config](#pkg-config)
-  - [build tag 条件编译](#build-tag-条件编译)
+# 文章
+title: "CGO 引用与编译简介"  # 文章标题
+description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
+url:  "posts/go/cgo/intro"  # 设置网页永久链接
+tags: [ "go", "cgo", "intro" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
 
 对于开发环境，首先必备 C/C++ 构建工具链，然后设置 `CGO_ENABLED` 为 1，表示 CGO 是被启用的状态。在本地构建时 `CGO_ENABLED` 默认是启用的，当交叉构建时 CGO 默认是禁止的。通过 `import "C"` 语句启用 CGO 特性。
 

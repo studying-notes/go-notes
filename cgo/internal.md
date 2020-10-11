@@ -1,11 +1,25 @@
-# CGO 内部机制
+---
+date: 2020-08-07T21:06:02+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
+
+# 文章
+title: "CGO 内部机制"  # 文章标题
+description: "CGO 特性主要是通过一个叫 cgo 的命令行工具来辅助输出 Go 和 C 之间的桥接代码。本文从生成的代码分析 Go 语言和 C 语言函数直接相互调用的流程。"
+url:  "posts/go/cgo/internal"  # 设置网页永久链接
+tags: [ "go", "cgo" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
 
 CGO 特性主要是通过一个叫 cgo 的命令行工具来辅助输出 Go 和 C 之间的桥接代码。本文从生成的代码分析 Go 语言和 C 语言函数直接相互调用的流程。
-
-- [CGO 内部机制](#cgo-内部机制)
-  - [CGO 生成的中间文件](#cgo-生成的中间文件)
-  - [Go 调用 C 函数](#go-调用-c-函数)
-  - [C 调用 Go 函数](#c-调用-go-函数)
 
 ## CGO 生成的中间文件
 

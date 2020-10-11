@@ -1,14 +1,23 @@
-# Go 程序链接 C 库
+---
+date: 2020-08-07T21:06:02+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
 
-- [Go 程序链接 C 库](#go-程序链接-c-库)
-  - [链接 C 静态库](#链接-c-静态库)
-    - [Linux](#linux)
-    - [Windows .lib 文件](#windows-lib-文件)
-  - [链接 C 动态库](#链接-c-动态库)
-    - [Linux](#linux-1)
-    - [Windows](#windows)
-  - [Go 导出 C 静态库](#go-导出-c-静态库)
-  - [Go 导出 C 动态库](#go-导出-c-动态库)
+# 文章
+title: "CGO 链接 C 库"  # 文章标题
+description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
+url:  "posts/go/cgo/link"  # 设置网页永久链接
+tags: [ "go", "cgo" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
 
 CGO 在使用 C/C++ 资源的时候一般有三种形式：**直接使用源码**；**链接静态库**；**链接动态库**。直接使用源码就是在 `import "C"` 之前的注释部分包含 C 代码，或者在当前包中包含 C/C++ 源文件。链接静态库和动态库的方式比较类似，都是**通过在 LDFLAGS 选项指定要链接的库方式链接**。
 

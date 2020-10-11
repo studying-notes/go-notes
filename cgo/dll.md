@@ -1,19 +1,25 @@
-# Go 调用 DLL 动态库
+---
+date: 2020-08-07T21:06:02+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
 
-- [Go 调用 DLL 动态库](#go-调用-dll-动态库)
-	- [简单 CGO 程序](#简单-cgo-程序)
-	- [Go 程序编译成动态库](#go-程序编译成动态库)
-		- [Windows](#windows)
-		- [Linux/Unix/macOS](#linuxunixmacos)
-	- [Go 调用 Windows DLL](#go-调用-windows-dll)
-		- [syscall.Syscall 系列方法](#syscallsyscall-系列方法)
-		- [调用 user32.dll 试验](#调用-user32dll-试验)
-	- [调用自己编译的 DLL](#调用自己编译的-dll)
-		- [准备文件](#准备文件)
-		- [编译成 DLL 文件](#编译成-dll-文件)
-		- [在 Go 中载入 DLL](#在-go-中载入-dll)
+# 文章
+title: "CGO 调用 DLL 动态库"  # 文章标题
+description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
+url:  "posts/go/cgo/dll"  # 设置网页永久链接
+tags: [ "go", "cgo" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
 
-## 简单 CGO 程序
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
+
+## 最简 CGO 程序
 
 ```go
 // test.go
