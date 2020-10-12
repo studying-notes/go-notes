@@ -45,6 +45,8 @@ draft: false  # 草稿
 
 ## 算法与数据结构
 
+{{<card src="posts/go/libraries/standard/rand">}}
+
 ## CGO 编程
 
 {{<card src="posts/go/cgo/quickstart">}}
