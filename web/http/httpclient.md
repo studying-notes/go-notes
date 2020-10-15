@@ -15,15 +15,13 @@ weight: 20 # 排序优先级
 chapter: false  # 设置为章节
 
 index: true  # 是否可以被索引
-toc: false  # 是否自动生成目录
+toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
 
 ## HTTP 客户端
 
-### 基本的 HTTP/HTTPS 请求
-
-**GET**
+### GET
 
 ```go
 func main() {
@@ -36,7 +34,7 @@ func main() {
 }
 ```
 
-带参数的请求必须通过 net/url 标准库处理：
+带参数的请求必须通过 `net/url` 标准库处理：
 
 ```go
 func main() {
@@ -54,7 +52,7 @@ func main() {
 }
 ```
 
-**POST**
+### POST
 
 ```go
 func main() {
@@ -70,7 +68,7 @@ func main() {
 }
 ```
 
-**POSTFORM**
+### POST FORM
 
 ```go
 func main() {
@@ -83,7 +81,7 @@ func main() {
 }
 ```
 
-### 自定义 Client
+## 自定义客户端
 
 管理 HTTP 客户端的 Headers、重定向策略等，必须创建一个 Client。
 
@@ -104,9 +102,9 @@ func main() {
 }
 ```
 
-### 自定义 Transport
+## 自定义 Transport
 
-管理代理、TLS 配置、keep-alive、压缩等，必须创建一个 Transport。
+管理代理、TLS 配置、`keep-alive`、压缩等，必须创建一个 Transport。
 
 ```go
 func main() {
@@ -124,8 +122,3 @@ func main() {
 	fmt.Println(string(body))
 }
 ```
-
-```go
-
-```
-

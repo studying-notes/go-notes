@@ -11,7 +11,7 @@ series: [ "Go 学习笔记"]  # 系列
 categories: [ "学习笔记"]  # 分类
 
 # 章节
-weight: 20 # 排序优先级
+weight: 1 # 排序优先级
 chapter: false  # 设置为章节
 
 index: true  # 是否可以被索引
