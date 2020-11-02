@@ -19,6 +19,10 @@ toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
 
+## 问题
+
+- Debug(true) 在 Windows 服务情况下会报错
+
 ## POST 请求带 JSON
 
 ### 映射方式
