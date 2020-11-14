@@ -1,13 +1,23 @@
-# Go 的反射机制
+---
+date: 2020-11-08T19:47:48+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
 
-- [Go 的反射机制](#go-的反射机制)
-	- [反射函数和类型](#反射函数和类型)
-		- [Type](#type)
-		- [Value](#value)
-	- [遍历结构体](#遍历结构体)
-		- [获取标签值](#获取标签值)
-		- [获取字段值](#获取字段值)
-		- [处理字段值](#处理字段值)
+# 文章
+title: "Go 的反射机制"  # 文章标题
+# description: "文章描述"
+url:  "posts/go/abc/reflect"  # 设置网页永久链接
+tags: [ "go", "reflect" ]  # 标签
+series: [ "Go 学习笔记"]  # 系列
+categories: [ "学习笔记"]  # 分类
+
+# 章节
+weight: 20 # 排序优先级
+chapter: false  # 设置为章节
+
+index: true  # 是否可以被索引
+toc: true  # 是否自动生成目录
+draft: false  # 草稿
+---
 
 ## 反射函数和类型
 
@@ -51,31 +61,11 @@ func (v Value) Bytes() []byte
 
 反射中的所有方法基本都是围绕着 `Type` 和 `Value` 这两个类型设计的。通过 `reflect.TypeOf`、`reflect.ValueOf` 可以将一个普通的变量转换成 `Type` 和 `Value`，随后就可以使用相关方法对它们进行复杂的操作。
 
-```go
-
-```
-
-```go
-
-```
-
-```go
-
-```
-
-```go
-
-```
-
-```go
-
-```
-
-
-
 ## 遍历结构体
 
 ### 获取标签值
+
+提取非嵌套结构体指定标签的值
 
 ```go
 func ExtractTagValue(i interface{}, tag string) (tagValues []string) {
@@ -93,7 +83,26 @@ func ExtractTagValue(i interface{}, tag string) (tagValues []string) {
 }
 ```
 
+```go
+type Fruit struct {
+	ID    string   `json:"id"`
+	Name  []string `json:"name"`
+	Price string   `json:"price"`
+	Area  `json:"area"`
+}
+
+func main() {
+	fmt.Println(ExtractTagValue(Fruit{}, "json"))
+}
+```
+
+```
+[id name price area]
+```
+
 ### 获取字段值
+
+获取结构体字段的值
 
 ```go
 func ExtractFieldValue(i interface{}) (fieldValues []interface{}) {
@@ -111,7 +120,21 @@ func ExtractFieldValue(i interface{}) (fieldValues []interface{}) {
 }
 ```
 
-### 处理字段值
+```go
+func main() {
+	fruit := Fruit{ID: "1", Name: []string{"apple", "nut"}, Price: "12",
+		Area: Area{Length: "20", Width: "30"}}
+	fmt.Println(ExtractFieldValue(fruit))
+}
+```
+
+```
+[1 [apple nut] 12 {20 30}]
+```
+
+### 修改字段值
+
+修改结构体字段值
 
 ```go
 func ModifyFieldValue(ptr interface{}, handle func(string) string) {
@@ -130,11 +153,36 @@ func ModifyFieldValue(ptr interface{}, handle func(string) string) {
 				f.Set(reflect.ValueOf(handle(f.String()))) // 设置新字段值
 			case reflect.Slice:
 				obj := reflect.ValueOf(f.Interface())
-				for i := 0; i < obj.Len(); i++ {
-					_ = obj.Index(i).String() // 提取切片数据
+				for j := 0; j < obj.Len(); j++ {
+					_ = obj.Index(j).String() // 提取切片数据
 				}
 			}
 		}
 	}
 }
+```
+
+```go
+func main() {
+	ModifyFieldValue(&fruit, func(s string) string {
+		return "modify-" + s
+	})
+	fmt.Printf("%+v\n", fruit)
+}
+```
+
+```
+{ID:modify-1 Name:[apple nut] Price:modify-12 Area:{Length:20 Width:30}}
+```
+
+```go
+
+```
+
+```go
+
+```
+
+```go
+
 ```
