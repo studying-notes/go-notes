@@ -19,11 +19,117 @@ toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
 
-## 切片的结构定义
+## 理解例题
 
-切片（slice）就是一种简化版的动态数组。因为动态数组的长度不固定，所以切片的长度自然也就不能是类型的组成部分了。数组虽然有适用的地方，但是数组的类型和操作都不够灵活，因此在 Go 代码中数组使用得并不多。而切片则使用得相当广泛。
+### 题目一
 
-切片的结构定义，即 `reflect.SliceHeader`：
+下面程序输出什么？
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var array [10]int
+
+	var slice = array[5:6]
+
+	fmt.Println("length of slice: ", len(slice))
+	fmt.Println("capacity of slice: ", cap(slice))
+	fmt.Println(&slice[0] == &array[5])
+}
+```
+
+### 程序解释
+
+main 函数中定义了一个 10 个长度的整型数组 array，然后定义了一个切片 slice，切取数组的第 6 个元素，最后打印 slice 的长度和容量，判断切片的第一个元素和数组的第 6 个元素地址是否相等。
+
+### 参考答案
+
+slice 根据数组 array 创建，与数组共享存储空间，slice 起始位置是 array[5]，长度为 1，容量为 5，slice[0]和array[5]地址相同。
+
+### 题目二
+
+下面程序输出什么？
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func AddElement(slice []int, e int) []int {
+	return append(slice, e)
+}
+
+func main() {
+	var slice []int
+	//fmt.Println("length of slice: ", len(slice))
+	//fmt.Println("capacity of slice: ", cap(slice))
+
+	slice = append(slice, 1, 2, 3)
+	//fmt.Println("length of slice: ", len(slice))
+	//fmt.Println("capacity of slice: ", cap(slice))
+
+	newSlice := AddElement(slice, 4)
+	//fmt.Println("length of slice: ", len(newSlice))
+	//fmt.Println("capacity of slice: ", cap(newSlice))
+
+	fmt.Println(&slice[0] == &newSlice[0])
+}
+```
+
+### 程序解释
+
+函数 AddElement() 接受一个切片和一个元素，把元素 append 进切片中，并返回切片。main() 函数中定义一个切片，并向切片中 append 3 个元素，接着调用 AddElement() 继续向切片 append 进第 4 个元素同时定义一个新的切片 newSlice。最后判断新切片 newSlice 与旧切片 slice 是否共用一块存储空间。
+
+### 参考答案
+
+append 函数执行时会判断切片容量是否能够存放新增元素，如果不能，则会重新申请存储空间，新存储空间将是原来的 2 倍或 1.25 倍（取决于扩展原空间大小），本例中实际执行了两次 append 操作，第一次空间增长到 4，所以第二次 append 不会再扩容，所以新旧两个切片将共用一块存储空间。程序会输出 "true"。
+
+### 题目三
+
+下面程序输出什么？
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	orderLen := 5
+	order := make([]uint16, 2*orderLen)
+	fmt.Println(order)
+
+	pollorder := order[:orderLen:orderLen]
+	fmt.Println(pollorder)
+
+	lockorder := order[orderLen:][:orderLen:orderLen]
+	fmt.Println(lockorder)
+
+
+	fmt.Println("len(pollorder) = ", len(pollorder))
+	fmt.Println("cap(pollorder) = ", cap(pollorder))
+	fmt.Println("len(lockorder) = ", len(lockorder))
+	fmt.Println("cap(lockorder) = ", cap(lockorder))
+}
+```
+
+### 程序解释
+
+该段程序源自 select 的实现代码，程序中定义一个长度为 10 的切片 order，pollorder 和 lockorder 分别是对 order 切片做了 order [ low : high : max ]操作生成的切片，最后程序分别打印 pollorder 和 lockorder 的容量和长度。
+
+### 参考答案
+
+order [ low : high : max ]操作意思是对 order 进行切片，新切片范围是[ low, high), 新切片容量是 max。order 长度为 2 倍的 orderLen，pollorder 切片指的是 order 的前半部分切片，lockorder 指的是 order 的后半部分切片，即原 order 分成了两段。所以，pollorder 和 lockerorder 的长度和容量都是 orderLen，即 5。
+
+## 切片的数据结构
+
+Slice 依托数组实现，底层数组对用户屏蔽，在底层数组容量不足时可以实现自动重分配并生成新的 Slice。
+
+切片的结构定义， `reflect.SliceHeader`：
 
 ```go
 // SliceHeader is the runtime representation of a slice.
@@ -39,27 +145,87 @@ type SliceHeader struct {
 }
 ```
 
-由此可以看出切片的开头部分和 Go 字符串是一样的，但是切片多了一个 Cap 成员表示切片指向的内存空间的最大容量（对应元素的个数，而不是字节数）。
+`src/runtime/slice.go:slice` 中也定义了 Slice 的数据结构：
+
+```go
+type slice struct {
+	array unsafe.Pointer  // 指向底层数组
+	len   int  // 切片长度
+	cap   int  // 底层数组容量
+}
+```
+
+由此可以看出切片的开头部分和字符串是一样的，但是切片多了一个 Cap 成员表示切片指向的内存空间的最大容量（对应元素的个数，而不是字节数）。
 
 `x := []int{2,3,5, 7,11}` 和 `y := x[1:3]` 两个切片对应的内存结构：
 
 ![06NAIJ.png](https://s1.ax1x.com/2020/10/10/06NAIJ.png)
 
-切片的定义方式：
+- 每个切片都指向一个底层数组
+- 每个切片都保存了当前切片的长度、底层数组可用容量
+- 使用 len() 计算切片长度时间复杂度为 O(1)，不需要遍历切片
+- 使用 cap() 计算切片容量时间复杂度为 O(1)，不需要遍历切片
+- 通过函数传递切片时，不会拷贝整个切片，因为切片本身只是个结构体而已
+- 使用 append() 向切片追加元素时有可能触发扩容，扩容后将会生成新的切片
+
+## 切片的创建方式
 
 ```go
-a []int               // nil切片，和nil相等，一般用来表示一个不存在的切片
-b = []int{}           // 空切片，和nil不相等，一般用来表示一个空的集合
-c = []int{1, 2, 3}    // 有3个元素的切片，len和cap都为3
-d = c[:2]             // 有2个元素的切片，len为2，cap为3
-e = c[0:2:cap(c)]     // 有2个元素的切片，len为2，cap为3
-f = c[:0]             // 有0个元素的切片，len为0，cap为3
-g = make([]int, 3)    // 有3个元素的切片，len和cap都为3
-h = make([]int, 2, 3) // 有2个元素的切片，len为2，cap为3
-i = make([]int, 0, 3) // 有0个元素的切片，len为0，cap为3
+a []int               // nil 切片，和 nil 相等，一般用来表示一个不存在的切片
+b = []int{}           // 空切片，和 nil 不相等，一般用来表示一个空的集合
+c = []int{1, 2, 3}    // 有 3 个元素的切片，len 和 cap 都为 3
+d = c[:2]             // 有 2 个元素的切片，len 为 2，cap 为 3
+e = c[0:2:cap(c)]     // 有 2 个元素的切片，len 为 2，cap 为 3
+f = c[:0]             // 有 0 个元素的切片，len 为 0，cap 为 3
+g = make([]int, 3)    // 有 3 个元素的切片，len 和 cap 都为 3
+h = make([]int, 2, 3) // 有 2 个元素的切片，len 为 2，cap 为 3
+i = make([]int, 0, 3) // 有 0 个元素的切片，len 为 0，cap 为 3
 ```
 
-和数组一样，内置的 len() 函数返回切片中有效元素的长度，内置的 cap() 函数返回切片容量大小，容量必须大于或等于切片的长度。也可以通过 reflect.SliceHeader 结构访问切片的信息（只是为了说明切片的结构，并不是推荐的做法）。切片可以和 nil 进行比较，只有当切片底层数据指针为空时切片本身才为 nil，这时候切片的长度和容量信息将是无效的。如果有切片的底层数据指针为空，但是长度和容量不为 0 的情况，那么说明切片本身已经被损坏了（例如，直接通过reflect.SliceHeader或unsafe包对切片作了不正确的修改）。
+和数组一样，内置的 len() 函数返回切片中有效元素的长度，内置的 cap() 函数返回切片容量大小，容量必须大于或等于切片的长度。也可以通过 reflect.SliceHeader 结构访问切片的信息（只是为了说明切片的结构，并不是推荐的做法）。
+
+切片可以和 nil 进行比较，只有当切片底层数据指针为空时切片本身才为 nil，这时候切片的长度和容量信息将是无效的。如果有切片的底层数据指针为空，但是长度和容量不为 0 的情况，那么说明切片本身已经被损坏了（例如，直接通过reflect.SliceHeader 或 unsafe 包对切片作了不正确的修改）。
+
+### make 方式详解
+
+使用 make 来创建 Slice 时，可以同时指定长度和容量，创建时底层会分配一个数组，数组的长度即容量。
+
+例如，语句 `slice := make([]int, 5, 10)` 所创建的 Slice，结构如下图所示：
+
+[![DiVKsK.png](https://s3.ax1x.com/2020/11/15/DiVKsK.png)](https://imgchr.com/i/DiVKsK)
+
+该 Slice 长度为 5，即可以使用下标 slice[0] ~ slice[4]来操作里面的元素，capacity 为 10，表示后续向 slice 添加新的元素时可以不必重新分配内存，直接使用预留内存即可。
+
+### 数组方式详解
+
+用数组来创建 Slice 时，Slice 将与原数组共用一部分内存。
+
+例如，语句 `slice := array[5:7]` 所创建的 Slice，结构如下图所示：
+
+[![DiVBdg.png](https://s3.ax1x.com/2020/11/15/DiVBdg.png)](https://imgchr.com/i/DiVBdg)
+
+切片从数组 array[5] 开始，到数组 array[7] 结束（不含 array[7]），即切片长度为 2，数组后面的内容都作为切片的预留内存，即 capacity 为 5。
+
+数组和切片操作可能作用于同一块内存，这也是使用过程中需要注意的地方。
+
+根据数组或切片生成新的切片一般使用 `slice := array[start:end]` 方式，这种新生成的切片并没有指定切片的容量，实际上新切片的容量是从 start 开始直至 array 的结束。
+
+比如下面两个切片，长度和容量都是一致的，使用共同的内存地址：
+
+```go
+sliceA := make([]int, 5, 10)
+sliceB := sliceA[0:5]
+```
+
+根据数组或切片生成切片还有另一种写法，即切片同时也指定容量，即 slice[start:end:cap], 其中 cap 即为新切片的容量，当然容量不能超过原切片实际值，如下所示：
+
+```go
+    sliceA := make([]int, 5, 10)  //length = 5; capacity = 10
+    sliceB := sliceA[0:5]         //length = 5; capacity = 10
+    sliceC := sliceA[0:5:5]       //length = 5; capacity = 5
+```
+
+ ## 遍历切片
 
 遍历切片的方式和遍历数组的方式类似：
 
@@ -77,6 +243,13 @@ for i := 0; i < len(c); i++ {
 
 其实除了遍历之外，只要是切片的底层数据指针、长度和容量没有发生变化，对切片的遍历、元素的读取和修改就和数组一样。在对切片本身进行赋值或参数传递时，和数组指针的操作方式类似，但是**只复制切片头信息**（reflect.SliceHeader），而**不会复制底层的数据**。对于类型，和数组的最大不同是，切片的类型和长度信息无关，只要是相同类型元素构成的切片均对应相同的切片类型。
 
+### 数组转切片
+
+```go
+array = [3]int{1,2,3}
+slice = array[:]
+```
+
 ### 切片函数传参理解
 
 通过函数可以修改切片的底层数据：
@@ -93,7 +266,7 @@ func main() {
 }
 ```
 
-## 添加切片元素
+## 添加切片元素/扩容
 
 ### append
 
@@ -107,6 +280,23 @@ a = append(a, []int{1, 2, 3}...) // 追加一个切片，切片需要解包
 ```
 
 不过要注意的是，在容量不足的情况下，`append()` 操作会导致重新分配内存，可能导致巨大的内存分配和复制数据的代价。即使容量足够，依然需要用 `append()` 函数的返回值来更新切片本身，因为新切片的长度已经发生了变化。
+
+例如，当向一个 capacity 为 5，且 length 也为 5 的 Slice 再次追加 1 个元素时，就会发生扩容，如下图所示：
+
+[![DiGcEn.png](https://s3.ax1x.com/2020/11/15/DiGcEn.png)](https://imgchr.com/i/DiGcEn)
+
+扩容操作只关心容量，会把原 Slice 数据拷贝到新 Slice，追加数据由 append 在扩容结束后完成。上图可见，扩容后新的 Slice 长度仍然是 5，但容量由 5 提升到了 10，原 Slice 的数据也都拷贝到了新 Slice 指向的数组中。
+
+扩容容量的选择遵循以下规则：
+
+- 如果原 Slice 容量小于 1024，则新 Slice 容量将扩大为原来的 2 倍
+- 如果原 Slice 容量大于等于 1024，则新 Slice 容量将扩大为原来的 1.25 倍
+
+使用 append() 向 Slice 添加一个元素的实现步骤如下：
+
+- 假如 Slice 容量够用，则将新元素追加进去，Slice.len++，返回原 Slice 
+- 原 Slice 容量不够，则将 Slice 先扩容，扩容后得到新 Slice 
+- 将新元素追加进新 Slice，Slice.len++，返回新的 Slice
 
 除了在切片的尾部追加，还可以在切片的开头添加元素：
 
@@ -130,6 +320,10 @@ a = append(a[:i], append([]int{1, 2, 3}, a[i:]...)...) // 在第i个位置插入
 
 ### copy
 
+使用 copy() 内置函数拷贝两个切片时，会将源切片的数据逐个拷贝到目的切片指向的数组中，拷贝数量取两个切片长度的最小值。
+
+例如长度为 10 的切片拷贝到长度为 5 的切片时，将会拷贝 5 个元素。也就是说，copy 过程中不会发生扩容。
+
 用 copy() 和 append() 组合可以避免创建中间的临时切片，同样是完成添加元素的操作：
 
 ```go
@@ -149,6 +343,10 @@ copy(a[i:], x)              // 复制新添加的切片
 ```
 
 稍显不足的是，在第一句扩展切片容量的时候，扩展空间部分的元素复制是没有必要的。没有专门的内置函数用于扩展切片的容量，append() 本质是用于追加元素而不是扩展容量，扩展切片容量只是 append() 的一个副作用。
+
+- 创建切片时可根据实际需要预分配容量，尽量避免追加过程中扩容操作，有利于提升性能；
+- 切片拷贝时需要判断实际拷贝的元素个数
+- 谨慎使用多个切片操作同一个数组，以防读写冲突
 
 ## 删除切片元素
 
