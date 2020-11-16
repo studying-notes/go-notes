@@ -5,7 +5,7 @@ author: "Rustle Karl"  # 作者
 # 文章
 title: "Go 并发模型"  # 文章标题
 description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
-url:  "posts/go/abc/goroutine"  # 设置网页永久链接
+url:  "posts/go/abc/concurrent/goroutine"  # 设置网页永久链接
 tags: [ "go", "goroutine" ]  # 标签
 series: [ "Go 学习笔记"]  # 系列
 categories: [ "学习笔记"]  # 分类

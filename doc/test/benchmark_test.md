@@ -5,7 +5,7 @@ author: "Rustle Karl"  # 作者
 # 文章
 title: "Go 性能测试"  # 文章标题
 description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
-url:  "posts/go/doc/benchmark"  # 设置网页永久链接
+url:  "posts/go/doc/test/benchmark"  # 设置网页永久链接
 tags: [ "go", "benchmark" ]  # 标签
 series: [ "Go 学习笔记"]  # 系列
 categories: [ "学习笔记"]  # 分类
