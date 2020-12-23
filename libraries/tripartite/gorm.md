@@ -16,7 +16,7 @@ chapter: false  # 将页面设置为章节
 
 index: true  # 文章是否可以被索引
 draft: false  # 草稿
-toc: false  # 是否自动生成目录
+toc: true  # 是否自动生成目录
 ---
 
 ## 目录
@@ -34,6 +34,7 @@ toc: false  # 是否自动生成目录
 	- [SQL Server](#sql-server)
 - [声明数据表模型](#声明数据表模型)
 	- [支持的结构体标签](#支持的结构体标签)
+	- [定义字段字符集](#定义字段字符集)
 - [gorm 中的默认设置](#gorm-中的默认设置)
 	- [开启日志输出打印 SQL 语句](#开启日志输出打印-sql-语句)
 	- [gorm.Model](#gormmodel)
@@ -46,7 +47,7 @@ toc: false  # 是否自动生成目录
 	- [默认列名为字段的下划线式](#默认列名为字段的下划线式)
 - [常用功能](#常用功能)
 	- [自动迁移数据表模型](#自动迁移数据表模型)
-	- [自动迁移时增加数据表参数](#自动迁移时增加数据表参数)
+	- [设置数据表字符集、引擎等](#设置数据表字符集引擎等)
 	- [检查表是否存在](#检查表是否存在)
 	- [增删改数据表的结构](#增删改数据表的结构)
 	- [索引和约束](#索引和约束)
@@ -61,6 +62,8 @@ toc: false  # 是否自动生成目录
 	- [条件查询](#条件查询)
 		- [通过 结构体 / Map 查询](#通过-结构体--map-查询)
 		- [通过 Where 条件语句查询](#通过-where-条件语句查询)
+		- [通过 In 条件语句查询](#通过-in-条件语句查询)
+		- [通过 LIKE 条件语句查询](#通过-like-条件语句查询)
 		- [通过 Not 条件语句查询](#通过-not-条件语句查询)
 		- [通过 Or 条件语句查询](#通过-or-条件语句查询)
 		- [FirstOrCreate 不存在就插入记录](#firstorcreate-不存在就插入记录)
@@ -127,8 +130,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/bill/gorm"
-	_ "github.com/bill/gorm/dialects/sqlite"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"log"
 	"time"
 )
@@ -200,10 +203,10 @@ func main() {
 **官方**
 
 ```go
-import _ "github.com/bill/gorm/dialects/mysql"
-// import _ "github.com/bill/gorm/dialects/postgres"
-// import _ "github.com/bill/gorm/dialects/sqlite"
-// import _ "github.com/bill/gorm/dialects/mssql"
+import _ "github.com/jinzhu/gorm/dialects/mysql"
+// import _ "github.com/jinzhu/gorm/dialects/postgres"
+// import _ "github.com/jinzhu/gorm/dialects/sqlite"
+// import _ "github.com/jinzhu/gorm/dialects/mssql"
 ```
 
 **三方**
@@ -230,8 +233,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/bill/gorm"
-	_ "github.com/bill/gorm/dialects/mysql"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
 	"time"
 )
@@ -346,6 +349,15 @@ type User struct {
 | EMBEDDED | 将结构设置为嵌入式 |
 | EMBEDDED_PREFIX | 设置嵌入式结构的前缀名称 |
 | - | 忽略字段 |
+
+### 定义字段字符集
+
+```go
+type User struct {
+    gorm.Model
+    Name `sql:"type:VARCHAR(5) CHARACTER SET utf8 COLLATE utf8_general_ci"`
+}
+```
 
 ## gorm 中的默认设置
 
@@ -484,11 +496,11 @@ type Animal struct {
 db.AutoMigrate(&User{}, &Product{}, &Order{})
 ```
 
-### 自动迁移时增加数据表参数
+### 设置数据表字符集、引擎等
 
 ```go
-// 比如修改表的字符类型 CHARSET=utf8
-db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&User{})
+// 比如修改表的字符类型 CHARSET=utf8mb4
+db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci").AutoMigrate(&User{})
 ```
 
 ### 检查表是否存在
@@ -644,12 +656,6 @@ db.Where("name = ?", "bill").Find(&users)
 db.Where("name <> ?", "bill").Find(&users)
 db.Where("name != ?", "bill").Find(&users)
 
-// IN
-db.Where("name IN (?)", []string{"bill", "grom"}).Find(&users)
-
-// LIKE
-db.Where("name LIKE ?", "%bill%").Find(&users)
-
 // AND
 db.Where("name = ? AND age >= ?", "bill", "22").Find(&users)
 
@@ -660,6 +666,20 @@ db.Where("updated_at > ?", "2020-03-06 00:00:00").Find(&users)
 // BETWEEN
 // select * from users where created_at between '2020-03-06 00:00:00' and '2020-03-14 00:00:00'
 db.Where("created_at BETWEEN ? AND ?", "2020-03-06 00:00:00", "2020-03-14 00:00:00").Find(&users)
+```
+
+#### 通过 In 条件语句查询
+
+```go
+// IN
+db.Where("name IN (?)", []string{"bill", "grom"}).Find(&users)
+```
+
+#### 通过 LIKE 条件语句查询
+
+```go
+// LIKE
+db.Where("name LIKE ?", "%bill%").Find(&users)
 ```
 
 #### 通过 Not 条件语句查询
