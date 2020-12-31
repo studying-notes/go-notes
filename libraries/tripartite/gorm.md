@@ -68,7 +68,9 @@ toc: true  # 是否自动生成目录
 		- [通过 Or 条件语句查询](#通过-or-条件语句查询)
 		- [FirstOrCreate 不存在就插入记录](#firstorcreate-不存在就插入记录)
 	- [子查询](#子查询)
-	- [部分字段查询 Select](#部分字段查询-select)
+	- [Select 部分字段查询](#select-部分字段查询)
+		- [映射结构体](#映射结构体)
+		- [一行一行赋值](#一行一行赋值)
 	- [排序 Order](#排序-order)
 		- [多字段排序](#多字段排序)
 		- [覆盖排序](#覆盖排序)
@@ -82,11 +84,19 @@ toc: true  # 是否自动生成目录
 		- [Pluck + Where 查询](#pluck--where-查询)
 	- [Scan 扫描：获取多个列的值](#scan-扫描获取多个列的值)
 - [更新](#更新)
-	- [更新所有字段 Save](#更新所有字段-save)
-	- [更新修改字段 Update](#更新修改字段-update)
-	- [更新或者忽略某些字段](#更新或者忽略某些字段)
+	- [Save 更新所有字段](#save-更新所有字段)
+	- [Update 更新指定字段](#update-更新指定字段)
+		- [根据主键更新单个属性](#根据主键更新单个属性)
+		- [根据条件更新单个属性](#根据条件更新单个属性)
+		- [用 map 更新多个属性](#用-map-更新多个属性)
+		- [用 struct 更新多个属性](#用-struct-更新多个属性)
+	- [Select 更新部分字段](#select-更新部分字段)
+	- [Omit 忽略更新部分字段](#omit-忽略更新部分字段)
 	- [只更新指定字段，不更新自动更新字段](#只更新指定字段不更新自动更新字段)
+		- [更新单个属性](#更新单个属性)
+		- [更新多个属性](#更新多个属性)
 	- [批量更新](#批量更新)
+	- [获取更新记录总数](#获取更新记录总数)
 	- [使用 SQL 计算表达式](#使用-sql-计算表达式)
 - [删除](#删除)
 	- [删除记录](#删除记录)
@@ -94,6 +104,12 @@ toc: true  # 是否自动生成目录
 	- [软删除](#软删除)
 	- [物理删除](#物理删除)
 - [事务处理](#事务处理)
+	- [禁用默认事务](#禁用默认事务)
+	- [一般流程](#一般流程)
+	- [嵌套事务](#嵌套事务)
+	- [手动事务](#手动事务)
+	- [手动事务示例](#手动事务示例)
+	- [SavePoint、RollbackTo](#savepointrollbackto)
 - [官网资料](#官网资料)
 
 用 GORM 实现创建、查询、更新和删除操作。现在 v2 版本已经在测试了，不过这里暂时只写一下 v1 版本。
@@ -569,6 +585,8 @@ db.Model(&User{}).RemoveIndex("idx_user_name")
 
 ## 查询
 
+> 暂时没有找到只获取一个值的方法。
+
 ### 基本查询
 
 #### 根据主键获取第一条记录
@@ -756,9 +774,11 @@ db.Where("amount > (?)", db.Table("users").Select("avg(amount)").Where("year = ?
 
 > 其中 (?) 的括号不可以少。
 
-### 部分字段查询 Select
+### Select 部分字段查询
 
 通常情况下，我们只想选择几个字段进行查询，指定你想从数据库中检索出的字段，默认会选择全部字段。
+
+#### 映射结构体
 
 ```go
 // SELECT name, age FROM users;
@@ -767,6 +787,11 @@ db.Select("name, age").Find(&users)
 // SELECT name, age FROM users;
 db.Select([]string{"name", "age"}).Find(&users)
 
+```
+
+#### 一行一行赋值
+
+```go
 // select coalesce(year, 1997) from users;
 // 两者等价
 /*
@@ -785,14 +810,14 @@ for rows.Next() {
 	}
 	fmt.Println(r)
 }
+```
 
-/*
+```
 2002
 1979
 1997
 2014
 1973
-*/
 ```
 
 ### 排序 Order
@@ -964,7 +989,9 @@ db.Raw("SELECT uuid, year FROM users WHERE year = ?", 1997).Scan(&result)
 
 ## 更新
 
-### 更新所有字段 Save
+### Save 更新所有字段
+
+不适用于部分字段的更新。
 
 ```go
 db.First(&user)
@@ -972,69 +999,187 @@ db.First(&user)
 user.Year = "2020"
 user.UserName = "admin"
 
-// UPDATE `users` SET `created_at` = '2016-01-21 12:41:03', `updated_at` = '2020-10-02 13:34:17', `deleted_at` = NULL, `email` = 'qsZrdnD@CCDQE.ru', `password` = 'iIqxlUrmDOsCFcgKdyUqzarzMgseaDtrpmgtmgEjXMlrmghOIZ', `phone_number` = '865-429-3107', `user_name` = 'admin', `first_name` = 'Michale', `last_name` = 'Fahey', `uuid` = 'b18f56bb19d14ae793564fd1dad426ab', `year` = '2020', `amount` = 727371.6  WHERE `users`.`deleted_at` IS NULL AND `users`.`id` = 1
 // 执行 SQL 时全部字段都更新了
 db.Save(&user)
 ```
 
-### 更新修改字段 Update
+执行的 SQL语句：
+
+```sql
+UPDATE `users`
+SET `created_at`   = '2016-01-21 12:41:03',
+`updated_at`   = '2020-10-02 13:34:17',
+`deleted_at`   = NULL,
+`email`        = 'qsZrdnD@CCDQE.ru',
+`password`     = 'iIqxlUrmDOsCFcgKdyUqzarzMgseaDtrpmgtmgEjXMlrmghOIZ',
+`phone_number` = '865-429-3107',
+`user_name`    = 'admin',
+`first_name`   = 'Michale',
+`last_name`    = 'Fahey',
+`uuid`         = 'b18f56bb19d14ae793564fd1dad426ab',
+`year`         = '2020',
+`amount`       = 727371.6
+WHERE `users`.`deleted_at` IS NULL
+AND `users`.`id` = 1
+```
+
+### Update 更新指定字段
+
+#### 根据主键更新单个属性
 
 ```go
-// 更新单个属性，如果它有变化
-// UPDATE `users` SET `password` = '12345', `updated_at` = '2020-10-02 13:54:02'  WHERE `users`.`deleted_at` IS NULL AND `users`.`id` = 3
 user.ID = 3
 db.Model(&user).Update("password", "12345")
+```
 
-// 根据给定的条件更新单个属性
-// UPDATE `users` SET `password` = '12345', `updated_at` = '2020-10-02 13:55:16'  WHERE `users`.`deleted_at` IS NULL AND ((year = 1997))
+执行的 SQL语句：
+
+```sql
+UPDATE `users`
+SET `password`   = '12345',
+    `updated_at` = '2020-10-02 13:54:02'
+WHERE `users`.`deleted_at` IS NULL
+  AND `users`.`id` = 3
+```
+
+#### 根据条件更新单个属性
+
+```go
 db.Model(&Model{}).Where("year = ?", 1997).Update("password", "12345")
+```
 
-// 使用 map 更新多个属性，只会更新其中有变化的属性
-// UPDATE `users` SET `password` = '12345', `updated_at` = '2020-10-02 13:57:36'  WHERE `users`.`deleted_at` IS NULL AND `users`.`id` = 20
+执行的 SQL语句：
+
+```sql
+UPDATE `users`
+SET `password`   = '12345',
+    `updated_at` = '2020-10-02 13:55:16'
+WHERE `users`.`deleted_at` IS NULL
+  AND ((year = 1997))
+```
+
+#### 用 map 更新多个属性
+
+> 只会更新其中有变化的属性
+
+```go
 user.ID = 20
 db.Model(&user).Updates(map[string]interface{}{"password": "12345"})
+```
 
-// 使用 struct 更新多个属性，只会更新其中有变化且为非零值的字段
-// UPDATE `users` SET `password` = 'passwd', `updated_at` = '2020-10-02 13:59:08', `year` = '1998'  WHERE `users`.`deleted_at` IS NULL AND `users`.`id` = 30
+执行的 SQL语句：
+
+```sql
+UPDATE `users`
+SET `password`   = '12345',
+    `updated_at` = '2020-10-02 13:57:36'
+WHERE `users`.`deleted_at` IS NULL
+  AND `users`.`id` = 20
+```
+
+#### 用 struct 更新多个属性
+
+> 只会更新其中有变化且为非零值的字段
+
+```go
 user.ID = 30
 db.Model(&user).Updates(Model{Password: "passwd", Year: "1998"})
+```
 
-// 当使用 struct 更新时，GORM 只会更新那些非零值的字段
-// 对于下面的操作，不会发生任何更新，"", 0, false 都是其类型的零值
+执行的 SQL语句：
+
+```sql
+UPDATE `users`
+SET `password`   = 'passwd',
+    `updated_at` = '2020-10-02 13:59:08',
+    `year`       = '1998'
+WHERE `users`.`deleted_at` IS NULL
+  AND `users`.`id` = 30
+```
+
+当使用 struct 更新时，GORM 只会更新那些非零值的字段，对于下面的操作，不会发生任何更新，"", 0, false 都是其类型的零值。
+
+```go
 db.Model(&user).Updates(User{Name: "", Age: 0, Actived: false})
 ```
 
-### 更新或者忽略某些字段
+### Select 更新部分字段
 
 ```go
-// UPDATE `users` SET `updated_at` = '2020-10-02 14:03:07', `year` = '2008'  WHERE `users`.`deleted_at` IS NULL
 db.Model(&user).Select("year").Updates(map[string]interface{}{"password": "123", "year": "2008"})
+```
 
-// Omit() 方法用来忽略字段
-// UPDATE `users` SET `password` = '123', `updated_at` = '2020-10-02 14:04:17'  WHERE `users`.`deleted_at` IS NULL
+执行的 SQL语句：
+
+```sql
+UPDATE `users`
+SET `updated_at` = '2020-10-02 14:03:07',
+    `year`       = '2008'
+WHERE `users`.`deleted_at` IS NULL
+```
+
+### Omit 忽略更新部分字段
+
+```go
 db.Model(&user).Omit("year").Updates(map[string]interface{}{"password": "123", "year": "2008"})
+```
+
+执行的 SQL语句：
+
+```sql
+UPDATE `users`
+SET `password`   = '123',
+    `updated_at` = '2020-10-02 14:04:17'
+WHERE `users`.`deleted_at` IS NULL
 ```
 
 ### 只更新指定字段，不更新自动更新字段
 
 上面的更新操作会自动运行 model 的 `BeforeUpdate`，`AfterUpdate` 方法，来更新一些类似 `UpdatedAt` 的字段在更新时保存其 `Associations`，如果不想调用这些方法，可以使用 `UpdateColumn`，`UpdateColumns`。
 
-```go
-// 更新单个属性，类似于 `Update`
-// update users set name = 'hello' where id = user.id;
-db.Model(&user).UpdateColumn("name", "hello")
+#### 更新单个属性
 
-// 更新多个属性，类似于 `Updates`
-// update users set name = 'hello',age=18 where id = user.id;
+> 类似于 `Update`
+
+```go
+db.Model(&user).UpdateColumn("name", "hello")
+```
+
+执行的 SQL语句：
+
+```sql
+update users set name = 'hello' where id = user.id;
+```
+
+#### 更新多个属性
+
+> 类似于 `Updates`
+
+```go
 db.Model(&user).UpdateColumns(User{Name: "hello", Age: 18})
+```
+
+执行的 SQL语句：
+
+```sql
+update users set name = 'hello', age=18 where id = user.id;
 ```
 
 ### 批量更新
 
 ```go
-// UPDATE `users` SET `password` = 'admin'  WHERE (id IN (1,2,3,4))
 db.Table("users").Where("id IN (?)", []int{1, 2, 3, 4}).Updates(map[string]interface{}{"password": "admin"})
+```
 
+执行的 SQL语句：
+
+```sql
+UPDATE `users` SET `password` = 'admin'  WHERE (id IN (1,2,3,4))
+```
+
+### 获取更新记录总数
+
+```go
 // 使用 `RowsAffected` 获取更新记录总数
 db.Model(User{}).Updates(User{Name: "rustle", Age: 18}).RowsAffected
 ```
@@ -1118,6 +1263,84 @@ db.Unscoped().Delete(&order)
 
 ## 事务处理
 
+### 禁用默认事务
+
+为了确保数据一致性，GORM 会在事务里执行写入操作（创建、更新、删除）。如果没有这方面的要求，可以在初始化时禁用它，这将获得大约 30%+ 性能提升。
+
+```go
+// 全局禁用
+db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{
+  SkipDefaultTransaction: true,
+})
+
+// 持续会话模式
+tx := db.Session(&Session{SkipDefaultTransaction: true})
+tx.First(&user, 1)
+tx.Find(&users)
+tx.Model(&user).Update("Age", 18)
+```
+
+### 一般流程
+
+```go
+db.Transaction(func(tx *gorm.DB) error {
+  // 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）
+  if err := tx.Create(&Animal{Name: "Giraffe"}).Error; err != nil {
+    // 返回任何错误都会回滚事务
+    return err
+  }
+
+  if err := tx.Create(&Animal{Name: "Lion"}).Error; err != nil {
+    return err
+  }
+
+  // 返回 nil 提交事务
+  return nil
+})
+```
+
+### 嵌套事务
+
+```go
+db.Transaction(func(tx *gorm.DB) error {
+  tx.Create(&user1)
+
+  tx.Transaction(func(tx2 *gorm.DB) error {
+    tx2.Create(&user2)
+    return errors.New("rollback user2") // Rollback user2
+  })
+
+  tx.Transaction(func(tx2 *gorm.DB) error {
+    tx2.Create(&user3)
+    return nil
+  })
+
+  return nil
+})
+
+// Commit user1, user3
+```
+
+### 手动事务
+
+```go
+// 开始事务
+tx := db.Begin()
+
+// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）
+tx.Create(...)
+
+// ...
+
+// 遇到错误时回滚事务
+tx.Rollback()
+
+// 否则，提交事务
+tx.Commit()
+```
+
+### 手动事务示例
+
 ```go
 func (a ArticleTags) Create(db *gorm.DB) error {
 	tx := db.Begin()
@@ -1142,9 +1365,23 @@ func (a ArticleTags) Create(db *gorm.DB) error {
 }
 ```
 
+### SavePoint、RollbackTo
+
+GORM 提供了 SavePoint、Rollbackto 来提供保存点以及回滚至保存点，例如：
+
+```go
+tx := db.Begin()
+tx.Create(&user1)
+
+tx.SavePoint("sp1")
+tx.Create(&user2)
+tx.RollbackTo("sp1") // Rollback user2
+
+tx.Commit() // Commit user1
+```
+
 ## 官网资料
 
 ```
 https://gorm.io/docs/query.html
 ```
-
