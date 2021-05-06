@@ -4,7 +4,7 @@ author: "Rustle Karl"  # 作者
 
 # 文章
 title: "GORM 笔记"  # 文章标题
-description: "用 GORM 实现创建、查询、更新和删除操作。现在 v2 版本已经在测试了，不过这里暂时只写一下 v1 版本。"
+description: "用 GORM 实现创建、查询、更新和删除操作"
 url:  "posts/go/libraries/tripartite/gorm"  # 设置网页链接，默认使用文件名
 tags: [ "go", "gorm", "orm", "mysql", "sql", "sqlite"]  # 自定义标签
 series: [ "Go 学习笔记"]  # 文章主题/文章系列
@@ -110,9 +110,17 @@ toc: true  # 是否自动生成目录
 	- [手动事务](#手动事务)
 	- [手动事务示例](#手动事务示例)
 	- [SavePoint、RollbackTo](#savepointrollbackto)
+- [实体关联](#实体关联)
+		- [自动创建、更新](#自动创建更新)
+	- [预加载](#预加载)
+		- [Joins 预加载](#joins-预加载)
+	- [Belongs To](#belongs-to)
+		- [重写外键](#重写外键)
+		- [重写引用](#重写引用)
+		- [外键约束](#外键约束)
 - [官网资料](#官网资料)
 
-用 GORM 实现创建、查询、更新和删除操作。现在 v2 版本已经在测试了，不过这里暂时只写一下 v1 版本。
+用 GORM 实现创建、查询、更新和删除操作。v2 版本与 v1 版本在增删查改方面基本没有区别，只在初始化时略有区别。
 
 ```shell
 # v1
@@ -1378,6 +1386,174 @@ tx.Create(&user2)
 tx.RollbackTo("sp1") // Rollback user2
 
 tx.Commit() // Commit user1
+```
+
+## 实体关联
+
+#### 自动创建、更新
+
+```go
+user := User{
+  Name:            "jinzhu",
+  BillingAddress:  Address{Address1: "Billing Address - Address 1"},
+  ShippingAddress: Address{Address1: "Shipping Address - Address 1"},
+  Emails:          []Email{
+    {Email: "jinzhu@example.com"},
+    {Email: "jinzhu-2@example.com"},
+  },
+  Languages:       []Language{
+    {Name: "ZH"},
+    {Name: "EN"},
+  },
+}
+
+db.Create(&user)
+// BEGIN TRANSACTION;
+// INSERT INTO "addresses" (address1) VALUES ("Billing Address - Address 1"), ("Shipping Address - Address 1") ON DUPLICATE KEY DO NOTHING;
+// INSERT INTO "users" (name,billing_address_id,shipping_address_id) VALUES ("jinzhu", 1, 2);
+// INSERT INTO "emails" (user_id,email) VALUES (111, "jinzhu@example.com"), (111, "jinzhu-2@example.com") ON DUPLICATE KEY DO NOTHING;
+// INSERT INTO "languages" ("name") VALUES ('ZH'), ('EN') ON DUPLICATE KEY DO NOTHING;
+// INSERT INTO "user_languages" ("user_id","language_id") VALUES (111, 1), (111, 2) ON DUPLICATE KEY DO NOTHING;
+// COMMIT;
+
+db.Save(&user)
+```
+
+```go
+
+```
+
+```go
+
+```
+
+```go
+
+```
+
+```go
+
+```
+
+
+### 预加载
+
+GORM 可以通过 Preload、Joins 预加载 belongs to 关联的记录。
+
+```go
+db.Preload("Orders").Find(&users)
+// SELECT * FROM users;
+// SELECT * FROM orders WHERE user_id IN (1,2,3,4);
+
+db.Preload("Orders").Preload("Profiles").Preload("Role").Find(&users)
+// SELECT * FROM users;
+// SELECT * FROM orders WHERE user_id IN (1,2,3,4); // has many
+// SELECT * FROM profiles WHERE user_id IN (1,2,3,4); // has one
+// SELECT * FROM roles WHERE id IN (4,5,6); // belongs to
+```
+
+#### Joins 预加载
+
+Preload 在一个单独查询中加载关联数据。而 Join Preload 会使用 inner join 加载关联数据。
+
+```go
+db.Joins("Company").Joins("Manager").Joins("Account").First(&user, 1)
+db.Joins("Company").Joins("Manager").Joins("Account").First(&user, "users.name = ?", "jinzhu")
+db.Joins("Company").Joins("Manager").Joins("Account").Find(&users, "users.id IN ?", []int{1,2,3,4,5})
+```
+
+Join Preload 适用于一对一的关系。
+
+
+```go
+
+```
+
+```go
+
+```
+
+```go
+
+```
+
+```go
+
+```
+
+
+
+
+
+### Belongs To
+
+创建时不存在会一起创建记录。
+
+belongs to 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。
+
+#### 重写外键
+
+```go
+type User struct {
+	gorm.Model
+	Name      string
+	CompanyID int
+	Company   Company `gorm:"foreignKey:id"`  // 自定义外键
+}
+
+type Company struct {
+	ID   int
+	Name string
+}
+```
+
+要定义一个 belongs to 关系，必须存在外键，默认的外键使用拥有者的类型名加上主字段名。
+
+#### 重写引用
+
+对于 belongs to 关系，GORM 通常使用拥有者的主字段作为外键的值。 对于上面的例子，它是 Company 的 ID 字段，当将 user 分配给某个 company 时，GORM 会将 company 的 ID 保存到用户的 CompanyID 字段
+
+此外，也可以使用标签 references 手动更改它：
+
+```go
+type User struct {
+	gorm.Model
+	Name      string
+	CompanyID string
+	Company   Company `gorm:"references:Code"` // v2 使用 Code 作为引用； v1 为 association_foreignkey
+}
+
+type Company struct {
+	ID   int
+	Code string
+	Name string
+}
+```
+
+#### 外键约束
+
+可以通过为标签 constraint 配置 OnUpdate、OnDelete 实现外键约束，在使用 GORM 进行迁移时它会被创建。
+
+```go
+type User struct {
+	gorm.Model
+	Name      string
+	CompanyID int
+	Company   Company `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+}
+
+type Company struct {
+	ID   int
+	Name string
+}
+```
+
+```go
+
+```
+
+```go
+
 ```
 
 ## 官网资料
