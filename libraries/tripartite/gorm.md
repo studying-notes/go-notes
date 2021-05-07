@@ -111,13 +111,21 @@ toc: true  # 是否自动生成目录
 	- [手动事务示例](#手动事务示例)
 	- [SavePoint、RollbackTo](#savepointrollbackto)
 - [实体关联](#实体关联)
-		- [自动创建、更新](#自动创建更新)
-	- [预加载](#预加载)
-		- [Joins 预加载](#joins-预加载)
+	- [自动创建、更新](#自动创建更新)
 	- [Belongs To](#belongs-to)
 		- [重写外键](#重写外键)
 		- [重写引用](#重写引用)
 		- [外键约束](#外键约束)
+	- [Has One](#has-one)
+		- [重写外键](#重写外键-1)
+		- [重写引用](#重写引用-1)
+		- [外键约束](#外键约束-1)
+		- [预加载](#预加载)
+		- [Joins 预加载](#joins-预加载)
+	- [Has Many](#has-many)
+		- [重写外键](#重写外键-2)
+		- [重写引用](#重写引用-2)
+		- [外键约束](#外键约束-2)
 - [官网资料](#官网资料)
 
 用 GORM 实现创建、查询、更新和删除操作。v2 版本与 v1 版本在增删查改方面基本没有区别，只在初始化时略有区别。
@@ -1390,7 +1398,7 @@ tx.Commit() // Commit user1
 
 ## 实体关联
 
-#### 自动创建、更新
+### 自动创建、更新
 
 ```go
 user := User{
@@ -1419,24 +1427,155 @@ db.Create(&user)
 db.Save(&user)
 ```
 
-```go
+### Belongs To
 
-```
+belongs to 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。
 
-```go
+创建时不存在会一起创建记录。
 
-```
+belongs to 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。
 
-```go
-
-```
+#### 重写外键
 
 ```go
+type User struct {
+	gorm.Model
+	Name      string
+	CompanyID int
+	Company   Company `gorm:"foreignKey:id"`  // 自定义外键
+}
 
+type Company struct {
+	ID   int
+	Name string
+}
 ```
 
+要定义一个 belongs to 关系，必须存在外键，默认的外键使用拥有者的类型名加上主字段名。
 
-### 预加载
+#### 重写引用
+
+对于 belongs to 关系，GORM 通常使用拥有者的主字段作为外键的值。 对于上面的例子，它是 Company 的 ID 字段，**当将 user 分配给某个 company 时，GORM 会将 company 的 ID 保存到用户的 CompanyID 字段**
+
+此外，也可以使用标签 references 手动更改它：
+
+```go
+type User struct {
+	gorm.Model
+	Name      string
+	CompanyID string
+
+	// v2 使用 Code 作为引用； v1 为 association_foreignkey
+	Company   Company `gorm:"references:Code"` 
+}
+
+type Company struct {
+	ID   int
+	Code string
+	Name string
+}
+```
+
+#### 外键约束
+
+可以通过为标签 constraint 配置 OnUpdate、OnDelete 实现外键约束，在使用 GORM 进行**迁移时它会被创建**。
+
+```go
+type User struct {
+	gorm.Model
+	Name      string
+	CompanyID int
+	Company   Company `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+}
+
+type Company struct {
+	ID   int
+	Name string
+}
+```
+
+### Has One
+
+has one 与另一个模型建立一对一的关联，但它和一对一关系有些许不同。 这种关联表明一个模型的每个实例都包含或拥有另一个模型的一个实例。
+
+例如，您的应用包含 user 和 credit card 模型，且每个 user 只能有一张 credit card。
+
+```go
+// User 有一张 CreditCard，UserID 是外键
+type User struct {
+  gorm.Model
+  CreditCard CreditCard
+}
+
+type CreditCard struct {
+  gorm.Model
+  Number string
+  UserID uint
+}
+```
+
+#### 重写外键
+
+对于 has one 关系，同样必须存在外键字段。拥有者将把属于它的模型的主键保存到这个字段。
+
+这个字段的名称通常由 has one 模型的类型加上其 主键 生成，对于上面的例子，它是 UserID。
+
+为 user 添加 credit card 时，它会将 user 的 ID 保存到自己的 UserID 字段。
+
+如果你想要使用另一个字段来保存该关系，你同样可以使用标签 foreignKey 来更改它，例如：
+
+```go
+type User struct {
+  gorm.Model
+  CreditCard CreditCard `gorm:"foreignKey:UserName"`
+  // 使用 UserName 作为外键
+}
+
+type CreditCard struct {
+  gorm.Model
+  Number   string
+  UserName string
+}
+```
+
+#### 重写引用
+
+默认情况下，拥有者实体会将 has one 对应模型的主键保存为外键，您也可以修改它，用另一个字段来保存，例如下个这个使用 Name 来保存的例子。
+
+您可以使用标签 references 来更改它，例如：
+
+```go
+type User struct {
+  gorm.Model
+  Name       string     `gorm:"index"`
+  CreditCard CreditCard `gorm:"foreignkey:UserName;references:name"`
+}
+
+type CreditCard struct {
+  gorm.Model
+  Number   string
+  UserName string
+}
+```
+
+#### 外键约束
+
+你可以通过为标签 constraint 配置 OnUpdate、OnDelete 实现外键约束，在使用 GORM 进行迁移时它会被创建，例如：
+
+```go
+type User struct {
+  gorm.Model
+  CreditCard CreditCard `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+}
+
+type CreditCard struct {
+  gorm.Model
+  Number string
+  UserID uint
+}
+```
+
+#### 预加载
 
 GORM 可以通过 Preload、Joins 预加载 belongs to 关联的记录。
 
@@ -1464,87 +1603,85 @@ db.Joins("Company").Joins("Manager").Joins("Account").Find(&users, "users.id IN 
 
 Join Preload 适用于一对一的关系。
 
+### Has Many
+
+has many 与另一个模型建立了一对多的连接。 不同于 has one，拥有者可以有零或多个关联模型。
+
+例如，您的应用包含 user 和 credit card 模型，且每个 user 可以有多张 credit card。
 
 ```go
+// User 有多张 CreditCard，UserID 是外键
+type User struct {
+  gorm.Model
+  CreditCards []CreditCard
+}
 
+type CreditCard struct {
+  gorm.Model
+  Number string
+  UserID uint
+}
 ```
-
-```go
-
-```
-
-```go
-
-```
-
-```go
-
-```
-
-
-
-
-
-### Belongs To
-
-创建时不存在会一起创建记录。
-
-belongs to 会与另一个模型建立了一对一的连接。 这种模型的每一个实例都“属于”另一个模型的一个实例。
 
 #### 重写外键
 
+要定义 has many 关系，同样必须存在外键。 默认的外键名是拥有者的类型名加上其主键字段名
+
+例如，要定义一个属于 User 的模型，则其外键应该是 UserID。
+
+此外，想要使用另一个字段作为外键，您可以使用 foreignKey 标签自定义它：
+
 ```go
 type User struct {
-	gorm.Model
-	Name      string
-	CompanyID int
-	Company   Company `gorm:"foreignKey:id"`  // 自定义外键
+  gorm.Model
+  CreditCards []CreditCard `gorm:"foreignKey:UserRefer"`
 }
 
-type Company struct {
-	ID   int
-	Name string
+type CreditCard struct {
+  gorm.Model
+  Number    string
+  UserRefer uint
 }
 ```
-
-要定义一个 belongs to 关系，必须存在外键，默认的外键使用拥有者的类型名加上主字段名。
 
 #### 重写引用
 
-对于 belongs to 关系，GORM 通常使用拥有者的主字段作为外键的值。 对于上面的例子，它是 Company 的 ID 字段，当将 user 分配给某个 company 时，GORM 会将 company 的 ID 保存到用户的 CompanyID 字段
+GORM 通常使用拥有者的主键作为外键的值。 对于上面的例子，它是 User 的 ID 字段。
 
-此外，也可以使用标签 references 手动更改它：
+为 user 添加 credit card 时，GORM 会将 user 的 ID 字段保存到 credit card 的 UserID 字段。
+
+同样的，您也可以使用标签 references 来更改它，例如：
 
 ```go
 type User struct {
-	gorm.Model
-	Name      string
-	CompanyID string
-	Company   Company `gorm:"references:Code"` // v2 使用 Code 作为引用； v1 为 association_foreignkey
+  gorm.Model
+  MemberNumber string
+  CreditCards  []CreditCard `gorm:"foreignKey:UserNumber;references:MemberNumber"`
 }
 
-type Company struct {
-	ID   int
-	Code string
-	Name string
+type CreditCard struct {
+  gorm.Model
+  Number     string
+  UserNumber string
 }
 ```
+
+将 MemberNumber 的值赋值给 UserNumber。
 
 #### 外键约束
 
-可以通过为标签 constraint 配置 OnUpdate、OnDelete 实现外键约束，在使用 GORM 进行迁移时它会被创建。
+你可以通过为标签 constraint 配置 OnUpdate、OnDelete 实现外键约束，在使用 GORM 进行迁移时它会被创建，例如：
 
 ```go
 type User struct {
-	gorm.Model
-	Name      string
-	CompanyID int
-	Company   Company `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+  gorm.Model
+  CreditCards []CreditCard `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
-type Company struct {
-	ID   int
-	Name string
+type CreditCard struct {
+  gorm.Model
+  Number string
+  UserID uint
 }
 ```
 
@@ -1555,6 +1692,28 @@ type Company struct {
 ```go
 
 ```
+
+```go
+
+```
+
+
+```go
+
+```
+
+```go
+
+```
+
+```go
+
+```
+
+
+
+
+
 
 ## 官网资料
 
