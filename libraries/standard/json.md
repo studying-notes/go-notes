@@ -18,6 +18,66 @@ toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
 
+## 处理 PUT 请求的反序列化问题
+
+首先，反对用指针。
+
+在 Go 标准库的反序列化中，结构体和 JSON 中单方面存在的字段都自动忽略。
+
+所以推荐做法是，先从数据库中取出该条数据，然后在该条数据的基础上反序列化。
+
+对应的接口协议设计就要求将对象的 ID 放在 path/query 参数里，修改数据放 body 里，而不是将修改对象的 ID 也放 body 里。
+
+```go
+package main
+
+import (
+	"encoding/json"
+)
+
+type Folder struct {
+	Path  string   `json:"path"`
+	Count int      `json:"count"`
+	UID   string   `json:"uid"`
+	Items []string `json:"items"`
+}
+
+func main() {
+	f := &Folder{Path: "path", Count: 1, UID: "uid", Items: []string{"1", "2"}}
+
+	data := []byte(`{"path": "", "count": 0}`)
+
+	_ = json.Unmarshal(data, &f)
+}
+```
+
+## 序列化列表
+
+偶尔会迷糊。。。
+
+```go
+import (
+	"encoding/json"
+	"fmt"
+)
+
+func main() {
+	v := []string{"1", "2", "3"}
+	buf, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(buf))
+
+	var val []string
+	err = json.Unmarshal(buf, &val)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(val)
+}
+```
+
 ## Go 和 JSON 转换关系
 
 | Go 类型 | JSON 类型 |
