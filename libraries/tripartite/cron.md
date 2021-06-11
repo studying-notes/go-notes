@@ -18,6 +18,10 @@ toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
 
+在以前的旧版本的里面默认的 cron 表示不是标准的，第一个位是秒级的定义。
+
+现在 v3 版本直接用标准 cron 表示式就行了。
+
 ```shell
 go get -u github.com/robfig/cron/v3
 ```
@@ -85,6 +89,8 @@ func main() {
 月份和周历名称都是不区分大小写的，SUN/Sun/sun 表示同样的含义。
 
 ## 实现秒级控制
+
+官方也提供了旧版本的秒级的定义，这个注意你需要传入的 cron 表达式不再是标准 cron 表达式
 
 ```go
 cron.New(cron.WithSeconds())
@@ -192,32 +198,16 @@ job = cron.NewChain(
 ).Then(job)
 ```
 
-## Thread safety
+## 线程不安全
 
-Since the Cron service runs concurrently with the calling code, some amount of care must be taken to ensure proper synchronization.
+Cron 无法做到线程安全，对于争用资源必须额外进行并发控制。
 
-All cron methods are designed to be correctly synchronized as long as the caller ensures that invocations have a clear happens-before ordering between them.
+## 日志系统
 
-## Logging
-
-Cron defines a Logger interface that is a subset of the one defined in github.com/go-logr/logr. It has two logging levels (Info and Error), and parameters are key/value pairs. This makes it possible for cron logging to plug into structured logging systems. An adapter, [Verbose]PrintfLogger, is provided to wrap the standard library *log.Logger.
-
-For additional insight into Cron operations, verbose logging may be activated which will record job runs, scheduling decisions, and added or removed jobs. Activate it with a one-off logger as follows:
+Cron 提供了 Logger 接口，通过该接口可以接管 Cron 产生的日志。
 
 ```go
 cron.New(
 	cron.WithLogger(
 		cron.VerbosePrintfLogger(log.New(os.Stdout, "cron: ", log.LstdFlags))))
-```
-
-```go
-
-```
-
-```go
-
-```
-
-```go
-
 ```

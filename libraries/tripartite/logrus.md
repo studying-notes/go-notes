@@ -28,7 +28,7 @@ Logrus 是 Go 的结构化 Logger，与 Log 标准库完全兼容。
 - `Field` 机制，通过 `Filed` 机制进行结构化的日志记录；
 - 线程安全。
 
-```
+```shell
 go get github.com/sirupsen/logrus
 ```
 
@@ -48,6 +48,10 @@ func main() {
     "animal": "walrus",
   }).Info("A walrus appears")
 }
+```
+
+```
+time="2021-01-04T12:35:01+08:00" level=info msg="A walrus appears" animal=walrus
 ```
 
 ```go
@@ -98,6 +102,11 @@ func main() {
 }
 ```
 
+```
+{"level":"warning","msg":"The group's number increased tremendously!","number":122,"o
+mg":true,"time":"2021-01-04T12:40:43+08:00"}
+```
+
 ## 记录到多个位置
 
 ```go
@@ -117,12 +126,12 @@ func main() {
   log.Out = os.Stdout
 
   // You could set this to any `io.Writer` such as a file
-  // file, err := os.OpenFile("logrus.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-  // if err == nil {
-  //  log.Out = file
-  // } else {
-  //  log.Info("Failed to log to file, using default stderr")
-  // }
+  file, err := os.OpenFile("logrus.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+  if err == nil {
+   log.Out = file
+  } else {
+   log.Info("Failed to log to file, using default stderr")
+  }
 
   log.WithFields(logrus.Fields{
     "animal": "walrus",
@@ -276,4 +285,12 @@ func main() {
 	})
 	_ = r.Run()
 }
+```
+
+```
+
+```
+
+```
+
 ```

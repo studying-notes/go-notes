@@ -83,6 +83,8 @@ toc: true  # 是否自动生成目录
 	- [Pluck 查询：获取一个列作为切片](#pluck-查询获取一个列作为切片)
 		- [Pluck + Where 查询](#pluck--where-查询)
 	- [Scan 扫描：获取多个列的值](#scan-扫描获取多个列的值)
+	- [原生 SQL Scan](#原生-sql-scan)
+		- [Exec](#exec)
 - [更新](#更新)
 	- [Save 更新所有字段](#save-更新所有字段)
 	- [Update 更新指定字段](#update-更新指定字段)
@@ -998,10 +1000,26 @@ var results []Result
 
 // SELECT uuid, year FROM `users`  WHERE (year = 1997)  
 db.Table("users").Select("uuid, year").Where("year = ?", 1997).Scan(&results)
+```
 
+### 原生 SQL Scan
+
+```go
 // 原生 SQL
 db.Raw("SELECT uuid, year FROM users WHERE year = ?", 1997).Scan(&result)
 ```
+
+#### Exec
+
+```go
+db.Exec("DROP TABLE users")
+db.Exec("UPDATE orders SET shipped_at=? WHERE id IN ?", time.Now(), []int64{1,2,3})
+
+// Exec with SQL Expression
+db.Exec("update users set money=? where name = ?", gorm.Expr("money * ? + ?", 10000, 1), "jinzhu")
+```
+
+> Raw 用于查询， Exec 用于其他命令
 
 ## 更新
 

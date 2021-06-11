@@ -18,6 +18,29 @@ draft: false  # 草稿
 toc: false  # 是否自动生成目录
 ---
 
+## 改变执行程序的环境
+
+```go
+cmd := exec.Command("programToExecute")
+additionalEnv := "FOO=bar"
+newEnv := append(os.Environ(), additionalEnv))
+cmd.Env = newEnv
+out, err := cmd.CombinedOutput()
+if err != nil {
+	log.Fatalf("cmd.Run() failed with %s\n", err)
+}
+fmt.Printf("%s", out)
+```
+
+```go
+
+```
+
+```go
+
+```
+
+
 ## 忽略输出结果
 
 ```go
