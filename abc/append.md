@@ -3,7 +3,7 @@ date: 2020-11-14T22:21:59+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go 方法 `append` 常见的误区/陷阱"  # 文章标题
+title: "Go append 方法的陷阱"  # 文章标题
 url:  "posts/go/abc/append"  # 设置网页永久链接
 tags: [ "go"]  # 标签
 series: [ "Go 学习笔记"]  # 系列

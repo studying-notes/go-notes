@@ -22,6 +22,7 @@ toc: true  # 是否自动生成目录
 ## 目录
 
 - [目录](#目录)
+- [First/Find/Scan 区别](#firstfindscan-区别)
 - [创建一张表](#创建一张表)
 - [功能预览](#功能预览)
 - [连接到数据库](#连接到数据库)
@@ -128,6 +129,9 @@ toc: true  # 是否自动生成目录
 		- [重写外键](#重写外键-2)
 		- [重写引用](#重写引用-2)
 		- [外键约束](#外键约束-2)
+- [GORM 时区配置](#gorm-时区配置)
+	- [系统默认时区](#系统默认时区)
+	- [设置时区](#设置时区)
 - [官网资料](#官网资料)
 
 用 GORM 实现创建、查询、更新和删除操作。v2 版本与 v1 版本在增删查改方面基本没有区别，只在初始化时略有区别。
@@ -139,6 +143,15 @@ go get -u github.com/jinzhu/gorm
 # v2
 go get gorm.io/gorm
 ```
+
+MySQL 的 8.0 以上版本不支持零日期格式，导致 gorm 插入默认数据出错。
+
+日期类型 time.Time 改为指针类型 *time.Time。个人认为这种方式最佳。
+
+## First/Find/Scan 区别
+
+First / Find 的结构体的 TableName 必须是存在的表，否则报错，即使指定了 db.Table() or db.Modlel() ；
+Scan 可以是任意结构体，但必须指定 db.Table() or db.Modlel()。
 
 ## 创建一张表
 
@@ -1702,6 +1715,34 @@ type CreditCard struct {
   UserID uint
 }
 ```
+
+## GORM 时区配置
+
+### 系统默认时区
+
+```go
+conStr := "root:123456@tcp(192.168.3.93:33061)/zxd?charset=utf8mb4&parseTime=true&loc=Local"
+
+db, err := gorm.Open("mysql", conStr)
+if err != nil {
+    log.Fatalf("%v", err)
+}
+```
+
+### 设置时区
+
+```go
+conStr := "root:123456@tcp(192.168.3.93:33061)/zxd?charset=utf8mb4&parseTime=true&loc=Asia%2fShanghai"
+
+db, err := gorm.Open("mysql", conStr)
+if err != nil {
+    log.Fatalf("%v", err)
+}
+```
+
+`loc=Asia%2fShanghai`，gorm 配置链接字符串要求对 Loc 做 UrlEncode 处理
+
+/ -> `%2f`
 
 ```go
 

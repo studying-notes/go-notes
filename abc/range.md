@@ -3,7 +3,7 @@ date: 2020-11-14T22:38:03+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "range 循环遍历"  # 文章标题
+title: "range 循环遍历易错点"  # 文章标题
 url:  "posts/go/abc/range"  # 设置网页永久链接
 tags: [ "go"]  # 标签
 series: [ "Go 学习笔记"]  # 系列

@@ -3,7 +3,7 @@ date: 2020-07-26T21:06:02+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go 并发模型"  # 文章标题
+title: "Go 并发模型 sync.Once"  # 文章标题
 description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
 url:  "posts/go/abc/concurrent/goroutine"  # 设置网页永久链接
 tags: [ "go", "goroutine" ]  # 标签
@@ -112,6 +112,12 @@ func main() {
 ```
 
 `atomic.AddUint64()` 函数调用保证了 `total` 的读取、更新和保存是一个原子操作，因此在多线程中访问也是安全的。
+
+atomic.LoadUint64() 读取值
+
+atomic.StoreUint64() 设置值
+
+### 单件模式
 
 原子操作配合互斥锁可以实现非常高效的单件模式。**互斥锁的代价比普通整数的原子读写高很多**，在性能敏感的地方可以增加一个数字型的标志位，通过原子检测标志位状态降低互斥锁的使用次数来提高性能。
 

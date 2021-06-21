@@ -19,6 +19,74 @@ toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
 
+## 接口指针问题
+
+定义时是接口，导致无法动态修改。
+
+```go
+package main
+
+import "fmt"
+
+type One interface {
+	Value() string
+}
+
+type one struct{}
+
+func (o one) Value() string {
+	return "one"
+}
+
+type two struct{}
+
+func (t two) Value() string {
+	return "two"
+}
+
+func main() {
+	var oo One
+
+	oo = one{}
+	xx := &oo
+	oo = two{}
+
+	fmt.Println((*xx).Value())
+}
+```
+
+```go
+package main
+
+import "fmt"
+
+type One interface {
+Value() string
+}
+
+type one struct{ v string }
+
+func (o one) Value() string {
+return o.v
+}
+
+type two struct{}
+
+func (t two) Value() string {
+return "two"
+}
+
+func main() {
+var oo one
+oo = one{v: "1"}
+xx := &oo
+oo = one{v: "2"}
+
+	fmt.Println(xx.Value())
+}
+```
+
+
 一般静态编程语言都有着严格的类型系统，这使得编译器可以深入检查程序员有没有作出什么出格的举动。但是，过于严格的类型系统却会使得编程太过烦琐，让程序员把时间都浪费在了和编译器的斗争中。
 
 Go 语言试图让程序员能在安全和灵活的编程之间取得一个平衡。它在提供严格的类型检查的同时，通过接口类型实现了对鸭子类型的支持，使得安全动态的编程变得相对容易。

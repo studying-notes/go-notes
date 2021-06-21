@@ -18,6 +18,34 @@ toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
 
+## 分配内存
+
+显示指定大小，如果往 map 放入大量数据，最好在新建 map 的时候显示指定 map 大小，否则会导致 map 频繁扩容，影响性能。
+
+## 示例
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	d := make(map[string]int)
+	d["cnt"] = 32
+
+	d["cnt"] ++
+	d["x"]++
+
+	fmt.Println(d["cnt"])
+	fmt.Println(d["x"])
+}
+```
+
+```
+33
+1
+```
+
 ## map 的数据结构
 
 map 以哈希表作为底层实现，一个哈希表里可以有多个哈希表节点，也即 bucket，而每个 bucket 就保存了 map 中的一个或一组键值对。
@@ -152,7 +180,7 @@ hmap 数据结构中 oldbuckets 成员指身原 bucket，而 buckets 指向了�
 5. 当前 bucket 没有找到，则继续从下个 overflow 的 bucket 中查找。
 6. 如果当前处于搬迁过程，则优先从 oldbuckets 查找
 
-如果查找不到，也不会返回空值，而是返回相应类型的 0 值。
+**如果查找不到，也不会返回空值，而是返回相应类型的 0 值。**
 
 ## 插入过程
 
