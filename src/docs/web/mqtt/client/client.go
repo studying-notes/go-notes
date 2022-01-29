@@ -10,9 +10,9 @@ import (
 )
 
 // 简单处理，打印主题和信息
-var handler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
-	fmt.Printf("Topic: %s\n\n", msg.Topic())
-	fmt.Printf("Msg: %s\n", msg.Payload())
+var messageHandler mqtt.MessageHandler = func(client mqtt.Client, message mqtt.Message) {
+	fmt.Printf("Topic: %s\n\n", message.Topic())
+	fmt.Printf("Msg: %s\n", message.Payload())
 }
 
 // 消息内容
@@ -35,7 +35,7 @@ func main() {
 	opts := mqtt.NewClientOptions().AddBroker(broker).SetClientID("client")
 	opts.SetKeepAlive(2 * time.Second)
 	// Subscribe 的 callback 为 nil 时默认调用
-	opts.SetDefaultPublishHandler(handler)
+	opts.SetDefaultPublishHandler(messageHandler)
 	opts.SetPingTimeout(1 * time.Second)
 
 	c := mqtt.NewClient(opts)

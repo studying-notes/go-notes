@@ -1,0 +1,10 @@
+http:
+  host: localhost
+  port: 5799
+  base_path: /document/reader
+
+logger:
+  filename: immigration_office_ocr_service.log
+  max_size: 100 # megabytes
+  max_age: 28 # days
+  max_backups: 15

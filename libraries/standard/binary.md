@@ -51,7 +51,30 @@ func main() {
 	buf := bytes.NewReader(writeBuf.Bytes())
 	var message Message
 	_ = binary.Read(buf, binary.LittleEndian, &message)
-	
 }
 ```
 
+```go
+package main
+
+import (
+	"encoding/binary"
+	"fmt"
+)
+
+func main() {
+	buf := []byte{0x9e, 0x8d}
+	fmt.Println(buf)
+	
+	fmt.Printf("%d\n", binary.BigEndian.Uint16(buf))
+
+	fmt.Printf("%d\n", int(buf[0])<<8|int(buf[1]))
+	fmt.Printf("%d\n", int(buf[0])<<8|int(buf[1]))
+
+	port := 40589
+	fmt.Printf("%x\n", port)
+
+	fmt.Println(byte(port >> 8))
+	fmt.Println(byte(port))
+}
+```

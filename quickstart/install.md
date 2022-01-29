@@ -39,8 +39,11 @@ sudo add-apt-repository ppa:longsleep/golang-backports
 ```
 
 ```shell
-sudo apt-get update
-sudo apt-get install golang-go -y
+apt update
+
+apt update && apt upgrade -y
+
+apt install golang-go -y
 ```
 
 ```shell
@@ -130,10 +133,11 @@ go env -w GO111MODULE=on
 
 ## CentOS
 
-wget https://dl.google.com/go/go1.15.6.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.17.6.linux-amd64.tar.gz
+
 
 ```shell
-sudo tar -C /home/fujiawei -xzvf go1.15.6.linux-amd64.tar.gz
+tar -xzvf go1.17.6.linux-amd64.tar.gz
 ```
 
 ```shell
@@ -148,10 +152,6 @@ export PATH=$PATH:$GOPATH/bin
 
 ```shell
 source /etc/profile
-```
-
-```shell
-sudo tar -C /home/fujiawei -xzvf go1.15.6.linux-amd64.tar.gz
 ```
 
 ```shell

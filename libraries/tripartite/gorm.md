@@ -22,6 +22,8 @@ toc: true  # 是否自动生成目录
 ## 目录
 
 - [目录](#目录)
+- [distinct](#distinct)
+- [Update/Updates](#updateupdates)
 - [First/Find/Scan 区别](#firstfindscan-区别)
 - [创建一张表](#创建一张表)
 - [功能预览](#功能预览)
@@ -78,6 +80,7 @@ toc: true  # 是否自动生成目录
 	- [限制输出数量 LIMIT](#限制输出数量-limit)
 	- [统计数量 COUNT](#统计数量-count)
 	- [分组 Group & Having](#分组-group--having)
+		- [单字段与多字段](#单字段与多字段)
 		- [一行一行获取](#一行一行获取)
 		- [一次性获取](#一次性获取)
 	- [JOIN 连接查询](#join-连接查询)
@@ -147,6 +150,14 @@ go get gorm.io/gorm
 MySQL 的 8.0 以上版本不支持零日期格式，导致 gorm 插入默认数据出错。
 
 日期类型 time.Time 改为指针类型 *time.Time。个人认为这种方式最佳。
+
+## distinct
+
+只能多行全字段去重，不能多行单字段去重
+
+## Update/Updates
+
+更新时的数据类型必须与模型结构体保持一致，比如字符型数值不能用于整数，否则乱码。Where 则不存在这个问题。
 
 ## First/Find/Scan 区别
 
@@ -909,6 +920,15 @@ db.Table("users").Select("count(distinct(year))").Count(&count)
 ```
 
 ### 分组 Group & Having
+
+#### 单字段与多字段
+
+> 不能加括号
+
+```go
+Group("one")
+Group("one, two")
+```
 
 #### 一行一行获取
 
