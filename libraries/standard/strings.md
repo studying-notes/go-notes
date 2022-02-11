@@ -3,11 +3,11 @@ date: 2021-01-19T10:22:59+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go strings — 字符串操作"  # 文章标题
+title: "strings - 字符串操作"  # 文章标题
 url:  "posts/go/libraries/standard/string"  # 设置网页链接，默认使用文件名
 tags: [ "go", "string", "standard" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -17,6 +17,26 @@ index: true  # 是否可以被索引
 toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
+
+- [2.1 strings — 字符串操作](#21-strings--字符串操作)
+  - [2.1.1 字符串比较](#211-字符串比较)
+  - [2.1.2 是否存在某个字符或子串](#212-是否存在某个字符或子串)
+  - [2.1.3 子串出现次数 ( 字符串匹配 )](#213-子串出现次数--字符串匹配-)
+  - [2.1.4 字符串分割为[]string](#214-字符串分割为string)
+    - [2.1.3.1 Fields 和 FieldsFunc](#2131-fields-和-fieldsfunc)
+    - [2.1.3.2 Split 和 SplitAfter、 SplitN 和 SplitAfterN](#2132-split-和-splitafter-splitn-和-splitaftern)
+  - [2.1.4 字符串是否有某个前缀或后缀](#214-字符串是否有某个前缀或后缀)
+  - [2.1.5 字符或子串在字符串中出现的位置](#215-字符或子串在字符串中出现的位置)
+  - [2.1.6 字符串 JOIN 操作](#216-字符串-join-操作)
+  - [2.1.7 字符串重复几次](#217-字符串重复几次)
+  - [2.1.8 字符替换](#218-字符替换)
+  - [2.1.9 字符串子串替换](#219-字符串子串替换)
+  - [2.1.10 大小写转换](#2110-大小写转换)
+  - [2.1.10 标题处理](#2110-标题处理)
+  - [2.1.11 修剪](#2111-修剪)
+  - [2.1.12 Replacer 类型](#2112-replacer-类型)
+  - [2.1.13 Reader 类型](#2113-reader-类型)
+  - [2.1.14 Builder 类型](#2114-builder-类型)
 
 ## Trim
 
@@ -56,30 +76,6 @@ draft: false  # 草稿
 
 将字符串s中后缀字符串prefix去掉返回
 
-```go
-
-```
-
-```go
-
-```
-
-```go
-
-```
-
-```go
-
-```
-
-```go
-
-```
-
-```go
-
-```
-
 # 2.1 strings — 字符串操作 #
 
   字符串常见操作有：
@@ -106,16 +102,16 @@ draft: false  # 草稿
 
 
 ## 2.1.1 字符串比较 ##
-  
+
 ```go
     // Compare 函数，用于比较两个字符串的大小，如果两个字符串相等，返回为 0。如果 a 小于 b ，返回 -1 ，反之返回 1 。不推荐使用这个函数，直接使用 == != > < >= <= 等一系列运算符更加直观。
-   func Compare(a, b string) int 
+   func Compare(a, b string) int
    //   EqualFold 函数，计算 s 与 t 忽略字母大小写后是否相等。
    func EqualFold(s, t string) bool
 ```
-  
+
 示例：
-  
+
 ```go
 a := "gopher"
 b := "hello world"
@@ -126,7 +122,7 @@ fmt.Println(strings.Compare(b, a))
 fmt.Println(strings.EqualFold("GO", "go"))
 fmt.Println(strings.EqualFold("壹", "一"))
 ```
-  
+
 输出结果：
 ```bash
 -1
@@ -135,8 +131,8 @@ fmt.Println(strings.EqualFold("壹", "一"))
 true
 false
 ```
-  
-  
+
+
 ## 2.1.2 是否存在某个字符或子串 ##
 
 有三个函数做这件事：
@@ -201,8 +197,8 @@ fmt.Println(strings.Count("谷歌中国", ""))
   输出：
 ```bash
 3
-12  
-5  
+12
+5
 ```
 
 关于 Rabin-Karp 算法的实现，有兴趣的可以看看 Count 的源码。
@@ -341,7 +337,7 @@ fmt.Println(strings.HasSuffix("Amigo", "go"))
 fmt.Println(strings.HasSuffix("Amigo", "Ami"))
 fmt.Println(strings.HasSuffix("Amigo", ""))
 ```
-    
+
 输出结果：
 ```bash
 true
@@ -473,13 +469,13 @@ banana
 
 
 ## 2.1.8 字符替换 ##
-  
+
 ```go
 func Map(mapping func(rune) rune, s string) string
 ```
 
 Map 函数，将 s 的每一个字符按照 mapping 的规则做映射替换，如果 mapping 返回值  <0 ，则舍弃该字符。该方法只能对每一个字符做处理，但处理方式很灵活，可以方便的过滤，筛选汉字等。
-  
+
 示例：
 ```go
 mapping := func(r rune) rune {
@@ -536,7 +532,7 @@ moo moo moo
 
 
 ## 2.1.10 大小写转换
-  
+
 ```go
 func ToLower(s string) string
 func ToLowerSpecial(c unicode.SpecialCase, s string) string
@@ -560,7 +556,7 @@ fmt.Println(strings.ToUpperSpecial(unicode.TurkishCase, "hello world"))
 fmt.Println(strings.ToUpper("örnek iş"))
 fmt.Println(strings.ToUpperSpecial(unicode.TurkishCase, "örnek iş"))
 ```
-  
+
 输出结果:
 ```bash
 hello world
@@ -576,17 +572,17 @@ HELLO WORLD
 ÖRNEK IŞ
 ÖRNEK İŞ    // 有细微差别
 ```
-  
-  
+
+
 ## 2.1.10 标题处理
-  
+
 ```go
 func Title(s string) string
 func ToTitle(s string) string
 func ToTitleSpecial(c unicode.SpecialCase, s string) string
 ```
 标题处理包含 3 个相关函数，其中 Title 会将 s 每个单词的首字母大写，不处理该单词的后续字符。ToTitle 将 s 的每个字母大写。ToTitleSpecial 将 s 的每个字母大写，并且会将一些特殊字母转换为其对应的特殊大写字母。
-  
+
 举个例子：
 ```go
 fmt.Println(strings.Title("hElLo wOrLd"))
@@ -599,7 +595,7 @@ fmt.Println(strings.Title("dünyanın ilk borsa yapısı Aizonai kabul edilir"))
 fmt.Println(strings.ToTitle("dünyanın ilk borsa yapısı Aizonai kabul edilir"))
 fmt.Println(strings.ToTitleSpecial(unicode.TurkishCase, "dünyanın ilk borsa yapısı Aizonai kabul edilir"))
 ```
-    
+
 输出结果：
 ```bash
 HElLo WOrLd
@@ -668,7 +664,7 @@ Hello, Gophers
 你好,!@#$ Gophers###$$$
 !!!@@@你好
 ```
-    
+
 ## 2.1.12 Replacer 类型 ##
 
 这是一个结构，没有导出任何字段，实例化通过 `func NewReplacer(oldnew ...string) *Replacer` 函数进行，其中不定参数 oldnew 是 old-new 对，即进行多个替换。如果 oldnew 长度与奇数，会导致 panic.
@@ -688,7 +684,7 @@ This is &lt;b&gt;HTML&lt;/b&gt;!
 func (r *Replacer) WriteString(w io.Writer, s string) (n int, err error)
 ```
 
-    
+
 ## 2.1.13 Reader 类型 ##
 
 看到名字就能猜到，这是实现了 `io` 包中的接口。它实现了 io.Reader（Read 方法），io.ReaderAt（ReadAt 方法），io.Seeker（Seek 方法），io.WriterTo（WriteTo 方法），io.ByteReader（ReadByte 方法），io.ByteScanner（ReadByte 和 UnreadByte 方法），io.RuneReader（ReadRune 方法） 和 io.RuneScanner（ReadRune 和 UnreadRune 方法）。
@@ -711,7 +707,7 @@ func NewReader(s string) *Reader
 其他方法不介绍了，都是之前接口的实现，有兴趣的可以看看源码实现，大部分都是根据 i、prevRune 两个属性来控制。
 
 ## 2.1.14 Builder 类型 ##
-    
+
 ```go
 type Builder struct {
 	addr *Builder // of receiver, to detect copies by value
@@ -719,7 +715,7 @@ type Builder struct {
 }
 ```
 该类型实现了 io 包下的 Writer, ByteWriter, StringWriter 等接口，可以向该对象内写入数据，Builder 没有实现 Reader 等接口，所以该类型不可读，但提供了 String 方法可以获取对象内的数据。
-  
+
 ```go
 // 该方法向 b 写入一个字节
 func (b *Builder) WriteByte(c byte) error
@@ -743,9 +739,9 @@ func (b *Builder) String() string
 Builder 有 4 个与写入相关的方法，这 4 个方法的 error 都总是为 nil.
 
 Builder 的 cap 会自动增长，一般不需要手动调用 Grow 方法。
- 
+
 String 方法可以方便的获取 Builder 的内容。
- 
+
  举个例子：
 ```go
 b := strings.Builder{}
@@ -765,7 +761,7 @@ fmt.Println(b.String())
 b.Reset()
 fmt.Println(b.String())
 ```
- 
+
  输出结果：
 ```bash
 3
@@ -777,8 +773,3 @@ fmt.Println(b.String())
 164
 7夕Hello, World你好，世界
 ```
- 
-# 导航 #
-
-- [第二章 文本](/chapter02/02.0.md)
-- 下一节：[bytes — byte slice 便利操作](02.2.md)
