@@ -3,11 +3,11 @@ date: 2020-07-20T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Logrus 日志库"  # 文章标题
+title: "logrus - 日志库"  # 文章标题
 url:  "posts/go/libraries/tripartite/logrus"  # 设置网页链接，默认使用文件名
 tags: [ "go", "logrus", "log", "logger" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -31,6 +31,19 @@ Logrus 是 Go 的结构化 Logger，与 Log 标准库完全兼容。
 ```shell
 go get github.com/sirupsen/logrus
 ```
+
+- [基本示例](#基本示例)
+- [记录到多个位置](#记录到多个位置)
+- [日志级别](#日志级别)
+  - [设置日志级别](#设置日志级别)
+- [字段](#字段)
+- [默认字段](#默认字段)
+- [日志条目](#日志条目)
+- [Hooks](#hooks)
+- [格式化](#格式化)
+- [记录函数名](#记录函数名)
+- [线程安全](#线程安全)
+- [Gin 框架使用 Logrus](#gin-框架使用-logrus)
 
 ## 基本示例
 
