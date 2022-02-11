@@ -3,11 +3,11 @@ date: 2020-10-10T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go 标准库 Context"  # 文章标题
+title: "context - 上下文管理"  # 文章标题
 url:  "posts/go/libraries/standard/context"  # 设置网页链接，默认使用文件名
 tags: [ "go", "context", "goroutine" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -19,6 +19,20 @@ draft: false  # 草稿
 ---
 
 在 Go http  标准库的 Server 中，每一个请求在都有一个对应的 goroutine 去处理。请求处理函数通常会启动额外的 goroutine 用来访问后端服务，比如数据库和 RPC 服务。用来处理一个请求的 goroutine 通常需要访问一些与请求特定的数据，比如终端用户的身份认证信息、验证相关的 token、请求的截止时间。 当一个请求被取消或超时时，所有用来处理该请求的 goroutine 都应该迅速退出，然后系统才能释放这些 goroutine 占用的资源。
+
+- [为什么需要 Context](#为什么需要-context)
+	- [全局变量方式](#全局变量方式)
+	- [通道方式](#通道方式)
+	- [官方版方式](#官方版方式)
+- [Context 接口](#context-接口)
+	- [Background() 和 TODO()](#background-和-todo)
+- [With 系列函数](#with-系列函数)
+	- [WithCancel](#withcancel)
+	- [WithDeadline](#withdeadline)
+	- [WithTimeout](#withtimeout)
+	- [WithValue](#withvalue)
+- [使用 Context 的注意事项](#使用-context-的注意事项)
+- [客户端超时取消示例](#客户端超时取消示例)
 
 ## 为什么需要 Context
 
