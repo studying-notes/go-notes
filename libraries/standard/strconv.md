@@ -3,11 +3,11 @@ date: 2020-10-10T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go 字符串转换其他类型"  # 文章标题
+title: "strconv - 字符串转换其他类型"  # 文章标题
 url:  "posts/go/libraries/standard/strconv"  # 设置网页链接，默认使用文件名
 tags: [ "go", "bufio", "io" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -17,6 +17,11 @@ index: true  # 是否可以被索引
 toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
+
+- [string 与 int 类型转换](#string-与-int-类型转换)
+- [Parse 系列函数](#parse-系列函数)
+- [Format 系列函数](#format-系列函数)
+- [其他](#其他)
 
 ## string 与 int 类型转换
 
