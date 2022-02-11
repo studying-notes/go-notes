@@ -3,11 +3,11 @@ date: 2020-09-19T13:39:18+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go 获取系统运行信息"  # 文章标题
+title: "gopsutil - 获取系统运行信息"  # 文章标题
 url:  "posts/go/libraries/tripartite/gopsutil"  # 设置网页链接，默认使用文件名
 tags: [ "go", "gopsutil" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 文章分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 文章分类
 
 # 章节
 weight: 20 # 文章在章节中的排序优先级，正序排序
@@ -21,6 +21,14 @@ toc: false  # 是否自动生成目录
 ```shell
 go get github.com/shirou/gopsutil
 ```
+
+- [CPU](#cpu)
+- [Memory](#memory)
+- [Host](#host)
+- [Disk](#disk)
+- [net IO](#net-io)
+- [net](#net)
+- [获取本机 IP 的两种方式](#获取本机-ip-的两种方式)
 
 ## CPU
 
