@@ -3,11 +3,11 @@ date: 2020-10-10T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "通过 fmt 标准库获取用户输入"  # 文章标题
+title: "fmt - 获取用户输入"  # 文章标题
 url:  "posts/go/libraries/standard/fmt"  # 设置网页链接，默认使用文件名
 tags: [ "go", "fmt", "io" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
