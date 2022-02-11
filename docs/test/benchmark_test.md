@@ -4,11 +4,10 @@ author: "Rustle Karl"  # 作者
 
 # 文章
 title: "Go 性能测试"  # 文章标题
-description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
 url:  "posts/go/docs/test/benchmark"  # 设置网页永久链接
 tags: [ "go", "benchmark" ]  # 标签
-series: [ "Go 学习笔记"]  # 系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -82,9 +81,9 @@ $ go test -bench=".*" -benchmem
 goos: windows
 goarch: amd64
 pkg: github/fujiawei-dev/go-notes/test/benchmark
-BenchmarkSprint-8       15229449                76.4 ns/op             2 B/op          1 allocs/op   
-BenchmarkFormat-8       349739210                3.13 ns/op            0 B/op          0 allocs/op   
-BenchmarkItoa-8         383148979                3.08 ns/op            0 B/op          0 allocs/op   
+BenchmarkSprint-8       15229449                76.4 ns/op             2 B/op          1 allocs/op
+BenchmarkFormat-8       349739210                3.13 ns/op            0 B/op          0 allocs/op
+BenchmarkItoa-8         383148979                3.08 ns/op            0 B/op          0 allocs/op
 PASS
 ok      github/fujiawei-dev/go-notes/test/benchmark     4.247s
 ```

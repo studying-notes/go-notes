@@ -5,8 +5,8 @@ author: "Rustle Karl"  # 作者
 title: "Go Main 测试"  # 文章标题
 url:  "posts/go/docs/test/sub_test"  # 设置网页永久链接
 tags: [ "go", "test" ]  # 标签
-series: [ "Go 学习笔记"]  # 系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 系列
+categories: [ "学习笔记" ]  # 分类
 
 
 # 章节
