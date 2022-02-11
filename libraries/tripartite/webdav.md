@@ -3,11 +3,11 @@ date: 2022-01-17T10:37:27+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Webdav"  # 文章标题
+title: "webdav - 简单的 WebDAV 服务实现"  # 文章标题
 url:  "posts/go/libraries/tripartite/webdav"  # 设置网页链接，默认使用文件名
 tags: [ "go", "webdav" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -28,6 +28,13 @@ WebDAV（Web-based Distributed Authoring and Versioning）是一种基于 HTTP 1
 - 名称空间操作。您可以使用 COPY 和 MOVE 方法让服务器复制和删除相关资源。
 
 本节我们尝试用 Go 语言实现自己的 WebDAV 服务。
+
+- [WebDAV 对 HTTP 的扩展](#webdav-对-http-的扩展)
+- [最简的 WebDAV 服务](#最简的-webdav-服务)
+- [只读的 WebDAV 服务](#只读的-webdav-服务)
+- [密码认证 WebDAV 服务](#密码认证-webdav-服务)
+- [浏览器视图](#浏览器视图)
+- [集成进 Gin](#集成进-gin)
 
 ## WebDAV 对 HTTP 的扩展
 
@@ -326,4 +333,3 @@ func main() {
 	log.Fatal(e.Run(":8080"))
 }
 ```
-
