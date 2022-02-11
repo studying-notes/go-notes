@@ -3,12 +3,12 @@ date: 2020-07-20T21:39:18+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "用 SQLCipher 加密 SQLite"  # 文章标题
+title: "go-sqlcipher - 用 SQLCipher 加密 SQLite"  # 文章标题
 description: "Windows 下加密 SQLite 的准备工作相当繁琐"
 url:  "posts/go/libraries/tripartite/sqlcipher"  # 设置网页链接，默认使用文件名
 tags: [ "go", "sqlcipher", "sqlite"]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 文章分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 文章分类
 
 # 章节
 weight: 20 # 文章在章节中的排序优先级，正序排序
@@ -18,6 +18,18 @@ index: true  # 文章是否可以被索引
 draft: false  # 草稿
 toc: true  # 是否自动生成目录
 ---
+
+- [预准备](#预准备)
+	- [安装 Perl 64bit](#安装-perl-64bit)
+	- [安装 GCC 64bit](#安装-gcc-64bit)
+	- [安装 MSYS](#安装-msys)
+	- [安装 Make](#安装-make)
+- [编译 OpenSSL 64bit && 32bit](#编译-openssl-64bit--32bit)
+- [安装 Go-SQLCipher 库](#安装-go-sqlcipher-库)
+	- [附个人 fork 修改版](#附个人-fork-修改版)
+- [启用 CGO](#启用-cgo)
+- [创建加密数据库](#创建加密数据库)
+- [打开加密数据库](#打开加密数据库)
 
 ## 预准备
 
@@ -109,7 +121,7 @@ cd openssl-1.0.2k
 # x64
 perl configure mingw64 no-shared no-asm
 
-# x86 
+# x86
 perl configure mingw no-shared no-asm
 
 # 在 Makefile 中添加参数
@@ -168,7 +180,7 @@ go install -v .
 上面的方法在 Windows 下过于麻烦，因此我把改好的 fork 仓库上传了，这样就不用每次都修改文件了。
 
 ```powershell
-go get github.com/fujiawei-dev/go-sqlcipher 
+go get github.com/fujiawei-dev/go-sqlcipher
 ```
 
 ## 启用 CGO
