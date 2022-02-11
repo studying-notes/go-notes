@@ -159,7 +159,7 @@ func main() {
 
 ## 命令行解析流程
 
-![](../../imgs/flag.png)
+![](../../assets/images/flag.png)
 
 1. flag.Parse
 

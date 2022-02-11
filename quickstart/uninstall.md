@@ -5,8 +5,8 @@ author: "Rustle Karl"  # 作者
 title: "Go 卸载指南"  # 文章标题
 url:  "posts/go/quickstart/uninstall"  # 设置网页永久链接
 tags: [ "go", "quickstart" ]  # 标签
-series: [ "Go 学习笔记"]  # 系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 系列
+categories: [ "学习笔记" ]  # 分类
 
 index: true  # 是否可以被索引
 toc: true  # 是否自动生成目录
