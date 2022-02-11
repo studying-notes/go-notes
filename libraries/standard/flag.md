@@ -3,11 +3,11 @@ date: 2020-10-10T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Flag 命令行参数解析"  # 文章标题
+title: "flag - 命令行参数解析"  # 文章标题
 url:  "posts/go/libraries/standard/flag"  # 设置网页链接，默认使用文件名
 tags: [ "go", "flag", "io" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -17,6 +17,17 @@ index: true  # 是否可以被索引
 toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
+
+- [获取命令行参数](#获取命令行参数)
+- [命令行参数类型](#命令行参数类型)
+- [定义命令行参数](#定义命令行参数)
+	- [flag.Type()](#flagtype)
+	- [flag.TypeVar()](#flagtypevar)
+- [解析命令行参数](#解析命令行参数)
+- [flag 中的其他函数](#flag-中的其他函数)
+- [子命令](#子命令)
+- [命令行解析流程](#命令行解析流程)
+- [定义参数类型](#定义参数类型)
 
 ## 获取命令行参数
 
