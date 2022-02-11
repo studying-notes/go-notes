@@ -3,11 +3,11 @@ date: 2020-09-19T13:39:18+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go 内存池 sync.Pool"  # 文章标题
+title: "sync.Pool - 内存池"  # 文章标题
 url:  "posts/go/libraries/standard/sync/pool"  # 设置网页链接，默认使用文件名
-tags: [ "go", "exec" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 文章分类
+tags: [ "go", "sync" ]  # 自定义标签
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 文章分类
 
 # 章节
 weight: 20 # 文章在章节中的排序优先级，正序排序
