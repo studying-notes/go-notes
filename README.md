@@ -3,12 +3,12 @@ date: 2020-09-19T21:06:02+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go 学习笔记目录"  # 文章标题
+title: "Go 学习笔记"  # 文章标题
 description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
-url:  "posts/go/readme"  # 设置网页永久链接
-tags: [ "go", "toc" ]  # 标签
-series: [ "Go 学习笔记"]  # 系列
-categories: [ "学习笔记"]  # 分类
+url:  "posts/go/README"  # 设置网页永久链接
+tags: [ "go", "README" ]  # 标签
+series: [ "Go 学习笔记" ]  # 系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 10 # 排序优先级
@@ -19,26 +19,81 @@ toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
 
+# Go 学习笔记
+
 > 纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。
 
 ## 目录结构
 
-- libraires 库
-  - libraries/standard 标准库
-  - libraries/tripartite 第三方库
-- src 测试源码
-- abc 深入语言实现
-- cmds 基本命令
-- quickstart 快速开始
-- docs 学习笔记文档
-- learn-src 知名库源码学习
+- `assets/images`: 笔记配图
+- `assets/templates`: 笔记模板
+- `docs`: 基础语法
+- `libraries`: 库
+  - `libraries/standard`: 标准库
+  - `libraries/tripartite`: 第三方库
+- `quickstart`: 基础用法
+- `src`: 源码示例
+  - `src/docs`: 基础语法源码示例
+  - `src/libraries/standard`: 标准库源码示例
+  - `src/libraries/tripartite`: 第三方库源码示例
+  - `src/quickstart`: 基础用法源码示例
 
-## 预准备
+## 基础用法
 
-{{<card src="posts/go/doc/install">}}
-{{<card src="posts/go/doc/uninstall">}}
+- [Go 安装与配置指南](quickstart/install.md)
+- [Go 卸载指南](quickstart/uninstall.md)
 
-## 语言基础
+## 基础语法
+
+## 库
+
+## 标准库
+
+- [binary - 二进制数据的序列化与反序列化](libraries/standard/binary.md)
+- [bufio - 获取用户输入](libraries/standard/bufio.md)
+- [fmt - 获取用户输入](libraries/standard/fmt.md)
+- [context - 上下文管理](libraries/standard/context.md)
+- [exec - 执行终端命令/外部命令](libraries/standard/exec.md)
+- [flag - 命令行参数解析](libraries/standard/flag.md)
+- [httputil - 网络工具包](libraries/standard/httputil.md)
+- [ioutil - IO 操作函数集](libraries/standard/ioutil.md)
+- [json - JSON 序列化和反序列化](libraries/standard/json.md)
+- [log - 日志](libraries/standard/log.md)
+- [sync.Pool - 内存池](libraries/standard/pool.md)
+- [pprof - 性能剖析](libraries/standard/pprof.md)
+- [rand - 随机数](libraries/standard/rand.md)
+- [regexp - 正则表达式](libraries/standard/regexp.md)
+- [strconv - 字符串转换其他类型](libraries/standard/strconv.md)
+- [strings - 字符串操作](libraries/standard/strings.md)
+- [template - 文本模板引擎](libraries/standard/template.md)
+- [time - 时间标准库](libraries/standard/time.md)
+- [net/http - HTTP 标准库](libraries/standard/net_http.md)
+- [image - 图片处理](libraries/standard/image.md)
+
+## 第三方库
+
+- [urfave/cli - 构建 CLI 程序](libraries/tripartite/cli.md)
+- [Cobra - 构建 CLI 程序](libraries/tripartite/cobra.md)
+- [cron - 启动定时任务](libraries/tripartite/cron.md)
+- [fsnotify - 监听文件系统事件](libraries/tripartite/fsnotify.md)
+- [gjson - 快速提取 JSON 值](libraries/tripartite/gjson.md)
+- [gopsutil - 获取系统运行信息](libraries/tripartite/gopsutil.md)
+- [gorm - 数据库操作](libraries/tripartite/gorm.md)
+- [logrus - 日志库](libraries/tripartite/logrus.md)
+- [zap - 日志库](libraries/tripartite/zap.md)
+- [service - 编写 Windows 服务](libraries/tripartite/service.md)
+- [go-sqlcipher - 用 SQLCipher 加密 SQLite](libraries/tripartite/sqlcipher.md)
+- [sqlx - 扩展标准库 database/sql](libraries/tripartite/sqlx.md)
+- [viper - 应用程序的完整配置解决方案](libraries/tripartite/viper.md)
+- [webdav - 简单的 WebDAV 服务实现](libraries/tripartite/webdav.md)
+- [gout - HTTP 客户端](libraries/tripartite/gout.md)
+- [xlsx - 读写 Excel 表格](libraries/tripartite/excel.md)
+- [mongo - 操作 MongoDB](libraries/tripartite/mongo.md)
+- [mysql - MySQL 操作示例](libraries/tripartite/mysql.md)
+- [redis - 操作 Redis](libraries/tripartite/redis.md)
+- [go-sqlite3 - SQLite / SQLCipher 操作示例](libraries/tripartite/sqlite.md)
+
+## 基础语法
 
 ### 数据结构
 
@@ -92,11 +147,6 @@ draft: false  # 草稿
 {{<card src="posts/go/libraries/standard/sync/pool">}}
 {{<card src="posts/go/libraries/standard/context">}}
 
-### 类型转换
-
-{{<card src="posts/go/abc/assert">}}
-{{<card src="posts/go/libraries/standard/strconv">}}
-
 ### 语法糖
 
 语法糖（Syntactic Sugar），Go 中最常用的语法糖莫过于赋值符 `:=`，其次，表示函数变参的 `...`。
@@ -138,14 +188,6 @@ Go 语言依赖管理经历了三个阶段：
 {{<card src="posts/go/doc/mod/vendor">}}
 {{<card src="posts/go/doc/mod/gomod">}}
 
-### Go Module
-
-
-
-## 算法与数据结构
-
-{{<card src="posts/go/libraries/standard/rand">}}
-
 ## CGO 编程
 
 {{<card src="posts/go/cgo/quickstart">}}
@@ -155,104 +197,3 @@ Go 语言依赖管理经历了三个阶段：
 {{<card src="posts/go/cgo/link">}}
 {{<card src="posts/go/cgo/type">}}
 {{<card src="posts/go/cgo/internal">}}
-
-## 命令行
-
-{{<card src="posts/go/cmd/compile">}}
-{{<card src="posts/go/cmd/build">}}
-
-### 构建命令行程序
-
-{{<card src="posts/go/libraries/tripartite/cobra">}}
-{{<card src="posts/go/libraries/standard/flag">}}
-
-## 输入输出
-
-### 标准输入输出
-
-{{<card src="posts/go/libraries/standard/bufio">}}
-{{<card src="posts/go/libraries/standard/fmt">}}
-{{<card src="posts/go/libraries/standard/ioutil">}}
-
-### 模板引擎
-
-{{<card src="posts/go/libraries/standard/template">}}
-{{<card src="posts/go/libraries/standard/regexp">}}
-
-### 数据库
-
-{{<card src="posts/go/libraries/tripartite/gorm">}}
-{{<card src="posts/go/libraries/tripartite/sqlx">}}
-{{<card src="posts/go/io/sqlite">}}
-{{<card src="posts/go/libraries/tripartite/sqlcipher">}}
-{{<card src="posts/go/io/mysql">}}
-{{<card src="posts/go/io/redis">}}
-{{<card src="posts/go/io/mongo">}}
-
-### 图片处理
-
-{{<card src="posts/go/io/image/draw">}}
-{{<card src="posts/go/io/image/merge">}}
-
-### 文件读写
-
-{{<card src="posts/go/libraries/tripartite/fsnotify">}}
-{{<card src="posts/go/io/excel">}}
-
-## 网络服务
-
-### HTTP 客户端
-
-{{<card src="posts/go/web/http/httpclient">}}
-{{<card src="posts/go/web/http/gout">}}
-
-### HTTP 服务端
-
-{{<card src="posts/go/web/http/cookie">}}
-{{<card src="posts/go/web/grpc">}}
-{{<card src="posts/go/web/mqtt/intro">}}
-
-### 序列化
-
-{{<card src="posts/go/libraries/standard/json">}}
-{{<card src="posts/go/libraries/tripartite/gjson">}}
-
-### 日志
-
-{{<card src="posts/go/libraries/standard/log">}}
-{{<card src="posts/go/libraries/tripartite/logrus">}}
-{{<card src="posts/go/libraries/tripartite/zap">}}
-
-### 程序配置
-
-{{<card src="posts/go/libraries/tripartite/viper">}}
-
-## 系统
-
-### 定时任务
-
-{{<card src="posts/go/libraries/tripartite/cron">}}
-
-### 执行命令
-
-{{<card src="posts/go/libraries/standard/exec">}}
-
-### 服务
-
-{{<card src="posts/go/libraries/standard/service">}}
-
-### 硬件监测
-
-{{<card src="posts/go/libraries/tripartite/gopsutil">}}
-
-### 时间
-
-{{<card src="posts/go/libraries/standard/time">}}
-{{<card src="posts/go/doc/zone">}}
-
-### 消息队列
-
-{{<card src="posts/go/web/mq/intro">}}
-{{<card src="posts/go/web/mq/kafka">}}
-{{<card src="posts/go/web/mq/nsq">}}
-{{<card src="posts/go/web/mq/rabbitmq">}}
