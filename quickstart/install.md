@@ -2,17 +2,11 @@
 date: 2020-08-30T21:06:02+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
-# 文章
 title: "Go 安装与配置指南"  # 文章标题
-description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
 url:  "posts/go/quickstart/install"  # 设置网页永久链接
-tags: [ "go", "config" ]  # 标签
+tags: [ "go", "quickstart" ]  # 标签
 series: [ "Go 学习笔记"]  # 系列
 categories: [ "学习笔记"]  # 分类
-
-# 章节
-weight: 20 # 排序优先级
-chapter: false  # 设置为章节
 
 index: true  # 是否可以被索引
 toc: true  # 是否自动生成目录
@@ -26,6 +20,15 @@ Go 语言安装比较简单，大体上分为三个步骤：
 * 安装可执行命令
 * 设置 PATH 环境变量
 * 设置 GOPATH 环境变量
+
+- [Ubuntu](#ubuntu)
+  - [添加官网源获取最新版](#添加官网源获取最新版)
+  - [通过 Snap 安装](#通过-snap-安装)
+  - [手动卸载旧版本](#手动卸载旧版本)
+  - [手动安装最新版](#手动安装最新版)
+  - [设置 PATH 和 GOPATH](#设置-path-和-gopath)
+  - [Go 模块代理](#go-模块代理)
+- [CentOS](#centos)
 
 ## Ubuntu
 
@@ -50,7 +53,9 @@ apt install golang-go -y
 go version
 ```
 
-### 通过 snap 安装
+### 通过 Snap 安装
+
+> 树莓派选择此方式最方便。
 
 ```shell
 snap install --classic go
@@ -61,6 +66,7 @@ snap install --classic go
 ```shell
 rm -rf /usr/bin/go
 rm -rf /usr/local/go
+
 apt purge golang-go
 ```
 
@@ -74,11 +80,8 @@ apt purge golang-go
 
 ```shell
 mkdir /usr/local/go
-chmod -R 0777 /usr/local/go
-```
 
-```shell
-wget https://studygolang.com/dl/golang/go1.13.7.linux-amd64.tar.gz
+chmod -R 0777 /usr/local/go
 ```
 
 ```shell
@@ -89,7 +92,7 @@ wget https://studygolang.com/dl/golang/go1.15.linux-amd64.tar.gz
 tar -C /usr/local -xvf go1.15.linux-amd64.tar.gz
 ```
 
-#### 设置 PATH 和 GOPATH
+### 设置 PATH 和 GOPATH
 
 Go 的二进制可执行文件存在于 ` $ GOROOT/bin` 目录，需要将该目录加入到 `PATH` 环境变量中。
 
@@ -123,7 +126,7 @@ echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.config/fish/config.fish && sour
 go env -w GOBIN=/usr/local/go/bin
 ```
 
-## Go 模块代理
+### Go 模块代理
 
 ```shell
 go env -w GOPROXY=https://goproxy.cn,direct
@@ -138,38 +141,4 @@ wget https://dl.google.com/go/go1.17.6.linux-amd64.tar.gz
 
 ```shell
 tar -xzvf go1.17.6.linux-amd64.tar.gz
-```
-
-```shell
-echo "
-export GOROOT=/usr/local/go
-export GOPATH=/home/fujiawei/gopath
-export GOBIN=$GOROOT/bin
-export PATH=$PATH:$GOROOT/bin
-export PATH=$PATH:$GOPATH/bin
-" >> /etc/profile
-```
-
-```shell
-source /etc/profile
-```
-
-```shell
-echo "
-export GOROOT=/home/fujiawei/go
-export GOPATH=/home/fujiawei/gopath
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-" > ~/.config/fish/config.fish && source ~/.config/fish/config.fish
-```
-
-```shell
-echo "
-export GOROOT=/home/fujiawei/go
-export GOPATH=/home/fujiawei/gopath
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-" >> /home/fujiawei/.bashrc && source /home/fujiawei/.bashrc
-```
-
-```shell
-
 ```
