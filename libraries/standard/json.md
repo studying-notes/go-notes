@@ -3,11 +3,11 @@ date: 2020-10-10T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go 语言 JSON 技巧"  # 文章标题
+title: "json - JSON 序列化和反序列化"  # 文章标题
 url:  "posts/go/libraries/standard/json"  # 设置网页链接，默认使用文件名
 tags: [ "go", "json" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -17,6 +17,23 @@ index: true  # 是否可以被索引
 toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
+
+- [处理 PUT 请求的反序列化问题](#处理-put-请求的反序列化问题)
+- [序列化列表](#序列化列表)
+- [Go 和 JSON 转换关系](#go-和-json-转换关系)
+- [基本的序列化](#基本的序列化)
+- [基本的反序列化](#基本的反序列化)
+- [嵌套结构体的序列化](#嵌套结构体的序列化)
+- [解析不知道格式的数据](#解析不知道格式的数据)
+- [结构体标签](#结构体标签)
+	- [指定字段名](#指定字段名)
+	- [忽略某个字段](#忽略某个字段)
+	- [忽略空值字段](#忽略空值字段)
+	- [忽略嵌套结构体空值字段](#忽略嵌套结构体空值字段)
+	- [不修改原结构体忽略空值字段](#不修改原结构体忽略空值字段)
+	- [优雅处理字符串格式的数字](#优雅处理字符串格式的数字)
+- [整数变浮点数](#整数变浮点数)
+- [自定义解析时间字段](#自定义解析时间字段)
 
 ## 处理 PUT 请求的反序列化问题
 
@@ -137,14 +154,14 @@ func main() {
 		Width  int `json:"width"`
 		Height int `json:"height"`
 	}
-	
+
 	type Person struct {
 		Name    string   `json:"name"`
 		Age     int      `json:"age"`
 		Parents []string `json:"parents"`
 		Thing   `json:"thing"`
 	}
-	
+
 	person := Person{Name: "Wetness", Age: 18,
 		Parents: []string{"Gomez", "Morita"},
 		// 类型字段也可以用于赋值，不用定义变量
