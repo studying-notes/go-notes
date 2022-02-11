@@ -120,6 +120,10 @@ Go 语言依赖管理经历了三个阶段：
 
 ## 第三方库
 
+- [Gin 学习笔记](libraries/tripartite/gin/README.md)
+- [validator - 参数校验](libraries/tripartite/validator.md)
+- [swagger - 通过注释在框架中集成 Swagger](libraries/tripartite/swagger.md)
+
 - [urfave/cli - 构建 CLI 程序](libraries/tripartite/cli.md)
 - [Cobra - 构建 CLI 程序](libraries/tripartite/cobra.md)
 - [cron - 启动定时任务](libraries/tripartite/cron.md)

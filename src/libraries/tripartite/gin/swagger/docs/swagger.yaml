@@ -1,0 +1,393 @@
+basePath: /api/v1
+definitions:
+  api.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  request.AddAccount:
+    properties:
+      name:
+        example: account
+        type: string
+    type: object
+  response.Account:
+    properties:
+      id:
+        example: 1
+        format: int64
+        type: integer
+      name:
+        example: account
+        type: string
+      uuid:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        format: uuid
+        type: string
+    type: object
+  response.Admin:
+    properties:
+      id:
+        example: 1
+        type: integer
+      name:
+        example: admin
+        type: string
+    type: object
+  response.Bottle:
+    properties:
+      account:
+        $ref: '#/definitions/response.Account'
+        type: object
+      id:
+        example: 1
+        type: integer
+      name:
+        example: bottle
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: fu.jiawei@outlook.com
+    name: Rustle Karl
+    url: https://github.com/fujiawei-dev
+  description: This is a sample server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://github.com/fujiawei-dev
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /accounts:
+    post:
+      consumes:
+      - application/json
+      description: add by json account
+      parameters:
+      - description: Add account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddAccount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Account'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.HTTPError'
+      summary: Add an account
+      tags:
+      - accounts
+  /admin/auth:
+    post:
+      consumes:
+      - application/json
+      description: get admin info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Admin'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Auth admin
+      tags:
+      - accounts
+      - admin
+  /bottles:
+    get:
+      consumes:
+      - application/json
+      description: get bottles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.Bottle'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.HTTPError'
+      summary: List bottles
+      tags:
+      - bottles
+  /bottles/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: get-string-by-int
+      parameters:
+      - description: Bottle ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Bottle'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.HTTPError'
+      summary: Show a bottle
+      tags:
+      - bottles
+  /examples/attribute:
+    get:
+      consumes:
+      - application/json
+      description: attribute
+      parameters:
+      - description: string enums
+        enum:
+        - A
+        - B
+        - C
+        in: query
+        name: enumstring
+        type: string
+      - description: int enums
+        enum:
+        - 1
+        - 2
+        - 3
+        in: query
+        name: enumint
+        type: integer
+      - description: int enums
+        enum:
+        - 1.1
+        - 1.2
+        - 1.3
+        in: query
+        name: enumnumber
+        type: number
+      - description: string valid
+        in: query
+        maxLength: 10
+        minLength: 5
+        name: string
+        type: string
+      - description: int valid
+        in: query
+        maximum: 10
+        minimum: 1
+        name: int
+        type: integer
+      - default: A
+        description: string default
+        in: query
+        name: default
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求结果
+          schema:
+            type: string
+        "400":
+          description: 操作失败
+          schema:
+            type: string
+      summary: attribute example
+      tags:
+      - example
+  /examples/calc:
+    get:
+      consumes:
+      - application/json
+      description: plus
+      parameters:
+      - description: used for calc
+        in: query
+        name: val1
+        required: true
+        type: integer
+      - description: used for calc
+        in: query
+        name: val2
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求结果
+          schema:
+            type: integer
+        "400":
+          description: 操作失败
+          schema:
+            type: string
+      summary: calc example
+      tags:
+      - example
+  /examples/groups/{group_id}/accounts/{account_id}:
+    get:
+      consumes:
+      - application/json
+      description: path params
+      parameters:
+      - description: Group ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: Account ID
+        in: path
+        name: account_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求结果
+          schema:
+            type: string
+        "400":
+          description: 操作失败
+          schema:
+            type: string
+      summary: path params example
+      tags:
+      - example
+  /examples/header:
+    get:
+      consumes:
+      - application/json
+      description: custom header
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求结果
+          schema:
+            type: string
+        "400":
+          description: 操作失败
+          schema:
+            type: string
+      summary: custom header example
+      tags:
+      - example
+  /examples/ping:
+    get:
+      consumes:
+      - application/json
+      description: do ping
+      responses:
+        "200":
+          description: 操作成功
+          schema:
+            type: string
+        "400":
+          description: 操作失败
+          schema:
+            type: string
+      summary: ping example
+      tags:
+      - example
+  /examples/securities:
+    get:
+      consumes:
+      - application/json
+      description: security
+      parameters:
+      - description: Authentication header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求结果
+          schema:
+            type: string
+        "400":
+          description: 操作失败
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      - OAuth2Implicit:
+        - admin
+        - write
+      summary: security example
+      tags:
+      - example
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+  BasicAuth:
+    type: basic
+  OAuth2AccessCode:
+    authorizationUrl: https://example.com/oauth/authorize
+    flow: accessCode
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+  OAuth2Application:
+    flow: application
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      write: ' Grants write access'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+  OAuth2Implicit:
+    authorizationUrl: https://example.com/oauth/authorize
+    flow: implicit
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      write: ' Grants write access'
+    type: oauth2
+  OAuth2Password:
+    flow: password
+    scopes:
+      admin: ' Grants read and write access to administrative information'
+      read: ' Grants read access'
+      write: ' Grants write access'
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+swagger: "2.0"
+x-extension-openapi:
+  example: value on a json format
