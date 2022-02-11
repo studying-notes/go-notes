@@ -3,12 +3,12 @@ date: 2022-01-29T18:46:11+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Golang 网络包 httputil"  # 文章标题
+title: "httputil - 网络工具包"  # 文章标题
 # description: "文章描述"
 url:  "posts/go/libraries/standard/httputil"  # 设置网页永久链接
 tags: [ "go", "http", "io" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -18,6 +18,15 @@ index: true  # 是否可以被索引
 toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
+
+- [打印网络请求](#打印网络请求)
+	- [打印服务端收到的请求](#打印服务端收到的请求)
+	- [打印客户端请求](#打印客户端请求)
+	- [打印客户端响应](#打印客户端响应)
+- [反向代理](#反向代理)
+	- [简单使用例](#简单使用例)
+	- [修改响应](#修改响应)
+	- [修改请求](#修改请求)
 
 ## 打印网络请求
 
