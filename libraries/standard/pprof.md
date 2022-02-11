@@ -5,7 +5,7 @@ author: "Rustle Karl"  # 作者
 # 文章
 title: "pprof - 性能剖析"  # 文章标题
 url:  "posts/go/libraries/standard/pprof"  # 设置网页永久链接
-tags: [ "go", "pprof"]  # 标签
+tags: [ "go", "pprof" ]  # 标签
 series: [ "Go 学习笔记" ]  # 文章主题/文章系列
 categories: [ "学习笔记" ]  # 分类
 

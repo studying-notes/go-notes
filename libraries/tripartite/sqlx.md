@@ -6,7 +6,7 @@ author: "Rustle Karl"  # 作者
 title: "sqlx - 扩展标准库 database/sql"  # 文章标题
 description: "扩展标准库 database/sql"
 url:  "posts/go/libraries/tripartite/sqlx"  # 设置网页链接，默认使用文件名
-tags: [ "go", "sqlx", "sql", "mysql"]  # 自定义标签
+tags: [ "go", "sqlx", "sql", "mysql" ]  # 自定义标签
 series: [ "Go 学习笔记" ]  # 文章主题/文章系列
 categories: [ "学习笔记" ]  # 分类
 

@@ -6,7 +6,7 @@ author: "Rustle Karl"  # 作者
 title: "go-sqlcipher - 用 SQLCipher 加密 SQLite"  # 文章标题
 description: "Windows 下加密 SQLite 的准备工作相当繁琐"
 url:  "posts/go/libraries/tripartite/sqlcipher"  # 设置网页链接，默认使用文件名
-tags: [ "go", "sqlcipher", "sqlite"]  # 自定义标签
+tags: [ "go", "sqlcipher", "sqlite" ]  # 自定义标签
 series: [ "Go 学习笔记" ]  # 文章主题/文章系列
 categories: [ "学习笔记" ]  # 文章分类
 

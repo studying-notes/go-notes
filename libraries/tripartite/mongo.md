@@ -3,7 +3,7 @@ date: 2020-07-20T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "mongo - 语言操作 MongoDB"  # 文章标题
+title: "mongo - 操作 MongoDB"  # 文章标题
 url:  "posts/go/libraries/tripartite/mongo"  # 设置网页链接，默认使用文件名
 tags: [ "go", "mongodb" ]  # 自定义标签
 series: [ "Go 学习笔记" ]  # 文章主题/文章系列

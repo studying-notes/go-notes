@@ -5,7 +5,7 @@ author: "Rustle Karl"  # 作者
 # 文章
 title: "service - 编写 Windows 服务"  # 文章标题
 url:  "posts/go/libraries/tripartite/service"  # 设置网页链接，默认使用文件名
-tags: [ "go", "service"]  # 标签
+tags: [ "go", "service" ]  # 标签
 series: [ "Go 学习笔记" ]  # 文章主题/文章系列
 categories: [ "学习笔记" ]  # 分类
 
