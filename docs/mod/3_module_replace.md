@@ -4,11 +4,10 @@ author: "Rustle Karl"  # 作者
 
 # 文章
 title: "gomod 深入讲解 3"  # 文章标题
-description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
 url:  "posts/go/docs/mod/3_module_replace"  # 设置网页永久链接
 tags: [ "go", "gomod" ]  # 标签
-series: [ "Go 学习笔记"]  # 系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -33,10 +32,10 @@ draft: false  # 草稿
 顾名思义，`replace` 指替换，它指示编译工具替换 `require` 指定中出现的包，比如，我们在 `require` 中指定的依赖如下：
 
 ```
-module github.com/renhongcai/gomodule  
-  
-go 1.13  
-  
+module github.com/renhongcai/gomodule
+
+go 1.13
+
 require github.com/google/uuid v1.1.1
 ```
 
@@ -59,7 +58,7 @@ github.com/google/uuid v1.1.1
 比如，我们修改 `go.mod`，添加replace指令：
 
 ```
-[root@ecs-d8b6 gomodule]# cat go.mod 
+[root@ecs-d8b6 gomodule]# cat go.mod
 module github.com/renhongcai/gomodule
 
 go 1.13
@@ -72,7 +71,7 @@ replace github.com/google/uuid v1.1.1 => github.com/google/uuid v1.1.0
 `replace github.com/google/uuid v1.1.1 => github.com/google/uuid v1.1.0`指定表示替换 uuid v1.1.1 版本为 v1.1.0，此时再次使用 `go list -m all` 命令查看最终选定的版本：
 
 ```
-[root@ecs-d8b6 gomodule]# go list -m all 
+[root@ecs-d8b6 gomodule]# go list -m all
 github.com/renhongcai/gomodule
 github.com/google/uuid v1.1.1 => github.com/google/uuid v1.1.0
 ```

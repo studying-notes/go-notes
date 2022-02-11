@@ -4,11 +4,10 @@ author: "Rustle Karl"  # 作者
 
 # 文章
 title: "gomod 深入讲解 6"  # 文章标题
-description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
 url:  "posts/go/docs/mod/6_module_version"  # 设置网页永久链接
 tags: [ "go", "gomod" ]  # 标签
-series: [ "Go 学习笔记"]  # 系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级

@@ -4,11 +4,10 @@ author: "Rustle Karl"  # 作者
 
 # 文章
 title: "gomod 深入讲解 2"  # 文章标题
-description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
 url:  "posts/go/docs/mod/2_module_quickstart"  # 设置网页永久链接
 tags: [ "go", "gomod" ]  # 标签
-series: [ "Go 学习笔记"]  # 系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -31,7 +30,7 @@ draft: false  # 草稿
 
 项目托管在GitHub `https://github.com/renhongcai/gomodule` 中，并使用版本号区别使用 go module 的阶段。
 
-- v1.0.0 未引用任何第三方包，也未使用 go module 
+- v1.0.0 未引用任何第三方包，也未使用 go module
 - v1.1.0 未引用任何第三方包，已开始使用 go module，但没有任何外部依赖
 - v1.2.0 引用了第三方包，并更新了项目依赖
 
@@ -71,7 +70,7 @@ go: creating new go.mod: module github.com/renhongcai/gomodule
 上面的命令会自动创建一个 `go.mod` 文件，其中包括 module 名字，以及我们所使用的 Go 版本：
 
 ```
-[root@ecs-d8b6 gomodule]# cat go.mod 
+[root@ecs-d8b6 gomodule]# cat go.mod
 module github.com/renhongcai/gomodule
 
 go 1.13
@@ -103,7 +102,7 @@ func main() {
 在开始编译以前，我们先使用 `go get` 来分析依赖情况，并会自动下载依赖：
 
 ```
-[root@ecs-d8b6 gomodule]# go get 
+[root@ecs-d8b6 gomodule]# go get
 go: finding github.com/google/uuid v1.1.1
 go: downloading github.com/google/uuid v1.1.1
 go: extracting github.com/google/uuid v1.1.1
@@ -116,7 +115,7 @@ go: extracting github.com/google/uuid v1.1.1
 `go get` 命令会自动修改 `go.mod`文件：
 
 ```
-[root@ecs-d8b6 gomodule]# cat go.mod 
+[root@ecs-d8b6 gomodule]# cat go.mod
 module github.com/renhongcai/gomodule
 
 go 1.13
@@ -129,7 +128,7 @@ require github.com/google/uuid v1.1.1
 由于这是当前项目第一次引用外部依赖，`go get` 命令还会生成一个 `go.sum` 文件，记录依赖包的 hash 值：
 
 ```
-[root@ecs-d8b6 gomodule]# cat go.sum 
+[root@ecs-d8b6 gomodule]# cat go.sum
 github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=
 github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 ```

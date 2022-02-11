@@ -3,12 +3,11 @@ date: 2020-11-15T20:29:40+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "gomod 深入讲解"  # 文章标题
-description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
+title: "gomod 深入讲解 10"  # 文章标题
 url:  "posts/go/docs/mod/10_module_go_sum"  # 设置网页永久链接
 tags: [ "go", "gomod" ]  # 标签
-series: [ "Go 学习笔记"]  # 系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -38,7 +37,7 @@ draft: false  # 草稿
 ```
 比如，某个`go.sum`文件中记录了`github.com/google/uuid` 这个依赖包的`v1.1.1`版本的哈希值：
 ```
-github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=  
+github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=
 github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 ```
 在Go module机制下，我们需要同时使用依赖包的名称和版本才可以准确的描述一个依赖，为了方便叙述，下面我们使用`依赖包版本`来指代依赖包名称和版本。

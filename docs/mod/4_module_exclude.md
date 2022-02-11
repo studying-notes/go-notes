@@ -4,11 +4,10 @@ author: "Rustle Karl"  # 作者
 
 # 文章
 title: "gomod 深入讲解 4"  # 文章标题
-description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
 url:  "posts/go/docs/mod/4_module_exclude"  # 设置网页永久链接
 tags: [ "go", "gomod" ]  # 标签
-series: [ "Go 学习笔记"]  # 系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -31,15 +30,15 @@ draft: false  # 草稿
 在 `github.com/renhongcai/gomodule` 的 v1.3.0 版本中，我们的 `go.mod` 文件如下：
 
 ```
-module github.com/renhongcai/gomodule  
-  
-go 1.13  
-  
-require (  
-  github.com/google/uuid v1.0.0  
-  golang.org/x/text v0.3.2  
-)  
-  
+module github.com/renhongcai/gomodule
+
+go 1.13
+
+require (
+  github.com/google/uuid v1.0.0
+  golang.org/x/text v0.3.2
+)
+
 replace golang.org/x/text v0.3.2 => github.com/golang/text v0.3.2
 ```
 
