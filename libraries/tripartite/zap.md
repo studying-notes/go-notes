@@ -3,11 +3,11 @@ date: 2020-10-10T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Zap 日志库"  # 文章标题
+title: "zap - 日志库"  # 文章标题
 url:  "posts/go/libraries/tripartite/zap"  # 设置网页链接，默认使用文件名
 tags: [ "go", "zap", "log", "logger" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -17,6 +17,20 @@ index: true  # 是否可以被索引
 toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
+
+- [介绍](#介绍)
+- [Zap Logger](#zap-logger)
+	- [Logger](#logger)
+	- [Sugared Logger](#sugared-logger)
+- [定制 Logger](#定制-logger)
+	- [将日志写入文件而不是终端](#将日志写入文件而不是终端)
+	- [将 JSON Encoder 更改为普通的 Log Encoder](#将-json-encoder-更改为普通的-log-encoder)
+	- [输出带颜色](#输出带颜色)
+	- [更改时间编码/添加调用者详细信息](#更改时间编码添加调用者详细信息)
+- [用 Lumberjack 根据文件大小进行日志切割归档](#用-lumberjack-根据文件大小进行日志切割归档)
+	- [加入 Lumberjack](#加入-lumberjack)
+	- [完整示例](#完整示例)
+- [用 file-foratelogs 根据文件大小进行日志切割归档](#用-file-foratelogs-根据文件大小进行日志切割归档)
 
 ## 介绍
 
@@ -86,7 +100,7 @@ func main() {
 日志记录器方法的语法是这样的：
 
 ```go
-func (log *Logger)Method(msg string, fields ...Field) 
+func (log *Logger)Method(msg string, fields ...Field)
 ```
 
 其中 `Method` 是一个可变参数函数，可以是 Info/Error/Debug/Panic 等。每个方法都接受一个消息字符串和任意数量的 `zapcore.Field` 参数。每个 `zapcore.Field` 其实就是一组键值对参数。
