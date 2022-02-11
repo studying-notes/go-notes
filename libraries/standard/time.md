@@ -3,11 +3,11 @@ date: 2020-09-10T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go 时间标准库"  # 文章标题
+title: "time - 时间标准库"  # 文章标题
 url:  "posts/go/libraries/standard/time"  # 设置网页链接，默认使用文件名
 tags: [ "go", "log", "logger" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -17,6 +17,10 @@ index: true  # 是否可以被索引
 toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
+
+- [定时器](#定时器)
+- [循环定时器](#循环定时器)
+- [时间格式化](#时间格式化)
 
 ## 定时器
 
