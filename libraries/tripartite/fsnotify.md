@@ -3,11 +3,11 @@ date: 2020-07-20T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "用 fsnotify 监听文件系统事件"  # 文章标题
+title: "fsnotify - 监听文件系统事件"  # 文章标题
 url:  "posts/go/libraries/tripartite/fsnotify"  # 设置网页链接，默认使用文件名
 tags: [ "go", "fsnotify" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
