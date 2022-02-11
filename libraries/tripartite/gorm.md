@@ -3,12 +3,12 @@ date: 2020-09-19T13:39:18+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "GORM 笔记"  # 文章标题
+title: "gorm - 数据库操作"  # 文章标题
 description: "用 GORM 实现创建、查询、更新和删除操作"
 url:  "posts/go/libraries/tripartite/gorm"  # 设置网页链接，默认使用文件名
 tags: [ "go", "gorm", "orm", "mysql", "sql", "sqlite"]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 文章分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 文章分类
 
 # 章节
 weight: 20 # 文章在章节中的排序优先级，正序排序
@@ -471,7 +471,7 @@ type Animal struct {
 
 ```go
 // 默认表名为 `users`
-type User struct {} 
+type User struct {}
 
 // 设置结构体 User 的表名为 `profiles`
 func (User) TableName() string {
@@ -670,8 +670,8 @@ fmt.Println(gm.Error)
 ```
 
 ```
-[2020-10-10 11:06:59]  [22.01ms]  SELECT * FROM `users`  WHERE `users`.`deleted_at` IS NULL ORDER BY `users`.`id` ASC LIMIT 1  
-[1 rows affected or returned ] 
+[2020-10-10 11:06:59]  [22.01ms]  SELECT * FROM `users`  WHERE `users`.`deleted_at` IS NULL ORDER BY `users`.`id` ASC LIMIT 1
+[1 rows affected or returned ]
 1
 <nil>
 ```
@@ -1031,7 +1031,7 @@ type Result struct {
 }
 var results []Result
 
-// SELECT uuid, year FROM `users`  WHERE (year = 1997)  
+// SELECT uuid, year FROM `users`  WHERE (year = 1997)
 db.Table("users").Select("uuid, year").Where("year = ?", 1997).Scan(&results)
 ```
 
@@ -1517,7 +1517,7 @@ type User struct {
 	CompanyID string
 
 	// v2 使用 Code 作为引用； v1 为 association_foreignkey
-	Company   Company `gorm:"references:Code"` 
+	Company   Company `gorm:"references:Code"`
 }
 
 type Company struct {
