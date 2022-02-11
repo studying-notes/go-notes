@@ -42,8 +42,14 @@ draft: false  # 草稿
 
 - [Go 安装与配置指南](quickstart/install.md)
 - [Go 卸载指南](quickstart/uninstall.md)
+- [Go 编译命令执行过程以及编译相关的命令参数](quickstart/go_build.md)
 
 ## 基础语法
+
+### 其他
+
+- [Go 语法糖](docs/others/suger.md)
+- [Go 格式化占位符](docs/others/format.md)
 
 ## 库
 
@@ -70,6 +76,16 @@ draft: false  # 草稿
 - [net/http - HTTP 标准库](libraries/standard/net_http.md)
 - [image - 图片处理](libraries/standard/image.md)
 
+### CGO 编程
+
+- [CGO 功能预览](libraries/standard/cgo/1_quickstart.md)
+- [CGO 引用与编译简介](libraries/standard/cgo/2_intro.md)
+- [CGO 调用 DLL 动态库](libraries/standard/cgo/3_dll.md)
+- [CGO 调用函数](libraries/standard/cgo/4_func.md)
+- [CGO 链接 C 库](libraries/standard/cgo/5_link.md)
+- [CGO 数据类型转换](libraries/standard/cgo/6_type.md)
+- [CGO 内部机制](libraries/standard/cgo/7_internal.md)
+
 ## 第三方库
 
 - [urfave/cli - 构建 CLI 程序](libraries/tripartite/cli.md)
@@ -92,6 +108,8 @@ draft: false  # 草稿
 - [mysql - MySQL 操作示例](libraries/tripartite/mysql.md)
 - [redis - 操作 Redis](libraries/tripartite/redis.md)
 - [go-sqlite3 - SQLite / SQLCipher 操作示例](libraries/tripartite/sqlite.md)
+- [grpc - gRPC 和 Protobuf](libraries/tripartite/grpc.md)
+- [mqtt - MQTT 学习笔记](libraries/tripartite/mqtt.md)
 
 ## 基础语法
 
@@ -187,13 +205,3 @@ Go 语言依赖管理经历了三个阶段：
 {{<card src="posts/go/doc/mod/gopath">}}
 {{<card src="posts/go/doc/mod/vendor">}}
 {{<card src="posts/go/doc/mod/gomod">}}
-
-## CGO 编程
-
-{{<card src="posts/go/cgo/quickstart">}}
-{{<card src="posts/go/cgo/intro">}}
-{{<card src="posts/go/cgo/dll">}}
-{{<card src="posts/go/cgo/func">}}
-{{<card src="posts/go/cgo/link">}}
-{{<card src="posts/go/cgo/type">}}
-{{<card src="posts/go/cgo/internal">}}
