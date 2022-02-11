@@ -3,11 +3,11 @@ date: 2020-12-02T08:57:22+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go 启动定时任务"  # 文章标题
+title: "cron - 启动定时任务"  # 文章标题
 url:  "posts/go/libraries/tripartite/cron"  # 设置网页链接，默认使用文件名
 tags: [ "go", "corn" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -26,6 +26,22 @@ draft: false  # 草稿
 go get -u github.com/robfig/cron/v3
 ```
 
+- [快速开始](#快速开始)
+- [时间表达式](#时间表达式)
+- [实现秒级控制](#实现秒级控制)
+- [特殊字符](#特殊字符)
+	- [Asterisk ( * )](#asterisk---)
+	- [Slash ( / )](#slash---)
+	- [Comma ( , )](#comma---)
+	- [Hyphen ( - )](#hyphen----)
+	- [Question mark ( ? )](#question-mark---)
+- [预定义时间规则](#预定义时间规则)
+- [固定时间间隔](#固定时间间隔)
+- [时区](#时区)
+- [Job Wrappers](#job-wrappers)
+- [线程不安全](#线程不安全)
+- [日志系统](#日志系统)
+
 ## 快速开始
 
 ```go
@@ -38,7 +54,7 @@ import (
 
 func main() {
 	c := cron.New()
-	
+
 	c.AddFunc("30 * * * *", func() {
 		fmt.Println("Every hour on the half hour")
 	})
@@ -55,8 +71,8 @@ func main() {
 		fmt.Println("Every hour, starting an hour from now")
 	})
 
-	c.AddFunc("@daily", func() { 
-		fmt.Println("Every day") 
+	c.AddFunc("@daily", func() {
+		fmt.Println("Every day")
 	})
 
 	c.AddFunc("@every 1h30m", func() {
