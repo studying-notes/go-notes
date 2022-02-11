@@ -3,11 +3,11 @@ date: 2020-11-11T16:27:36+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "PProf 之性能剖析"  # 文章标题
+title: "pprof - 性能剖析"  # 文章标题
 url:  "posts/go/libraries/standard/pprof"  # 设置网页永久链接
 tags: [ "go", "pprof"]  # 标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -17,6 +17,21 @@ index: true  # 是否可以被索引
 toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
+
+- [PProf 简介](#pprof-简介)
+	- [采样方式](#采样方式)
+	- [使用模式](#使用模式)
+	- [可以做什么](#可以做什么)
+- [PProf 的使用](#pprof-的使用)
+	- [通过访问网址](#通过访问网址)
+	- [通过交互式终端](#通过交互式终端)
+		- [Heap Profile](#heap-profile)
+		- [CPU Profile](#cpu-profile)
+		- [Blocking Profile](#blocking-profile)
+		- [Mutexes](#mutexes)
+		- [Trace](#trace)
+	- [可视化界面](#可视化界面)
+- [通过测试用例做剖析](#通过测试用例做剖析)
 
 ## PProf 简介
 
@@ -168,4 +183,3 @@ go test -bench. -cpuprofile=cpu.profile
 ```go
 
 ```
-
