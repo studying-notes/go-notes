@@ -3,11 +3,11 @@ date: 2021-01-05T09:15:27+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "Go ioutil — 方便的 IO 操作函数集"  # 文章标题
+title: "ioutil - IO 操作函数集"  # 文章标题
 url:  "posts/go/libraries/standard/ioutil"  # 设置网页链接，默认使用文件名
 tags: [ "go", "ioutil", "io" ]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -19,6 +19,13 @@ draft: false  # 草稿
 ---
 
 虽然 io 包提供了不少类型、方法和函数，但有时候使用起来不是那么方便。比如读取一个文件中的所有内容。为此，标准库中提供了一些常用、方便的 IO 操作函数。
+
+- [NopCloser 函数](#nopcloser-函数)
+- [ReadAll 函数](#readall-函数)
+- [ReadDir 函数](#readdir-函数)
+- [ReadFile 和 WriteFile 函数](#readfile-和-writefile-函数)
+- [TempDir 和 TempFile 函数](#tempdir-和-tempfile-函数)
+- [Discard 变量](#discard-变量)
 
 ## NopCloser 函数
 
@@ -51,7 +58,7 @@ draft: false  # 草稿
 
 其实在 ioutil 中提供了一个方便的函数：ReadDir，它读取目录并返回排好序的文件和子目录名（[]os.FileInfo）。
 
-```go	
+```go
 func main() {
 	dir := os.Args[1]
 	listAll(dir,0)
@@ -94,7 +101,7 @@ ReadFile 函数的签名如下:
 
 WriteFile 函数的签名如下：
 
-```go 
+```go
 	func WriteFile(filename string, data []byte, perm os.FileMode) error
 ```
 
