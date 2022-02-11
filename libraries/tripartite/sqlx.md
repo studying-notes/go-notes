@@ -3,12 +3,12 @@ date: 2020-10-10T14:33:53+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 # 文章
-title: "sqlx 操作示例"  # 文章标题
+title: "sqlx - 扩展标准库 database/sql"  # 文章标题
 description: "扩展标准库 database/sql"
 url:  "posts/go/libraries/tripartite/sqlx"  # 设置网页链接，默认使用文件名
 tags: [ "go", "sqlx", "sql", "mysql"]  # 自定义标签
-series: [ "Go 学习笔记"]  # 文章主题/文章系列
-categories: [ "学习笔记"]  # 分类
+series: [ "Go 学习笔记" ]  # 文章主题/文章系列
+categories: [ "学习笔记" ]  # 分类
 
 # 章节
 weight: 20 # 排序优先级
@@ -22,6 +22,22 @@ draft: false  # 草稿
 ```
 go get github.com/jmoiron/sqlx
 ```
+
+- [连接数据库](#连接数据库)
+- [查询](#查询)
+	- [查询单行](#查询单行)
+	- [查询多行](#查询多行)
+- [插入、更新和删除](#插入更新和删除)
+- [NamedExec](#namedexec)
+- [NamedQuery](#namedquery)
+- [事务操作](#事务操作)
+- [sqlx.In 批量插入](#sqlxin-批量插入)
+	- [bindvars（绑定变量）](#bindvars绑定变量)
+	- [拼接语句实现](#拼接语句实现)
+	- [sqlx.In 实现](#sqlxin-实现)
+- [sqlx.In 查询](#sqlxin-查询)
+	- [in](#in)
+	- [FIND_IN_SET](#find_in_set)
 
 ## 连接数据库
 
@@ -135,7 +151,7 @@ func main() {
 ```go
 func main() {
 	sqlStr := "SELECT * FROM user WHERE name=:name"
-	
+
 	// Map 映射
 	rows, _ := db.NamedQuery(sqlStr, map[string]interface{}{"name": "go"})
 	defer rows.Close()
@@ -236,7 +252,7 @@ https://github.com/jmoiron/sqlx/issues/123
 ```go
 // 不能用来插入表名（做SQL语句中表名的占位符）
 db.Query("SELECT * FROM ?", "mytable")
- 
+
 // 也不能用来插入列名（做SQL语句中列名的占位符）
 db.Query("SELECT ?, ? FROM people", "name", "location")
 ```
