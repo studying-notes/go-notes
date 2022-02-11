@@ -46,6 +46,38 @@ draft: false  # 草稿
 
 ## 基础语法
 
+### 测试与性能
+
+* 单元测试 - 指对软件中的最小可测试单元进行检查和验证，比如对一个函数的测试。
+* 性能测试 - 也称基准测试，可以测试一段程序的性能，可以得到时间消耗、内存使用情况的报告。
+* 示例测试 - 示例测试，广泛应用于 Go 源码和各种开源框架中，用于展示某个包或某个方法的用法。
+
+- [Go 性能测试](abc/test/benchmark.md)
+- [Go 示例测试](abc/test/example.md)
+- [Go Main 测试](abc/test/main.md)
+- [Go 子测试](docs/test/sub_test.md)
+- [Go 单元测试](docs/test/unit_test.md)
+
+### 依赖管理
+
+Go 语言依赖管理经历了三个阶段：
+
+- GOPATH；
+- vendor；
+- Go Module；
+
+- [从 gopath 到 gomod 历程](docs/mod/0_gopath_vendor_gomod.md)
+- [gomod 深入讲解 1](docs/mod/1_module_basic.md)
+- [gomod 深入讲解 2](docs/mod/2_module_quickstart.md)
+- [gomod 深入讲解 3](docs/mod/3_module_replace.md)
+- [gomod 深入讲解 4](docs/mod/4_module_exclude.md)
+- [gomod 深入讲解 5](docs/mod/5_module_indirect.md)
+- [gomod 深入讲解 6](docs/mod/6_module_version.md)
+- [gomod 深入讲解 7](docs/mod/7_module_incompatible.md)
+- [gomod 深入讲解 8](docs/mod/8_module_pseudo_version.md)
+- [gomod 深入讲解 9](docs/mod/9_module_storage.md)
+- [gomod 深入讲解 10](docs/mod/10_module_go_sum.md)
+
 ### 其他
 
 - [Go 语法糖](docs/others/suger.md)
@@ -110,6 +142,13 @@ draft: false  # 草稿
 - [go-sqlite3 - SQLite / SQLCipher 操作示例](libraries/tripartite/sqlite.md)
 - [grpc - gRPC 和 Protobuf](libraries/tripartite/grpc.md)
 - [mqtt - MQTT 学习笔记](libraries/tripartite/mqtt.md)
+- [opier - 异构结构体复制](libraries/tripartite/copier.md)
+
+### 消息队列
+
+- [Kafka 学习笔记](libraries/tripartite/mq/kafka.md)
+- [NSQ 简介](libraries/tripartite/mq/nsq.md)
+- [RabbitMQ 简介](libraries/tripartite/mq/rabbitmq.md)
 
 ## 基础语法
 
@@ -165,23 +204,6 @@ draft: false  # 草稿
 {{<card src="posts/go/libraries/standard/sync/pool">}}
 {{<card src="posts/go/libraries/standard/context">}}
 
-### 语法糖
-
-语法糖（Syntactic Sugar），Go 中最常用的语法糖莫过于赋值符 `:=`，其次，表示函数变参的 `...`。
-
-## 测试与性能
-
-* 单元测试 - 指对软件中的最小可测试单元进行检查和验证，比如对一个函数的测试。
-* 性能测试 - 也称基准测试，可以测试一段程序的性能，可以得到时间消耗、内存使用情况的报告。
-* 示例测试 - 示例测试，广泛应用于 Go 源码和各种开源框架中，用于展示某个包或某个方法的用法。
-
-{{<card src="posts/go/doc/test/benchmark_test">}}
-{{<card src="posts/go/doc/test/unit_test">}}
-{{<card src="posts/go/doc/test/example_test">}}
-{{<card src="posts/go/doc/test/sub_test">}}
-{{<card src="posts/go/doc/test/main_test">}}
-{{<card src="posts/go/libraries/standard/pprof">}}
-
 ### 深入测试标准库
 
 {{<card src="posts/go/abc/test/common">}}
@@ -193,15 +215,3 @@ draft: false  # 草稿
 {{<card src="posts/go/abc/test/go_test">}}
 {{<card src="posts/go/abc/test/go_test_params">}}
 {{<card src="posts/go/abc/test/go_test_benchstat">}}
-
-## 依赖管理
-
-Go 语言依赖管理经历了三个阶段：
-
-- GOPATH；
-- vendor；
-- Go Module；
-
-{{<card src="posts/go/doc/mod/gopath">}}
-{{<card src="posts/go/doc/mod/vendor">}}
-{{<card src="posts/go/doc/mod/gomod">}}

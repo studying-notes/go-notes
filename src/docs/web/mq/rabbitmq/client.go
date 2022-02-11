@@ -22,7 +22,7 @@ var (
 	pubTime  = time.Second * 16
 	tickTime = time.Second * 8
 
-	messageTTL  = int64(time.Hour / time.Millisecond)          // TTL for message in queue 
+	messageTTL  = int64(time.Hour / time.Millisecond)          // TTL for message in queue
 	queueExpire = int64(time.Hour * 24 * 7 / time.Millisecond) // expire time for unused queue
 
 	errAck     = errors.New("ack")
@@ -202,7 +202,7 @@ func (clt *Client) sendPublish(topicId int, keySuffix string, msg []byte, expire
 	if expire <= 0 {
 		return errors.New("Expiration parameter error")
 	}
-	
+
 	return clt.ch.Publish(topic.chanName, topic.keyPrefix+"."+keySuffix, false, false, amqp.Publishing{
 		ContentType: "text/plain",
 		Body:        msg,
