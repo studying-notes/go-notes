@@ -22,7 +22,7 @@ toc: true  # 是否自动生成目录
 ## 目录
 
 - [目录](#目录)
-- [distinct](#distinct)
+- [Distinct](#distinct)
 - [Update/Updates](#updateupdates)
 - [First/Find/Scan 区别](#firstfindscan-区别)
 - [创建一张表](#创建一张表)
@@ -31,11 +31,19 @@ toc: true  # 是否自动生成目录
 	- [引入驱动](#引入驱动)
 	- [支持的数据库示例](#支持的数据库示例)
 	- [MySQL](#mysql)
+		- [自定义驱动](#自定义驱动)
+		- [已存在的连接](#已存在的连接)
 		- [MySQL 操作示例](#mysql-操作示例)
 	- [PostgreSQL](#postgresql)
+		- [自定义驱动](#自定义驱动-1)
+		- [已存在的连接](#已存在的连接-1)
 	- [SQLite3](#sqlite3)
 	- [SQL Server](#sql-server)
+	- [Clickhouse](#clickhouse)
+	- [连接池](#连接池)
 - [声明数据表模型](#声明数据表模型)
+	- [约定](#约定)
+	- [字段级权限控制](#字段级权限控制)
 	- [支持的结构体标签](#支持的结构体标签)
 	- [定义字段字符集](#定义字段字符集)
 - [gorm 中的默认设置](#gorm-中的默认设置)
@@ -54,6 +62,12 @@ toc: true  # 是否自动生成目录
 	- [检查表是否存在](#检查表是否存在)
 	- [增删改数据表的结构](#增删改数据表的结构)
 	- [索引和约束](#索引和约束)
+- [创建](#创建)
+	- [常用方式](#常用方式)
+	- [指定字段](#指定字段)
+	- [忽略字段](#忽略字段)
+	- [批量插入](#批量插入)
+	- [创建钩子](#创建钩子)
 - [查询](#查询)
 	- [基本查询](#基本查询)
 		- [根据主键获取第一条记录](#根据主键获取第一条记录)
@@ -144,14 +158,13 @@ toc: true  # 是否自动生成目录
 go get -u github.com/jinzhu/gorm
 
 # v2
-go get gorm.io/gorm
+go get -u gorm.io/gorm
+go get -u gorm.io/driver/sqlite
 ```
 
 MySQL 的 8.0 以上版本不支持零日期格式，导致 gorm 插入默认数据出错。
 
-日期类型 time.Time 改为指针类型 *time.Time。个人认为这种方式最佳。
-
-## distinct
+## Distinct
 
 只能多行全字段去重，不能多行单字段去重
 
@@ -162,6 +175,7 @@ MySQL 的 8.0 以上版本不支持零日期格式，导致 gorm 插入默认数
 ## First/Find/Scan 区别
 
 First / Find 的结构体的 TableName 必须是存在的表，否则报错，即使指定了 db.Table() or db.Modlel() ；
+
 Scan 可以是任意结构体，但必须指定 db.Table() or db.Modlel()。
 
 ## 创建一张表
@@ -281,8 +295,61 @@ import _ "github.com/go-sql-driver/mysql"
 gorm.Open("mysql", "user:password@(localhost)/dbname?charset=utf8&parseTime=True&loc=Local")
 ```
 
+```go
+import (
+  "gorm.io/driver/mysql"
+  "gorm.io/gorm"
+)
+
+func main() {
+  // refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
+  dsn := "user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
+  db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+}
+```
+
+```go
+db, err := gorm.Open(mysql.New(mysql.Config{
+  DSN: "gorm:gorm@tcp(127.0.0.1:3306)/gorm?charset=utf8&parseTime=True&loc=Local", // data source name
+  DefaultStringSize: 256, // default size for string fields
+  DisableDatetimePrecision: true, // disable datetime precision, which not supported before MySQL 5.6
+  DontSupportRenameIndex: true, // drop & create when rename index, rename index not supported before MySQL 5.7, MariaDB
+  DontSupportRenameColumn: true, // `change` when rename column, rename column not supported before MySQL 8, MariaDB
+  SkipInitializeWithVersion: false, // auto configure based on currently MySQL version
+}), &gorm.Config{})
+```
+
 - `parseTime` - 需要解析 `time.Time` 时设置为 `True`
 - `charset` - 为了完整支持 `UTF-8` 编码，需要设置为 `charset=utf8mb4`
+
+#### 自定义驱动
+
+```go
+import (
+  _ "example.com/my_mysql_driver"
+  "gorm.io/gorm"
+)
+
+db, err := gorm.Open(mysql.New(mysql.Config{
+  DriverName: "my_mysql_driver",
+  DSN: "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local", // data source name, refer https://github.com/go-sql-driver/mysql#dsn-data-source-name
+}), &gorm.Config{})
+```
+
+#### 已存在的连接
+
+```go
+import (
+  "database/sql"
+  "gorm.io/driver/mysql"
+  "gorm.io/gorm"
+)
+
+sqlDB, err := sql.Open("mysql", "mydb_dsn")
+gormDB, err := gorm.Open(mysql.New(mysql.Config{
+  Conn: sqlDB,
+}), &gorm.Config{})
+```
 
 #### MySQL 操作示例
 
@@ -355,16 +422,130 @@ func main() {
 gorm.Open("postgres", "host=myhost port=myport user=gorm dbname=gorm password=mypassword")
 ```
 
+```go
+import (
+  "gorm.io/driver/postgres"
+  "gorm.io/gorm"
+)
+
+dsn := "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
+db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+```
+
+```go
+// https://github.com/go-gorm/postgres
+db, err := gorm.Open(postgres.New(postgres.Config{
+  DSN: "user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai",
+  PreferSimpleProtocol: true, // disables implicit prepared statement usage
+}), &gorm.Config{})
+```
+
+#### 自定义驱动
+
+```go
+import (
+  _ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
+  "gorm.io/gorm"
+)
+
+db, err := gorm.Open(postgres.New(postgres.Config{
+  DriverName: "cloudsqlpostgres",
+  DSN: "host=project:region:instance user=postgres dbname=postgres password=password sslmode=disable",
+})
+```
+
+#### 已存在的连接
+
+```go
+import (
+  "database/sql"
+  "gorm.io/driver/postgres"
+  "gorm.io/gorm"
+)
+
+sqlDB, err := sql.Open("postgres", "mydb_dsn")
+gormDB, err := gorm.Open(postgres.New(postgres.Config{
+  Conn: sqlDB,
+}), &gorm.Config{})
+```
+
 ### SQLite3
 
 ```go
 gorm.Open("sqlite3", "gorm.db")
 ```
 
+```go
+import (
+  "gorm.io/driver/sqlite" // Sqlite driver based on GGO
+  // "github.com/glebarez/sqlite" // Pure go SQLite driver, checkout https://github.com/glebarez/sqlite for details
+  "gorm.io/gorm"
+)
+
+// github.com/mattn/go-sqlite3
+db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+```
+
 ### SQL Server
 
 ```go
 gorm.Open("mssql", "sqlserver://username:password@localhost:1433?database=dbname")
+```
+
+```go
+import (
+  "gorm.io/driver/sqlserver"
+  "gorm.io/gorm"
+)
+
+// github.com/denisenkom/go-mssqldb
+dsn := "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
+db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
+```
+
+### Clickhouse
+
+```go
+import (
+  "gorm.io/driver/clickhouse"
+  "gorm.io/gorm"
+)
+
+func main() {
+  dsn := "tcp://localhost:9000?database=gorm&username=gorm&password=gorm&read_timeout=10&write_timeout=20"
+  db, err := gorm.Open(clickhouse.Open(dsn), &gorm.Config{})
+
+  // Auto Migrate
+  db.AutoMigrate(&User{})
+  // Set table options
+  db.Set("gorm:table_options", "ENGINE=Distributed(cluster, default, hits)").AutoMigrate(&User{})
+
+  // Insert
+  db.Create(&user)
+
+  // Select
+  db.Find(&user, "id = ?", 10)
+
+  // Batch Insert
+  var users = []User{user1, user2, user3}
+  db.Create(&users)
+  // ...
+}
+```
+
+### 连接池
+
+```go
+sqlDB, err := db.DB()
+
+// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
+sqlDB.SetMaxIdleConns(10)
+
+// SetMaxOpenConns sets the maximum number of open connections to the database.
+sqlDB.SetMaxOpenConns(100)
+
+// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
+sqlDB.SetConnMaxLifetime(time.Hour)
 ```
 
 ## 声明数据表模型
@@ -389,24 +570,58 @@ type User struct {
 }
 ```
 
+### 约定
+
+GORM 倾向于约定，而不是配置。默认情况下，GORM 使用 ID 作为主键，使用结构体名的 蛇形复数 作为表名，字段名的 蛇形 作为列名，并使用 CreatedAt、UpdatedAt 字段追踪创建、更新时间。
+
+https://gorm.io/zh_CN/docs/conventions.html
+
+### 字段级权限控制
+
+可导出的字段在使用 GORM 进行 CRUD 时拥有全部的权限，此外，GORM 允许您用标签控制字段级别的权限。这样您就可以让一个字段的权限是只读、只写、只创建、只更新或者被忽略。
+
+```go
+type User struct {
+  Name string `gorm:"<-:create"` // allow read and create
+  Name string `gorm:"<-:update"` // allow read and update
+  Name string `gorm:"<-"`        // allow read and write (create and update)
+  Name string `gorm:"<-:false"`  // allow read, disable write permission
+  Name string `gorm:"->"`        // readonly (disable write permission unless it configured )
+  Name string `gorm:"->;<-:create"` // allow read and create
+  Name string `gorm:"->:false;<-:create"` // createonly (disabled read from db)
+  Name string `gorm:"-"`  // ignore this field when write and read with struct
+  Name string `gorm:"migration"` // // ignore this field when migration
+}
+```
+
 ### 支持的结构体标签
 
-| Tag | Description|
-| :-------------- | :-------------- |
-| column | 指定列名 |
-| type | 指定列的数据类型 `gorm:"type:varchar(25)"` |
-| size | 指定列的大小，默认 255 `gorm:"size:50"` |
-| PRIMARY_KEY | 指定列为 primary key |
-| unique | 指定列为 unique |
-| DEFAULT | 指定列的默认值 |
-| PRECISION | 指定列精度 |
-| not null | 指定列不为空 |
-| AUTO_INCREMENT | 指定列为自增序列 |
-| index | 创建带有或不带有名称的索引，相同名称将创建复合索引 |
-| unique_index | 类似 `index`，但是唯一 |
-| EMBEDDED | 将结构设置为嵌入式 |
-| EMBEDDED_PREFIX | 设置嵌入式结构的前缀名称 |
-| - | 忽略字段 |
+声明 model 时，tag 是可选的，GORM 支持以下 tag。 tag 名大小写不敏感，但建议使用 camelCase 风格
+
+| 标签名                 | 说明                                                         |
+| :--------------------- | :----------------------------------------------------------- |
+| column                 | 指定 db 列名                                                 |
+| type                   | 列数据类型，推荐使用兼容性好的通用类型，例如：所有数据库都支持 bool、int、uint、float、string、time、bytes 并且可以和其他标签一起使用，例如：`not null`、`size`, `autoIncrement`… 像 `varbinary(8)` 这样指定数据库数据类型也是支持的。在使用指定数据库数据类型时，它需要是完整的数据库数据类型，如：`MEDIUMINT UNSIGNED not NULL AUTO_INCREMENT` |
+| size                   | 指定列大小，例如：`size:256`                                 |
+| primaryKey             | 指定列为主键                                                 |
+| unique                 | 指定列为唯一                                                 |
+| default                | 指定列的默认值                                               |
+| precision              | 指定列的精度                                                 |
+| scale                  | 指定列大小                                                   |
+| not null               | 指定列为 NOT NULL                                            |
+| autoIncrement          | 指定列为自动增长                                             |
+| autoIncrementIncrement | 自动步长，控制连续记录之间的间隔                             |
+| embedded               | 嵌套字段                                                     |
+| embeddedPrefix         | 嵌入字段的列名前缀                                           |
+| autoCreateTime         | 创建时追踪当前时间，对于 `int` 字段，它会追踪秒级时间戳，您可以使用 `nano`/`milli` 来追踪纳秒、毫秒时间戳，例如：`autoCreateTime:nano` |
+| autoUpdateTime         | 创建/更新时追踪当前时间，对于 `int` 字段，它会追踪秒级时间戳，您可以使用 `nano`/`milli` 来追踪纳秒、毫秒时间戳，例如：`autoUpdateTime:milli` |
+| index                  | 根据参数创建索引，多个字段使用相同的名称则创建复合索引，查看 [索引](https://gorm.io/zh_CN/docs/indexes.html) 获取详情 |
+| uniqueIndex            | 与 `index` 相同，但创建的是唯一索引                          |
+| check                  | 创建检查约束，例如 `check:age > 13`，查看 [约束](https://gorm.io/zh_CN/docs/constraints.html) 获取详情 |
+| <-                     | 设置字段写入的权限， `<-:create` 只创建、`<-:update` 只更新、`<-:false` 无写入权限、`<-` 创建和更新权限 |
+| ->                     | 设置字段读的权限，`->:false` 无读权限                        |
+| -                      | 忽略该字段，`-` 无读写权限                                   |
+| comment                | 迁移时为字段添加注释                                         |
 
 ### 定义字段字符集
 
@@ -624,6 +839,101 @@ db.Model(&User{}).AddUniqueIndex("idx_user_name_age", "name", "id","email")
 // 删除索引
 db.Model(&User{}).RemoveIndex("idx_user_name")
 ```
+
+## 创建
+
+### 常用方式
+
+```go
+user := User{Name: "Who", Age: 18, Birthday: time.Now()}
+
+result := db.Create(&user) // pass pointer of data to Create
+
+user.ID             // returns inserted data's primary key
+result.Error        // returns error
+result.RowsAffected // returns inserted records count
+```
+
+### 指定字段
+
+```go
+db.Select("Name", "Age", "CreatedAt").Create(&user)
+// INSERT INTO `users` (`name`,`age`,`created_at`) VALUES ("Who", 18, "2020-07-04 11:05:21.775")
+```
+
+### 忽略字段
+
+```go
+db.Omit("Name", "Age", "CreatedAt").Create(&user)
+// INSERT INTO `users` (`birthday`,`updated_at`) VALUES ("2020-01-01 00:00:00.000", "2020-07-04 11:05:21.775")
+```
+
+### 批量插入
+
+```go
+var users = []User{{Name: "jinzhu1"}, {Name: "jinzhu2"}, {Name: "jinzhu3"}}
+db.Create(&users)
+
+for _, user := range users {
+  user.ID // 1,2,3
+}
+```
+
+可以指定一次批量插入的数量，上面的默认是组合成一条SQL插入，下面的是按数量分割多次插入
+
+```go
+var users = []User{{Name: "jinzhu_1"}, ...., {Name: "jinzhu_10000"}}
+
+// batch size 100
+db.CreateInBatches(users, 100)
+```
+
+```go
+
+```
+
+```go
+
+```
+
+### 创建钩子
+
+BeforeSave, BeforeCreate, AfterSave, AfterCreate
+
+```go
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+  u.UUID = uuid.New()
+
+  if u.Role == "admin" {
+    return errors.New("invalid role")
+  }
+  return
+}
+```
+
+跳过钩子
+
+```go
+DB.Session(&gorm.Session{SkipHooks: true}).Create(&user)
+
+DB.Session(&gorm.Session{SkipHooks: true}).Create(&users)
+
+DB.Session(&gorm.Session{SkipHooks: true}).CreateInBatches(users, 100)
+```
+
+```go
+
+```
+
+```go
+
+```
+
+```go
+
+```
+
+
 
 ## 查询
 
