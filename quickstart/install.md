@@ -21,14 +21,29 @@ Go 语言安装比较简单，大体上分为三个步骤：
 * 设置 PATH 环境变量
 * 设置 GOPATH 环境变量
 
+- [Go 模块代理](#go-模块代理)
+- [Windows](#windows)
 - [Ubuntu](#ubuntu)
   - [添加官网源获取最新版](#添加官网源获取最新版)
   - [通过 Snap 安装](#通过-snap-安装)
   - [手动卸载旧版本](#手动卸载旧版本)
   - [手动安装最新版](#手动安装最新版)
   - [设置 PATH 和 GOPATH](#设置-path-和-gopath)
-  - [Go 模块代理](#go-模块代理)
 - [CentOS](#centos)
+
+## Go 模块代理
+
+```shell
+go env -w GOPROXY=https://goproxy.cn,direct
+go env -w GOSUMDB=off
+go env -w GO111MODULE=on
+```
+
+## Windows
+
+```shell
+choco install golang
+```
 
 ## Ubuntu
 
@@ -37,13 +52,11 @@ Go 语言安装比较简单，大体上分为三个步骤：
 > 这种方法最方便，不必手动设置环境变量。
 
 ```shell
-sudo add-apt-repository ppa:longsleep/golang-backports
 # 或者省略，但安装的不会是最新版本
+sudo add-apt-repository ppa:longsleep/golang-backports
 ```
 
 ```shell
-apt update
-
 apt update && apt upgrade -y
 
 apt install golang-go -y
@@ -60,6 +73,8 @@ go version
 ```shell
 snap install --classic go
 ```
+
+这种方式后来因为一些原因认为不好，具体看树莓派学习笔记。
 
 ### 手动卸载旧版本
 
@@ -124,14 +139,6 @@ echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.config/fish/config.fish && sour
 
 ```shell
 go env -w GOBIN=/usr/local/go/bin
-```
-
-### Go 模块代理
-
-```shell
-go env -w GOPROXY=https://goproxy.cn,direct
-go env -w GOSUMDB=off
-go env -w GO111MODULE=on
 ```
 
 ## CentOS
