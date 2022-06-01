@@ -50,6 +50,12 @@ draft: false  # 草稿
 - [go generate 命令详解](quickstart/cmd/go_generate.md)
 - [go test 基础用法](docs/abc/test/go_test.md)
 
+### 新特性
+
+#### 1.18
+
+- [go fuzzing 测试](quickstart/feature/go1.18/fuzzing.md)
+
 ## 基础语法
 
 - [go1.18 新特性详解](quickstart/release/go1.18.md)
