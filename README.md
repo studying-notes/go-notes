@@ -47,6 +47,7 @@ draft: false  # 草稿
 ### 命令行
 
 - [go build 命令详解](quickstart/go_build.md)
+- [go generate 命令详解](quickstart/cmd/go_generate.md)
 
 ## 基础语法
 

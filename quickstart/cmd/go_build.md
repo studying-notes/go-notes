@@ -3,7 +3,7 @@ date: 2022-05-22T18:39:22+08:00
 author: "Rustle Karl"
 
 title: "go build 命令详解"
-url:  "posts/go/docs/cmd/go_build"  # 永久链接
+url:  "posts/go/quickstart/cmd/go_build"  # 永久链接
 tags: [ "Go", "README" ]  # 标签
 series: [ "Go 学习笔记" ]  # 系列
 categories: [ "学习笔记" ]  # 分类
