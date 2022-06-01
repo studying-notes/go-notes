@@ -44,6 +44,10 @@ draft: false  # 草稿
 - [Go 卸载指南](quickstart/uninstall.md)
 - [Go 编译命令执行过程以及编译相关的命令参数](quickstart/go_build.md)
 
+### 命令行
+
+- [go build 命令详解](quickstart/go_build.md)
+
 ## 基础语法
 
 - [go1.18 新特性详解](quickstart/release/go1.18.md)
