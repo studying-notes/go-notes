@@ -93,16 +93,14 @@ func readImage() {
 ## 图片转 Base64
 
 ```go
-func b64() {
-    f, err := os.Open("ubuntu.png")
-    if err != nil {
-        panic(err)
+func imageToBase64() {
+    imagePath := "image.jpg"
+    buf, err := ioutil.ReadFile(imagePath)
+	if err != nil {
+	    panic(err)	
     }
-    all, _ := ioutil.ReadAll(f)
-
-    str := base64.StdEncoding.EncodeToString(all)
-
-    fmt.Printf("%s\n", str)
+    imageBase64 := base64.StdEncoding.EncodeToString(buf)
+    fmt.Printf("%s\n", imageBase64)
 }
 ```
 
