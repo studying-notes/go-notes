@@ -5,9 +5,8 @@ author: "Rustle Karl"  # 作者
 # 文章
 title: "Go 模块深入讲解 1"  # 文章标题
 url:  "posts/go/docs/module/1_module_basic"  # 设置网页永久链接
-tags: [ "go" ]  # 标签
-series: [ "Go 学习笔记" ]  # 系列
-categories: [ "学习笔记" ]  # 分类
+tags: [ "go" ]
+categories: [ "Go 学习笔记" ]
 
 # 章节
 weight: 20 # 排序优先级
