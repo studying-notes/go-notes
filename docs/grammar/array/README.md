@@ -189,6 +189,26 @@ array = [3]int{1,2,3}
 slice = array[:]
 ```
 
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var array [10]int
+
+	var slice = array[5:6]
+
+	fmt.Println("length of slice: ", len(slice))
+	fmt.Println("capacity of slice: ", cap(slice))
+	fmt.Println(&slice[0] == &array[5])
+}
+```
+
+main 函数中定义了一个 10 个长度的整型数组 array，然后定义了一个切片 slice，切取数组的第 6 个元素，最后打印 slice 的长度和容量，判断切片的第一个元素和数组的第 6 个元素地址是否相等。
+
+slice 根据数组 array 创建，与数组共享存储空间，slice 起始位置是 array[5]，长度为 1，容量为 5，slice[0]和array[5]地址相同。
+
 ## 二维数组
 
 ```go

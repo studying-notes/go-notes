@@ -25,6 +25,38 @@ func append(slice []Type, elems ...Type) []Type
 
 不管初始切片长度为多少，不接收 `append` 返回都是有极大风险的。
 
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func AddElement(slice []int, e int) []int {
+	return append(slice, e)
+}
+
+func main() {
+	var slice []int
+	//fmt.Println("length of slice: ", len(slice))
+	//fmt.Println("capacity of slice: ", cap(slice))
+
+	slice = append(slice, 1, 2, 3)
+	//fmt.Println("length of slice: ", len(slice))
+	//fmt.Println("capacity of slice: ", cap(slice))
+
+	newSlice := AddElement(slice, 4)
+	//fmt.Println("length of slice: ", len(newSlice))
+	//fmt.Println("capacity of slice: ", cap(newSlice))
+
+	fmt.Println(&slice[0] == &newSlice[0])
+}
+```
+
+函数 AddElement() 接受一个切片和一个元素，把元素 append 进切片中，并返回切片。main() 函数中定义一个切片，并向切片中 append 3 个元素，接着调用 AddElement() 继续向切片 append 进第 4 个元素同时定义一个新的切片 newSlice。最后判断新切片 newSlice 与旧切片 slice 是否共用一块存储空间。
+
+append 函数执行时会判断切片容量是否能够存放新增元素，如果不能，则会重新申请存储空间，新存储空间将是原来的 2 倍或 1.25 倍（取决于扩展原空间大小），本例中实际执行了两次 append 操作，第一次空间增长到 4，所以第二次 append 不会再扩容，所以新旧两个切片将共用一块存储空间。程序会输出 "true"。
+
 ## 可以追加 nil 值
 
 向切片中追加一个 `nil` 值是完全不会报错的，如下代码所示：
