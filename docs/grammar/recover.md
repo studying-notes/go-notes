@@ -15,6 +15,18 @@ draft: true  # 草稿
 
 项目中，有时为了让程序更健壮，也即不 `panic`，我们或许会使用 `recover()` 来接收异常并处理。
 
+`panic` 会停掉当前正在执行的程序，但是与 `os.Exit(-1)` 这种退出不同，`panic` 的撤退比较有秩序，先处理完**当前** `goroutine` 已经 `defer` 挂上去的任务，即在 `panic` 语句之前注册的 `defer` 语句，执行完毕后再退出整个程序。
+
+而 `defer` 的存在，让我们可以在 `defer` 中通过 `recover` 获取 `panic`，从而达到捕获异常的效果。
+
+`panic` 允许传递一个参数，参数通常是将出错的信息以字符串的形式来表示，`panic` 会打印这个字符串，以及触发 `panic` 的调用栈。
+
+`panic` 的原则是：执行且只执行当前 `goroutine` 的 `defer`，且在 `panic` 之前注册。
+
+`panic` 仅保证当前 goroutine 下的 `defer` 都会被执行到，但不保证其他协程的 `defer` 也会执行到。如果是在同一 `goroutine` 下的调用者的 `defer`，那么可以一路回溯回去执行；但如果是不同 `goroutine`，那就不做保证了。
+
+`recover` 只在 `defer` 的函数中有效，如果不是在 `defer` 上下文中调用，`recover` 会直接返回 `nil`。
+
 比如以下代码：
 
 ```go
