@@ -32,3 +32,10 @@ draft: false  # 草稿
   - `src/libraries/standard`: 标准库源码示例
   - `src/libraries/tripartite`: 第三方库源码示例
   - `src/quickstart`: 基础用法源码示例
+
+
+## 新建笔记
+
+```bash
+project notes article --article-path path/to/file
+```
