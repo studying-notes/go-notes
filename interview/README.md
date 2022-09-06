@@ -7,3 +7,4 @@
 - [翻转字符串](questions/q003.md)
 - [判断两个给定的字符串排序后是否一致](questions/q004.md)
 - [字符串替换问题](questions/q005.md)
+- [机器人坐标计算](questions/q006.md)
