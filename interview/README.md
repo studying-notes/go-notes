@@ -11,3 +11,5 @@
 - [语法题目一](answers/q007.md)
 - [语法题目二](answers/q008.md)
 - [协程和 channel 配合使用](questions/q009.md)
+- [实现阻塞读且并发安全的 map](questions/q010.md)
+- [高并发下的锁与 map 的读写](questions/q011.md)
