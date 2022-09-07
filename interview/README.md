@@ -9,3 +9,4 @@
 - [字符串替换问题](questions/q005.md)
 - [机器人坐标计算](questions/q006.md)
 - [语法题目一](answers/q007.md)
+- [语法题目二](answers/q008.md)
