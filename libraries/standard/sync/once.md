@@ -41,7 +41,7 @@ func Instance() *singleton {
 }
 ```
 
-我们将通用的代码提取出来，就成了标准库中 `sync.Once` 的实现：
+我们将通用的代码提取出来，就成了标准库中 `sync.Once` 的实现（代码不是完全一样）：
 
 ```go
 type Once struct {
@@ -50,6 +50,7 @@ type Once struct {
 }
 
 func (o *Once) Do(f func()) {
+    // 首次判断，开销比互斥锁小，所以这里不用互斥锁
     if atomic.LoadUint32(&o.done) == 1 {
         return
     }
@@ -57,6 +58,8 @@ func (o *Once) Do(f func()) {
     o.m.Lock()
     defer o.m.Unlock()
 
+    // 再次判断，因为还是存在值已经改变的情况
+    // 在多核 CPU 中，因为 CPU 缓存会导致多个核心中变量值不同步
     if o.done == 0 {
         defer atomic.StoreUint32(&o.done, 1)
         f()
