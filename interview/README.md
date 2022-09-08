@@ -32,3 +32,4 @@ draft: true  # 草稿
 - [简单聊聊内存逃逸](answers/q019.md)
 - [字符串转成字节数组内存拷贝问题](answers/q020.md)
 - [http 包的内存泄漏](questions/q021.md)
+- [sync.Map 的用法](questions/q022.md)
