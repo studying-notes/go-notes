@@ -14,3 +14,4 @@
 - [实现阻塞读且并发安全的 map](questions/q010.md)
 - [高并发下的锁与 map 的读写](questions/q011.md)
 - [定时与 panic 恢复](questions/q012.md)
+- [为 sync.WaitGroup 中 Wait 函数支持 WaitTimeout 功能](questions/q013.md)
