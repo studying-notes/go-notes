@@ -1,4 +1,15 @@
-# Golang 面试题搜集
+---
+date: 2022-09-08T14:31:47+08:00  # 创建日期
+author: "Rustle Karl"  # 作者
+
+title: "Go 面试题搜集"  # 文章标题
+url:  "posts/go/interview/README"  # 设置网页永久链接
+tags: [ "Go", "readme" ]  # 标签
+categories: [ "Go 学习笔记" ]  # 分类
+
+toc: true  # 目录
+draft: true  # 草稿
+---
 
 ## 题目解析
 
@@ -17,3 +28,4 @@
 - [为 sync.WaitGroup 中 Wait 函数支持 WaitTimeout 功能](questions/q013.md)
 - [语法找错题目](answers/q014.md)
 - [并发题目测试](answers/q015.md)
+- [对已经关闭的的 chan 进行读写](answers/q018.md)

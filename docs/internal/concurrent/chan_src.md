@@ -2,8 +2,7 @@
 date: 2020-11-08T19:47:48+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
-title: "Chan Src"  # 文章标题
-title: "Go 管道 chan 详解"  # 文章标题
+title: "Go 管道 chan 源码分析"  # 文章标题
 url:  "posts/go/docs/internal/concurrent/chan_src"  # 设置网页永久链接
 tags: [ "Go", "chan-src" ]  # 标签
 categories: [ "Go 学习笔记" ]  # 分类
@@ -11,6 +10,21 @@ categories: [ "Go 学习笔记" ]  # 分类
 toc: true  # 目录
 draft: true  # 草稿
 ---
+
+- [数据结构](#数据结构)
+  - [环形队列](#环形队列)
+  - [等待队列](#等待队列)
+  - [类型信息](#类型信息)
+  - [锁](#锁)
+- [读写](#读写)
+  - [创建](#创建)
+  - [写数据](#写数据)
+  - [读数据](#读数据)
+  - [关闭](#关闭)
+- [常见用法](#常见用法)
+  - [单向](#单向)
+  - [select](#select)
+  - [range](#range)
 
 ## 数据结构
 
@@ -36,14 +50,14 @@ type hchan struct {
 
 ###  环形队列
 
-chan 内部实现了一个环形队列作为其缓冲区，队列的长度是创建 chan 时指定的。
+chan 内部实现了一个**环形队列**作为其缓冲区，**队列的长度是创建 chan 时指定的**。
 
 下图展示了一个可缓存 6 个元素的 channel 示意图：
 
 ![](https://dd-static.jd.com/ddimg/jfs/t1/90226/8/31359/7602/6314448eE9d65a0c0/8ad1fc6e75a555d8.png)
 
 - dataqsiz 指示了队列长度为 6，即可缓存 6 个元素；
-- buf 指向队列的内存，队列中还剩余两个元素；
+- buf 环形队列指针，指向队列的内存；
 - qcount 表示队列中还有两个元素；
 - sendx 指示后续写入的数据存储的位置，取值[ 0, 6) ；
 - recvx 指示从该位置读取数据, 取值[ 0, 6) ；
@@ -80,7 +94,9 @@ chan 内部实现了一个环形队列作为其缓冲区，队列的长度是创
 
 ### 创建
 
-创建 channel 的过程实际上是初始化 hchan 结构。其中类型信息和缓冲区长度由 make 语句传入，buf 的大小则与元素大小和缓冲区长度共同决定。
+创建 channel 的过程实际上是初始化 hchan 结构。
+
+其中类型信息和缓冲区长度由 make 语句传入，buf 的大小则与元素大小和缓冲区长度共同决定。
 
 创建 channel 的伪代码如下所示：
 
@@ -131,6 +147,8 @@ func makechan(t *chantype, size int) *hchan {
 1. 关闭值为 nil 的 channel
 2. 关闭已经被关闭的 channel
 3. 向已经关闭的 channel 写数据
+
+[对已经关闭的的 chan 进行读写](../.../../../../interview/answers/q018.md)
 
 ##  常见用法
 
