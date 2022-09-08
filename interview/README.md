@@ -13,3 +13,4 @@
 - [协程和 channel 配合使用](questions/q009.md)
 - [实现阻塞读且并发安全的 map](questions/q010.md)
 - [高并发下的锁与 map 的读写](questions/q011.md)
+- [定时与 panic 恢复](questions/q012.md)
