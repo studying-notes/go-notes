@@ -29,3 +29,4 @@ draft: true  # 草稿
 - [语法找错题目](answers/q014.md)
 - [并发题目测试](answers/q015.md)
 - [对已经关闭的的 chan 进行读写](answers/q018.md)
+- [简单聊聊内存逃逸](answers/q019.md)
