@@ -33,9 +33,24 @@ draft: false  # 草稿
   - `src/libraries/tripartite`: 第三方库源码示例
   - `src/quickstart`: 基础用法源码示例
 
-
 ## 新建笔记
+
+安装模板生成工具 [Toolkit-Py](https://github.com/fujiawei-dev/toolkit-py)：
+
+```bash
+pip install -U toolkit-py -i https://pypi.douban.com/simple
+```
+
+创建笔记：
 
 ```bash
 project notes article --article-path path/to/file
 ```
+
+## 面试题集
+
+- [Go 面试题搜集](interview/README.md)
+
+## 数据结构与算法
+
+- [Go 数据结构与算法](algorithm/README.md)

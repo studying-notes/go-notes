@@ -11,6 +11,28 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
+- [string 标准概念](#string-标准概念)
+- [底层数据结构](#底层数据结构)
+- [声明字符串](#声明字符串)
+- [内存布局](#内存布局)
+- [切片操作](#切片操作)
+- [遍历与打印](#遍历与打印)
+	- [遍历原始的字节码](#遍历原始的字节码)
+- [字符串和 `[]rune` 类型的相互转换](#字符串和-rune-类型的相互转换)
+- [字节数组与字符串相互转换](#字节数组与字符串相互转换)
+	- [string 转为 []byte](#string-转为-byte)
+	- [[N]byte 转为 string](#nbyte-转为-string)
+- [字符串内置操作模拟](#字符串内置操作模拟)
+	- [`for range` 遍历模拟](#for-range-遍历模拟)
+	- [`[]byte(s)` 转换模拟](#bytes-转换模拟)
+	- [`string(bytes)` 转换模拟](#stringbytes-转换模拟)
+	- [`[]rune(s)` 转换模拟](#runes-转换模拟)
+	- [`string(runes)` 转换模拟](#stringrunes-转换模拟)
+- [字符串拼接](#字符串拼接)
+- [为什么字符串不允许修改？](#为什么字符串不允许修改)
+- [[]byte 转换成 string 一定会拷贝内存吗？](#byte-转换成-string-一定会拷贝内存吗)
+- [string 和 []byte 如何取舍](#string-和-byte-如何取舍)
+
 ## string 标准概念
 
 Go 标准库 `builtin` 给出了所有内置类型的定义。源代码位于 `src/builtin/builtin.go`，其中关于 string 的描述如下:
@@ -412,17 +434,19 @@ func rawstring(size int) (s string, b []byte) { // 生成一个新的string，�
 
 ## 为什么字符串不允许修改？
 
-像 C++ 语言中的 string，其本身拥有内存空间，修改 string 是支持的。但 Go 的实现中，string 不包含内存空间，只有一个内存的指针，这样做的好处是 string 变得非常轻量，可以很方便的进行传递而不用担心内存拷贝。
+像 C++ 语言中的 string，其本身拥有内存空间，修改 string 是支持的。
 
-因为 string 通常指向字符串字面量，而字符串字面量存储位置是只读段，而不是堆或栈上，所以才有了 string 不可修改的约定。
+但 Go 的实现中，string 不包含内存空间，只有一个内存的指针，这样做的好处是 string 变得非常轻量，可以很方便的进行传递而不用担心内存拷贝。
+
+因为 string 通常指向**字符串字面量**，而**字符串字面量存储位置是只读段**，而**不是堆或栈上**，所以才有了 string 不可修改的约定。
 
 ## []byte 转换成 string 一定会拷贝内存吗？
 
-byte 切片转换成 string 的场景很多，为了性能上的考虑，有时候只是临时需要字符串的场景下，byte 切片转换成 string 时并不会拷贝内存，而是直接返回一个 string，这个 string 的指针 (string.str) 指向切片的内存。
+byte 切片转换成 string 的场景很多，为了性能上的考虑，有时候只是**临时需要字符串的场景**下，byte 切片转换成 string 时并不会拷贝内存，而是直接返回一个 string，这个 string 的指针 (string.str) 指向切片的内存。
 
 比如，编译器会识别如下临时场景：
 
-* 使用 m[string(b)] 来查找 map （ map 是 string 为 key，临时把切片 b 转成 string ）；
+* 使用 m[string(b)] 来查找 map (map 是 string 为 key，临时把切片 b 转成 string)；
 * 字符串拼接： `"<" + "string(b)" + ">"`；
 * 字符串比较：`string(b) == "foo"`
 
