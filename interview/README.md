@@ -31,3 +31,4 @@ draft: true  # 草稿
 - [对已经关闭的的 chan 进行读写](answers/q018.md)
 - [简单聊聊内存逃逸](answers/q019.md)
 - [字符串转成字节数组内存拷贝问题](answers/q020.md)
+- [http 包的内存泄漏](questions/q021.md)
