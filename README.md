@@ -2,11 +2,10 @@
 date: 2020-09-19T21:06:02+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
-# 文章
 title: "Go 学习笔记"  # 文章标题
 description: "纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。"
 url:  "posts/go/README"  # 设置网页永久链接
-tags: [ "Go", "README" ]  # 标签
+tags: [ "go", "README" ]  # 标签
 categories: [ "Go 学习笔记" ]  # 分类
 
 index: true  # 是否可以被索引
@@ -18,20 +17,36 @@ draft: false  # 草稿
 
 > 纸上得来终觉浅，学到过知识点分分钟忘得一干二净，今后无论学什么，都做好笔记吧。
 
+包括入门基础教程、标准库/第三方库详解、源码分析、数据结构与算法、面试题解析等。
+
 ## 目录结构
 
-- `assets/images`: 笔记配图
-- `assets/templates`: 笔记模板
-- `docs`: 基础教程
-- `libraries`: 库
-  - `libraries/standard`: 标准库
-  - `libraries/tripartite`: 第三方库
-- `quickstart`: 基础用法
-- `src`: 源码示例
-  - `src/docs`: 基础教程源码示例
-  - `src/libraries/standard`: 标准库源码示例
-  - `src/libraries/tripartite`: 第三方库源码示例
-  - `src/quickstart`: 基础用法源码示例
+- `assets`: 存储图片及模板文件
+  - `assets/templates`: 笔记模板
+
+- `algorithm`: 数据结构与算法
+  - `algorithm/structures`: [数据结构](algorithm/structures/README.md)
+  - `algorithm/math`: [基础数学](algorithm/math/README.md)
+
+- `docs`: 基础教程，成体系的，或者分类的文章笔记
+  - `docs/grammar`: [语法](docs/grammar/README.md)
+  - `docs/internal`: [内部实现](docs/internal/README.md)
+
+- `examples`: [实现单个简单功能的项目示例合集](examples/README.md)
+
+- `interview`: [面试题](interview/README.md)
+
+- `libraries`: 常用库详解笔记
+  - `libraries/standard`: [标准库详解](libraries/standard/README.md)
+  - `libraries/tripartite`: [第三方库详解](libraries/tripartite/README.md)
+
+- `quickstart`: 基础用法、简介
+  - `quickstart/cli`: [命令行](quickstart/cli/README.md)
+  - `quickstart/feature`: [新特性](quickstart/feature/README.md)
+
+- `tools`: [常用工具笔记](tools/README.md)
+
+- `src`: 与以上目录一一对应的源码存储目录
 
 ## 新建笔记
 
@@ -41,16 +56,8 @@ draft: false  # 草稿
 pip install -U toolkit-py -i https://pypi.douban.com/simple
 ```
 
-创建笔记：
+然后根据 `assets/templates` 目录下的模板创建笔记：
 
 ```bash
 project notes article --article-path path/to/file
 ```
-
-## 面试题集
-
-- [Go 面试题搜集](interview/README.md)
-
-## 数据结构与算法
-
-- [Go 数据结构与算法](algorithm/README.md)
