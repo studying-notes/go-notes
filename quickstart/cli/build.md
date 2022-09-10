@@ -101,7 +101,7 @@ go env GOCACHE
 go build -ldflags="-w -s"
 ```
 
-![06NCrT.png](https://dd-static.jd.com/ddimg/jfs/t1/3808/15/19129/11542/630dc243Ebd488312/532f5d69467d1437.png)
+![06NCrT.png](../../assets/images/quickstart/cli/build/532f5d69467d1437.png)
 
 ## 编译信息写入
 
@@ -125,7 +125,7 @@ go build -ldflags "-X main.version=1.0.0"
 
 编译器的[源码路径](https://github.com/golang/go/tree/master/src/cmd/compile)。
 
-![编译前端与编译后端](https://i.loli.net/2020/12/30/9BUhtlvIE6aGJKk.png)
+![编译前端与编译后端](../../assets/images/quickstart/cli/build/9BUhtlvIE6aGJKk.png)
 
 编译前端：词法分析 -> 语法分析 -> 语义分析
 编译后端：中间码生成 -> 代码优化 -> 机器码生成
@@ -146,7 +146,7 @@ func main() {
 }
 ```
 
-![Token](https://i.loli.net/2020/12/30/3NshrnFG7a9KxqJ.png)
+![Token](../../assets/images/quickstart/cli/build/3NshrnFG7a9KxqJ.png)
 
 如果要我们自己来实现这个“翻译工作”，程序要如何识别 `Token` 呢？
 
@@ -167,7 +167,7 @@ func main() {
 
 go 语言进行语法分析使用的是**自下而上**的方式来构造 `AST`，下面我们就来看一下 go 语言通过 `Token` 构造的这颗树是什么样子。
 
-![img](https://dd-static.jd.com/ddimg/jfs/t1/163443/29/27282/111630/630dbcf6Ef09f2502/1d2fa636c6626e42.png)
+![img](../../assets/images/quickstart/cli/build/1d2fa636c6626e42.png)
 
 这其中有意思的地方我全部用文字标注出来了。你会发现其实每一个 `AST` 树的节点都与一个 `Token` 实际位置相对应。
 

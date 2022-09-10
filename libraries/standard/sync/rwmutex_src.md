@@ -80,7 +80,7 @@ RWMutex 提供 4 个简单的接口来提供服务：
 
 所以 `func (rw *RWMutex) Lock()` 接口实现流程如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/217098/36/20054/20353/63144d7fEe4f27a4e/b9214cae374145f2.png)
+![](../../../assets/images/libraries/standard/sync/rwmutex_src/b9214cae374145f2.png)
 
 ### Unlock()实现逻辑
 
@@ -91,7 +91,7 @@ RWMutex 提供 4 个简单的接口来提供服务：
 
 所以 `func (rw *RWMutex) Unlock()` 接口实现流程如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/176144/39/29305/25572/63144da7Ef62abebc/4c38ac2a2ec064cb.png)
+![](../../../assets/images/libraries/standard/sync/rwmutex_src/4c38ac2a2ec064cb.png)
 
 ### RLock()实现逻辑
 
@@ -102,7 +102,7 @@ RWMutex 提供 4 个简单的接口来提供服务：
 
 所以 `func (rw *RWMutex) RLock()` 接口实现流程如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/44101/29/18890/20344/63144db4Ec414d8bb/5caa9f4c8bacdf6e.png)
+![](../../../assets/images/libraries/standard/sync/rwmutex_src/5caa9f4c8bacdf6e.png)
 
 ### RUnlock()实现逻辑
 
@@ -113,7 +113,7 @@ RWMutex 提供 4 个简单的接口来提供服务：
 
 所以 `func (rw *RWMutex) RUnlock()` 接口实现流程如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/180280/12/28856/22614/63144dc1E66ceaccd/9a3741800c350a0f.png)
+![](../../../assets/images/libraries/standard/sync/rwmutex_src/9a3741800c350a0f.png)
 
 即便有协程阻塞等待写操作，并不是所有的解除读锁定操作都会唤醒该协程，而是**最后一个解除读锁定的协程才会释放信号量将该协程唤醒**，因为只有**当所有读操作的协程释放锁后才可以唤醒协程**。
 
@@ -155,7 +155,7 @@ RWMutex.readerWait 由读操作赋值，由写操作减少值，这个过程中�
 
 所以，写操作就相当于把一段连续的读操作划分成两部分，前面的读操作结束后唤醒写操作，写操作结束后唤醒后面的读操作。如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/212213/40/21071/9954/63144dccE6150efa0/c1f41dfe651d5628.png)
+![](../../../assets/images/libraries/standard/sync/rwmutex_src/c1f41dfe651d5628.png)
 
 ```go
 

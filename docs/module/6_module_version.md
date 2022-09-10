@@ -91,10 +91,6 @@ require github.com/RainbowMango/M v1.2.3
 
 有时记录在`go.mod`文件中的依赖包版本会随着引入其他依赖包而发生变化。
 
-如下图所示：
-
-![](images/gomodule_minimal_version.png)
-
 Module A 依赖 Module M的v1.0.0版本，但之后 Module A 引入了 Module D，而Module D 依赖 Module M的v1.1.1版本，此时，由于依赖的传递，Module A也会选择v1.1.1版本。
 
 需要注意的是，此时会自动选择最小可用的版本，而不是最新的tag版本。

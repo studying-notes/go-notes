@@ -213,7 +213,7 @@ type _defer struct {
 
 下图展示多个 defer 被链接的过程：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/209385/2/25545/11955/6314493bE43a8a2b3/f4c43161402ad750.png)
+![](../../assets/images/docs/grammar/defer/f4c43161402ad750.png)
 
 从上图可以看到，新声明的 defer 总是添加到链表头部。函数返回前执行 defer 则是从链表首部依次取出执行。
 

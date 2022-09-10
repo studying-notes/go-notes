@@ -42,7 +42,7 @@ draft: true  # 草稿
 
 下图展示了一段内存，内存中既有已分配掉的内存，也有未分配的内存，垃圾回收的目标就是把那些已经分配的但没有对象引用的内存找出来并回收掉：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/132023/6/30152/10870/6312b74fEac9c9379/b2d86f32c376f2cb.png)
+![](../../../assets/images/docs/internal/memory/gc/b2d86f32c376f2cb.png)
 
 上图中，内存块 1、2、4 号位上的内存块已被分配（数字 1 代表已被分配，0 未分配）。变量 a, b 为一指针，指向内存的 1、2 号位。内存块的 4 号位曾经被使用过，但现在没有任何对象引用了，就需要被回收掉。
 
@@ -52,7 +52,7 @@ draft: true  # 草稿
 
 前面介绍内存分配时，介绍过 span 数据结构，span 中维护了一个个内存块，并由一个位图 allocBits 表示每个内存块的分配情况。在 span 数据结构中还有另一个位图 gcmarkBits 用于标记内存块被引用情况。
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/162567/20/30247/14862/6312c4b4E33c12a15/8ae5dd5483e3647e.png)
+![](../../../assets/images/docs/internal/memory/gc/8ae5dd5483e3647e.png)
 
 如上图所示，allocBits 记录了每块内存分配情况，而 gcmarkBits 记录了每块内存标记情况。标记阶段对每块内存进行标记，有对象引用的的内存标记为 1( 如图中灰色所示 )，没有引用到的保持默认为 0.
 
@@ -70,21 +70,21 @@ allocBits 和 gcmarkBits 数据结构是完全一样的，标记结束就是内�
 
 例如，当前内存中有 A ~ F 一共 6 个对象，根对象 a,b 本身为栈上分配的局部变量，根对象 a、b 分别引用了对象 A、B, 而 B 对象又引用了对象 D，则 GC 开始前各对象的状态如下图所示:
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/133672/40/23721/15064/6312c4e0E3b280c6b/c07813f3484df2d4.png)
+![](../../../assets/images/docs/internal/memory/gc/c07813f3484df2d4.png)
 
 初始状态下所有对象都是白色的。
 
 接着开始扫描根对象a、b:
 
-![](https://z3.ax1x.com/2020/11/15/DF9bPx.png)
+![](../../../assets/images/docs/internal/memory/gc/DF9bPx.png)
 
 由于根对象引用了对象 A、B，那么 A、B 变为灰色对象，接下来就开始分析灰色对象，分析 A 时，A 没有引用其他对象很快就转入黑色，B 引用了 D，则 B 转入黑色的同时还需要将 D 转为灰色，进行接下来的分析。如下图所示：
 
-![](https://z3.ax1x.com/2020/11/15/DF9xqH.png)
+![](../../../assets/images/docs/internal/memory/gc/DF9xqH.png)
 
 上图中灰色对象只有 D，由于 D 没有引用其他对象，所以 D 转入黑色。标记过程结束：
 
-![](https://z3.ax1x.com/2020/11/15/DFCGyF.png)
+![](../../../assets/images/docs/internal/memory/gc/DFCGyF.png)
 
 最终，黑色的对象会被保留下来，白色对象会被回收掉。
 

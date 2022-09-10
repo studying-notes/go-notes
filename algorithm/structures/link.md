@@ -71,7 +71,7 @@ draft: false  # 草稿
 
 对于单链表，又可以将其分为有头结点的单链表和无头结点的单链表。
 
-![](../imgs/link.png)
+![](../../assets/images/algorithm/structures/link/link.png)
 
 在单链表的开始结点之前附设一个类型相同的结点，称为头结点，头结点的数据域可以不存储任何信息（也可以存放如线性表的长度等附加信息），头结点的指针域存储指向开始结点的指针（即第一个元素结点的存储位置）。
 
@@ -229,7 +229,7 @@ func RecursiveReverse(head *LNode) {
 
 递归比较难理解。
 
-![](../imgs/rev.png)
+![](../../assets/images/algorithm/structures/link/rev.png)
 
 ### 插入法
 
@@ -649,13 +649,13 @@ func DetectRing2Pointer(head *LNode) (node *LNode, isRing bool) {
 
 ### 快慢指针法
 
-![](../imgs/ring.gif)
+![](../../assets/images/algorithm/structures/link/ring.gif)
 
 我觉得理解起来很难，简单来说，fast 比 slow 多走了一倍的路程，这一倍路程就是 n 个环的长度。那么 n 个环的长度就就是起始点到相遇点的距离，于是相遇点向后离入口点+(n-1) 个环的长度就是起始点到入口点的距离。
 
 数学证明：
 
-![](../imgs/ring.png)
+![](../../assets/images/algorithm/structures/link/ring.png)
 
 ```go
 func RingEntryNode(head *LNode) *LNode {
@@ -880,7 +880,7 @@ func RemoveNode(head *LNode, node *LNode) {
 
 所有链表都被排序。
 
-![](../imgs/2dim.png)
+![](../../assets/images/algorithm/structures/link/2dim.png)
 
 实现一个函数 flatten()，该函数用来**将链表扁平化成单个链表**，扁平化的链表也应该被排序。例如，对于上述输入链表，输出链表应为3->6->8->11->15->21->22->30->31->39->40->45->50。
 

@@ -112,7 +112,7 @@ string 在 runtime 包中就是 stringStruct，对外呈现叫做 string。
 
 字符串 `hello, world` 对应的内存结构：
 
-![06NZGR.png](https://s1.ax1x.com/2020/10/10/06NZGR.png)
+![06NZGR.png](../../assets/images/docs/grammar/string/06NZGR.png)
 
 分析可以发现，`hello, world` 字符串底层数据和以下数组是完全一致的：
 
@@ -172,7 +172,7 @@ fmt.Println("\xe7\x95\x8c") // 打印“界”
 
 “hello, 世界” 字符串的内存结构布局：
 
-![06NeR1.png](https://s1.ax1x.com/2020/10/10/06NeR1.png)
+![06NeR1.png](../../assets/images/docs/grammar/string/06NeR1.png)
 
 一个中文字符占了 3 个字节。
 
@@ -310,7 +310,7 @@ string 转换成 byte 切片，也需要一次内存拷贝，其过程如下：
 * 申请切片内存空间
 * 将 string 拷贝到切片
 
-[![DiNtsS.png](https://s3.ax1x.com/2020/11/15/DiNtsS.png)](https://imgchr.com/i/DiNtsS)
+[![DiNtsS.png](../../assets/images/docs/grammar/string/DiNtsS.png)](https://imgchr.com/i/DiNtsS)
 
 模拟实现中新创建了一个切片，然后**将字符串的数组逐一复制到切片中**，这是为了**保证字符串只读的语义**。当然，在将字符串转换为 `[]byte` 时，如果转换后的变量没有被修改，编译器可能会直接返回原始的字符串对应的底层数据。
 
@@ -340,7 +340,7 @@ func bytes2str(b []byte) (s string) {
 2. 构建 string （ string.str = p ； string.len = len ；）
 3. 拷贝数据 ( 切片中数据拷贝到新申请的内存空间 )
 
-[![DiN8RP.png](https://s3.ax1x.com/2020/11/15/DiN8RP.png)](https://imgchr.com/i/DiN8RP)
+[![DiN8RP.png](../../assets/images/docs/grammar/string/DiN8RP.png)](https://imgchr.com/i/DiN8RP)
 
 因为 Go 语言的字符串是只读的，无法以直接构造底层字节数组的方式生成字符串。在模拟实现中通过 `unsafe` 包获取字符串的底层数据结构，然后将切片的数据逐一复制到字符串中，这同样是为了保证字符串只读的语义不受切片的影响。如果转换后的字符串在生命周期中原始的 `[]byte` 的变量不发生变化，编译器可能会直接基于 `[]byte` 底层的数据构建字符串，而不进行复制。
 

@@ -54,7 +54,7 @@ chan 内部实现了一个**环形队列**作为其缓冲区，**队列的长度
 
 下图展示了一个可缓存 6 个元素的 channel 示意图：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/90226/8/31359/7602/6314448eE9d65a0c0/8ad1fc6e75a555d8.png)
+![](../../../assets/images/docs/internal/concurrent/chan_src/8ad1fc6e75a555d8.png)
 
 - dataqsiz 指示了队列长度为 6，即可缓存 6 个元素；
 - buf 环形队列指针，指向队列的内存；
@@ -75,7 +75,7 @@ chan 内部实现了一个**环形队列**作为其缓冲区，**队列的长度
 
 下图展示了一个没有缓冲区的 channel，有几个 goroutine 阻塞等待读数据：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/213078/24/21062/7142/631444a3Ecb91da8e/8bea1131cb0cfbde.png)
+![](../../../assets/images/docs/internal/concurrent/chan_src/8bea1131cb0cfbde.png)
 
 注意，一般情况下 recvq 和 sendq 至少有一个为空。只有一个例外，那就是同一个 goroutine 使用 select 语句向 channel 一边写数据，一边读数据。
 
@@ -123,7 +123,7 @@ func makechan(t *chantype, size int) *hchan {
 
 简单流程图如下：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/73915/22/21730/16993/631444c9E3c2ea666/234dd884026ad5e4.png)
+![](../../../assets/images/docs/internal/concurrent/chan_src/234dd884026ad5e4.png)
 
 ### 读数据
 
@@ -136,7 +136,7 @@ func makechan(t *chantype, size int) *hchan {
 
 简单流程图如下：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/37766/39/16890/23925/631444e4Eb71a9e6a/60e3dd2bc654d113.png)
+![](../../../assets/images/docs/internal/concurrent/chan_src/60e3dd2bc654d113.png)
 
 ### 关闭
 

@@ -93,7 +93,7 @@ state1 是个长度为 3 的数组，其中包含了 state 和一个信号量，
 
 考虑到字节是否对齐，三者出现的位置不同，为简单起见，依照字节已对齐情况下，三者在内存中的位置如下所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/27222/38/19271/9896/6312f359E45c28096/23475629b2c555ef.png)
+![](../../../assets/images/docs/internal/concurrent/waitgroup/23475629b2c555ef.png)
 
 WaitGroup 对外提供三个接口：
 

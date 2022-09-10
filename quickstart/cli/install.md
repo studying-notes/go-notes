@@ -37,14 +37,14 @@ go install [build flags] [packages]
 
 编译器执行了绝大部分编译相关的工作，过程如下：
 
-![06tX5j.png](https://dd-static.jd.com/ddimg/jfs/t1/49489/6/20961/11562/630dc1a3E73ebaa32/dd2b381e06063808.png)
+![06tX5j.png](../../assets/images/quickstart/cli/install/dd2b381e06063808.png)
 
 - 创建编译依赖所需的临时目录。Go 编译器会设置一个临时环境变量 WORK，用于在此工作区编译应用程序，执行编译后的二进制文件，其默认值为系统的临时文件目录路径。可以通过设置 GOTMPDIR 来调整其执行目录。
 - 编译和生成编译所需要的依赖。该阶段将会编译和生成标准库中的依赖（如 flag.a、log.a、net/http等）、应用程序中的外部依赖（如 gin-gonic/gin 等），以及应用程序自身的代码，然后生成、链接对应归档文件（.a 文件）和编译配置文件。
 - 创建并进入编译二进制文件所需的临时目录。即创建 exe 目录。
 - 生成可执行文件。这里主要用到的是 link 工具，该工具读取依赖文件的 Go 归档文件或对象及其依赖项，最终将它们组合为可执行的二进制文件。
 
-![06tOaQ.png](https://dd-static.jd.com/ddimg/jfs/t1/155194/35/24206/28953/630dc1a3Ed2680a74/65b045817a21d7a0.png)
+![06tOaQ.png](../../assets/images/quickstart/cli/install/65b045817a21d7a0.png)
 
 - 执行可执行文件。到先前指定的目录 $WORK/b001/exe/main 下执行生成的二进制文件。
 

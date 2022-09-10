@@ -122,7 +122,7 @@ type entry struct {
 
 很简单，它是一个指针，指向 value。看来，read 和 dirty 各自维护一套 key，key 指向的都是同一个 value。也就是说，只要修改了这个 entry，对 read 和 dirty 都是可见的。这个指针的状态有三种：
 
-![p 的三种状态](https://dd-static.jd.com/ddimg/jfs/t1/174057/11/29586/25689/6319b1dbE8b4d4752/4f0fb6cf011795c1.png)
+![p 的三种状态](../../../assets/images/libraries/standard/sync/map_src/4f0fb6cf011795c1.png)
 
 当 `p == nil` 时，说明这个键值对已被删除，并且 m.dirty == nil，或 m.dirty[k] 指向该 entry。
 
@@ -136,7 +136,7 @@ type entry struct {
 
 整体用一张图来表示：
 
-![sync.map 整体结构](https://dd-static.jd.com/ddimg/jfs/t1/208452/4/25710/68354/6319b1dcE6540378a/1b29502552120e34.png)
+![sync.map 整体结构](../../../assets/images/libraries/standard/sync/map_src/1b29502552120e34.png)
 
 ## Store
 

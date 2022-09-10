@@ -35,7 +35,7 @@ type Mutex struct {
 
 下图展示 Mutex 的内存布局：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/104604/18/32574/9060/63144ac4E732349bf/c2ae3396a8efcf90.png)
+![](../../../assets/images/libraries/standard/sync/mutex_src/c2ae3396a8efcf90.png)
 
 - Locked : 表示该 Mutex 是否已被锁定，0：没有锁定 1：已被锁定。
 - Woken : 表示是否有协程已被唤醒，0：没有协程唤醒 1：已有协程唤醒，正在加锁过程中。
@@ -61,7 +61,7 @@ Mutex 对外提供两个方法，实际上也只有这两个方法：
 
 假定当前只有一个协程在加锁，没有其他协程干扰，那么过程如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/194695/23/28202/13421/63144b1fEaff2c579/017c4cd5988955c2.png)
+![](../../../assets/images/libraries/standard/sync/mutex_src/017c4cd5988955c2.png)
 
 加锁过程会去判断 Locked 标志位是否为 0，如果是 0 则把 Locked 位置 1，代表加锁成功。从上图可见，加锁成功后，只是 Locked 位置 1，其他状态位没发生变化。
 
@@ -69,7 +69,7 @@ Mutex 对外提供两个方法，实际上也只有这两个方法：
 
 假定加锁时，锁已被其他协程占用了，此时加锁过程如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/220038/22/20982/20608/63144b42E1ffff0e3/eae070629013984e.png)
+![](../../../assets/images/libraries/standard/sync/mutex_src/eae070629013984e.png)
 
 从上图可看到，当协程B对一个已被占用的锁再次加锁时，Waiter计数器增加了1，此时协程B将被阻塞，直到Locked值变为0后才会被唤醒。
 
@@ -77,7 +77,7 @@ Mutex 对外提供两个方法，实际上也只有这两个方法：
 
 假定解锁时，没有其他协程阻塞，此时解锁过程如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/35813/34/17366/19751/63144b5aE42ca2916/a82254fc34c33dff.png)
+![](../../../assets/images/libraries/standard/sync/mutex_src/a82254fc34c33dff.png)
 
 由于没有其他协程阻塞等待加锁，所以此时解锁时只需要把 Locked 位置为 0 即可，不需要释放信号量。
 
@@ -85,7 +85,7 @@ Mutex 对外提供两个方法，实际上也只有这两个方法：
 
 假定解锁时，有 1 个或多个协程阻塞，此时解锁过程如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/107290/23/33112/19751/63144b6aE778547e3/39ca8986063f268e.png)
+![](../../../assets/images/libraries/standard/sync/mutex_src/39ca8986063f268e.png)
 
 协程 A 解锁过程分为两个步骤，一是把 Locked 位置 0，二是查看到 Waiter>0，所以释放一个信号量，唤醒一个阻塞的协程，被唤醒的协程 B 把 Locked 位置 1，于是协程 B 获得锁。
 

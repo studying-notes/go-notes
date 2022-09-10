@@ -17,7 +17,7 @@ draft: false  # 草稿
 
 ## 概述
 
-![](imgs/stack.png)
+![](../../assets/images/algorithm/structures/stack/stack.png)
 
 栈先存进去的数据只能最后被取出来，属于 LIFO（Last In First Out，后进先出）结构，它遵循进出顺序逆序，即先进后出，后进先出。
 

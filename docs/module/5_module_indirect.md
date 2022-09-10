@@ -45,8 +45,6 @@ require (
 
 如下图所示，Module A 依赖 B，但是 B 还未切换成 Module，也即没有 `go.mod` 文件，此时，当使用 `go mod tidy` 命令更新 A 的 `go.mod` 文件时，B 的两个依赖 B1 和 B2 将会被添加到 A 的 `go.mod` 文件中（前提是 A 之前没有依赖 B1 和 B2），并且 B1 和 B2 还会被添加 `// indirect` 的注释。
 
-![](images/gomodule_indirect_01.png)
-
 此时 Module A 的 `go.mod` 文件中 require 部分将会变成：
 
 ```
@@ -64,8 +62,6 @@ require (
 如上面所述，如果依赖 B 没有 `go.mod` 文件，则 Module A 将会把 B 的所有依赖记录到 A 的 `go.mod` 文件中。即便 B 拥有 `go.mod`，如果 `go.mod` 文件不完整的话，Module A 依然会记录部分 B 的依赖到 `go.mod` 文件中。
 
 如下图所示，Module B 虽然提供了 `go.mod` 文件中，但 `go.mod` 文件中只添加了依赖 B1，那么此时 A 在引用 B 时，则会在 A 的 `go.mod` 文件中添加 B2 作为间接依赖，B1 则不会出现在 A 的 `go.mod` 文件中。
-
-![](images/gomodule_indirect_02.png)
 
 此时 Module A 的 `go.mod` 文件中 require 部分将会变成：
 

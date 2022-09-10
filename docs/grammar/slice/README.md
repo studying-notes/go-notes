@@ -45,7 +45,7 @@ type slice struct {
 
 `x := []int{2,3,5, 7,11}` 和 `y := x[1:3]` 两个切片对应的内存结构：
 
-![06NAIJ.png](https://s1.ax1x.com/2020/10/10/06NAIJ.png)
+![06NAIJ.png](../../../assets/images/docs/grammar/slice/README/06NAIJ.png)
 
 - 每个切片都指向一个底层数组
 - 每个切片都保存了当前切片的长度、底层数组可用容量
@@ -78,7 +78,7 @@ i = make([]int, 0, 3) // 有 0 个元素的切片，len 为 0，cap 为 3
 
 例如，语句 `slice := make([]int, 5, 10)` 所创建的 Slice，结构如下图所示：
 
-[![DiVKsK.png](https://s3.ax1x.com/2020/11/15/DiVKsK.png)](https://imgchr.com/i/DiVKsK)
+[![DiVKsK.png](../../../assets/images/docs/grammar/slice/README/DiVKsK.png)](https://imgchr.com/i/DiVKsK)
 
 该 Slice 长度为 5，即可以使用下标 slice[0] ~ slice[4]来操作里面的元素，capacity 为 10，表示后续向 slice 添加新的元素时可以不必重新分配内存，直接使用预留内存即可。
 
@@ -88,7 +88,7 @@ i = make([]int, 0, 3) // 有 0 个元素的切片，len 为 0，cap 为 3
 
 例如，语句 `slice := array[5:7]` 所创建的 Slice，结构如下图所示：
 
-[![DiVBdg.png](https://s3.ax1x.com/2020/11/15/DiVBdg.png)](https://imgchr.com/i/DiVBdg)
+[![DiVBdg.png](../../../assets/images/docs/grammar/slice/README/DiVBdg.png)](https://imgchr.com/i/DiVBdg)
 
 切片从数组 array[5] 开始，到数组 array[7] 结束（不含 array[7]），即切片长度为 2，数组后面的内容都作为切片的预留内存，即 capacity 为 5。
 
@@ -169,7 +169,7 @@ a = append(a, []int{1, 2, 3}...) // 追加一个切片，切片需要解包
 
 例如，当向一个 capacity 为 5，且 length 也为 5 的 Slice 再次追加 1 个元素时，就会发生扩容，如下图所示：
 
-[![DiGcEn.png](https://s3.ax1x.com/2020/11/15/DiGcEn.png)](https://imgchr.com/i/DiGcEn)
+[![DiGcEn.png](../../../assets/images/docs/grammar/slice/README/DiGcEn.png)](https://imgchr.com/i/DiGcEn)
 
 扩容操作只关心容量，会把原 Slice 数据拷贝到新 Slice，追加数据由 append 在扩容结束后完成。上图可见，扩容后新的 Slice 长度仍然是 5，但容量由 5 提升到了 10，原 Slice 的数据也都拷贝到了新 Slice 指向的数组中。
 

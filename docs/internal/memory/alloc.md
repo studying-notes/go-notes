@@ -35,7 +35,7 @@ Go 是一个支持 goroutine 这种多线程的语言，所以它的内存管理
 
 - MCache: 用于小对象的每 M 一个的 cache
 
-![img](https://dd-static.jd.com/ddimg/jfs/t1/212130/27/21082/14309/6312ad6bE73586f77/c7ad3d758ae75fab.png)
+![img](../../../assets/images/docs/internal/memory/alloc/c7ad3d758ae75fab.png)
 
 > 按照其用途，span 面向内部管理，object 面向对象分配。
 
@@ -45,7 +45,7 @@ Go 是一个支持 goroutine 这种多线程的语言，所以它的内存管理
 
 以 64 位系统为例，Golang 程序启动时会向系统申请的内存如下图所示：
 
-![img](https://dd-static.jd.com/ddimg/jfs/t1/209239/26/26179/10184/6312ae30E0ef2b936/8e05e03bb2edb78e.jpg)
+![img](../../../assets/images/docs/internal/memory/alloc/8e05e03bb2edb78e.jpg)
 
 预申请的内存划分为 spans、bitmap、arena 三部分。
 
@@ -59,7 +59,7 @@ spans 区域存放 span 的指针，每个指针对应一个或多个 page，所
 
 bitmap 区域大小也是通过 arena 计算出来，不过主要用于 GC。
 
-![img](https://dd-static.jd.com/ddimg/jfs/t1/147631/7/27168/21196/6312ae4fE209a4e75/d8b5f196fc8fcac6.png)
+![img](../../../assets/images/docs/internal/memory/alloc/d8b5f196fc8fcac6.png)
 
 在旧的Go版本中，Go程序是采用预先保留连续的虚拟地址的方案，在64位的系统上，会预先保留512G的虚拟内存空间，但是不可增长，而新版本中，虚拟内存的地址长度被设置为了48位，理论上可以支持2^48字节的内存使用。
 
@@ -177,9 +177,9 @@ type mspan struct {
 
 以 class 10 为例，span 和管理的内存如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/174660/20/29538/13513/631074adE955c29b5/d209d3b9091f2782.png)
+![](../../../assets/images/docs/internal/memory/alloc/d209d3b9091f2782.png)
 
-![img](https://dd-static.jd.com/ddimg/jfs/t1/110676/28/32541/28525/6312af38E2e3f5736/0c6772292431a8f6.jpg)
+![img](../../../assets/images/docs/internal/memory/alloc/0c6772292431a8f6.jpg)
 
 spanclass 为 10，参照 class 表可得出 npages = 1,nelems = 56,elemsize 为 144。其中 startAddr 是在 span 初始化时就指定了某个页的地址。allocBits 指向一个位图，每位代表一个块是否被分配，本例中有两个块已经被分配，其 allocCount 也为 2。
 
@@ -203,7 +203,7 @@ alloc 为 mspan 的指针数组，数组大小为 class 总数的 2 倍。数组
 
 mcache 和 span 的对应关系如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/9541/37/18786/11831/631074cdEcae5b400/90324fdde610dc70.png)
+![](../../../assets/images/docs/internal/memory/alloc/90324fdde610dc70.png)
 
 mcache 在初始化时是没有任何 span 的，在使用过程中会动态地从 central 中获取并缓存下来，根据使用情况，每种 class 的 span 个数也不相同。上图所示，class 0 的 span 数比 class1 的要多，说明本线程中分配的小对象要多一些。
 
@@ -283,9 +283,9 @@ type mheap struct {
 
 mheap 内存管理示意图如下：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/173310/38/29273/17454/631074e0Eb71623d4/08656d72aeeb6fd6.png)
+![](../../../assets/images/docs/internal/memory/alloc/08656d72aeeb6fd6.png)
 
-![img](https://dd-static.jd.com/ddimg/jfs/t1/213174/8/20992/31806/6312af1eE6f0083bf/3e9819f59b2ba800.jpg)
+![img](../../../assets/images/docs/internal/memory/alloc/3e9819f59b2ba800.jpg)
 
 系统预分配的内存分为 spans、bitmap、arean 三个区域，通过 mheap 管理起来。接下来看内存分配过程。
 

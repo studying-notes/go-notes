@@ -43,7 +43,7 @@ context 是 Golang 应用开发常用的并发控制技术，它与 WaitGroup �
 
 context 翻译成中文是 "上下文"，即它可以控制一组呈树状结构的 goroutine，每个 goroutine 拥有相同的上下文。
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/40435/9/18678/11846/6312f558E02e09929/7552395d0248a760.png)
+![](../../../assets/images/docs/internal/concurrent/context/7552395d0248a760.png)
 
 上图中由于 goroutine 派生出子 goroutine，而子 goroutine 又继续派生新的 goroutine，这种情况下使用 WaitGroup 就不太容易，因为子 goroutine 个数不容易确定。而使用 context 就可以很容易实现。
 
@@ -137,7 +137,7 @@ context 包中实现 Context 接口的 struct，除了 emptyCtx 外，还有 can
 
 context 包中各 context 类型之间的关系，如下图所示：
 
-![](https://dd-static.jd.com/ddimg/jfs/t1/65792/16/21852/15364/63130ec9E986c220f/32002bd8e57e0985.png)
+![](../../../assets/images/docs/internal/concurrent/context/32002bd8e57e0985.png)
 
 struct cancelCtx、timerCtx、valueCtx 都继承于 Context，下面分别介绍这三个 struct。
 

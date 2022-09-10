@@ -30,7 +30,7 @@ type hmap struct {
 
 下图展示一个拥有 4 个 bucket 的 map：
 
-![DiJkPP.png](https://dd-static.jd.com/ddimg/jfs/t1/176812/1/27923/4522/631457d3E410172bc/3b58939afab06e42.png)
+![DiJkPP.png](../../../assets/images/docs/grammar/map/README/3b58939afab06e42.png)
 
 本例中, `hmap.B = 2`，而 hmap.buckets 长度是 2 ^ B 为 4。元素经过哈希运算后会落到某个 bucket 中进行存储。查找过程类似。
 
@@ -58,7 +58,7 @@ type bmap struct {
 
 下图展示 bucket 存放 8 个 key-value 对：
 
-![DiJ3GV.png](https://dd-static.jd.com/ddimg/jfs/t1/73018/6/17490/10594/631457dcE62269f63/c0c0437ed06fdcdd.png)
+![DiJ3GV.png](../../../assets/images/docs/grammar/map/README/c0c0437ed06fdcdd.png)
 
 ## 哈希冲突
 
@@ -68,7 +68,7 @@ type bmap struct {
 
 下图展示产生冲突后的 map：
 
-![DiJYMF.png](https://dd-static.jd.com/ddimg/jfs/t1/197306/8/26905/20930/631457e1Ec1d006cc/3b066ecb330d0f80.png)
+![DiJYMF.png](../../../assets/images/docs/grammar/map/README/3b066ecb330d0f80.png)
 
 bucket 数据结构指示下一个 bucket 的指针称为 overflow bucket，意为当前 bucket 盛不下而溢出的部分。事实上哈希冲突并不是好事情，它降低了存取效率，好的哈希算法可以保证哈希值的随机性，但冲突过多也是要控制的。
 
@@ -108,13 +108,13 @@ bucket 数据结构指示下一个 bucket 的指针称为 overflow bucket，意�
 
 下图展示了包含一个 bucket 满载的 map：
 
-![DiJBPx.png](https://dd-static.jd.com/ddimg/jfs/t1/29839/13/19068/7345/631457e8Ed9f4340e/a7cc2c7e2a5d8df3.png)
+![DiJBPx.png](../../../assets/images/docs/grammar/map/README/a7cc2c7e2a5d8df3.png)
 
 当前 map 存储了 7 个键值对，只有 1 个 bucket，负载因子为 7。再次插入数据时将会触发扩容操作，扩容之后再将新插入键写入新的 bucket。
 
 当第 8 个键值对插入时，将会触发扩容，扩容后示意图如下：
 
-![DiJDG6.png](https://dd-static.jd.com/ddimg/jfs/t1/161890/21/30445/11679/631457f0E807c04aa/cc9737e8773ba614.png)
+![DiJDG6.png](../../../assets/images/docs/grammar/map/README/cc9737e8773ba614.png)
 
 hmap 数据结构中 oldbuckets 成员指身原 bucket，而 buckets 指向了新申请的 bucket。新的键值对被插入新的 bucket 中。
 
@@ -122,7 +122,7 @@ hmap 数据结构中 oldbuckets 成员指身原 bucket，而 buckets 指向了�
 
 搬迁完成后的示意图如下：
 
-![DiJsxO.png](https://dd-static.jd.com/ddimg/jfs/t1/201916/6/26304/10659/631457f5Ed4b2e85f/58ad742d27488488.png)
+![DiJsxO.png](../../../assets/images/docs/grammar/map/README/58ad742d27488488.png)
 
 数据搬迁过程中原 bucket 中的键值对将存在于新 bucket 的前面，新插入的键值对将存在于新 bucket 的后面。
 
@@ -132,7 +132,7 @@ hmap 数据结构中 oldbuckets 成员指身原 bucket，而 buckets 指向了�
 
 在极端场景下，比如不断地增删，而键值对正好集中在一小部分的 bucket，这样会造成 overflow 的 bucket 数量增多，但负载因子又不高，从而无法执行增量搬迁的情况，如下图所示：
 
-![DiJcse.png](https://dd-static.jd.com/ddimg/jfs/t1/102132/25/30878/18550/631457faEf3e571fe/80b0e9de4b41cc10.png)
+![DiJcse.png](../../../assets/images/docs/grammar/map/README/80b0e9de4b41cc10.png)
 
 上图可见，overflow 的 bucket 中大部分是空的，访问效率会很差。此时进行一次等量扩容，即 buckets 数量不变，经过重新组织后 overflow 的 bucket 数量会减少，即节省了空间又会提高访问效率。
 

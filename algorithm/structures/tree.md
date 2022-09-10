@@ -189,7 +189,7 @@ func PrintLevel(root *BNode) {
 
 取数组的中间元素作为根结点，将数组分成左右两部分，对数组的两部分用递归的方法分别构建左右子树。
 
-![](imgs/a2t.png)
+![](../../assets/images/algorithm/structures/tree/a2t.png)
 
 ```go
 func Array2Tree(array []int, start, end int) *BNode {
@@ -292,7 +292,7 @@ func IsEqual(root1, root2 *BNode) bool {
 
 输入一棵二元查找树，将该二元查找树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整结点的指向。
 
-![](imgs/linked.png)
+![](../../assets/images/algorithm/structures/tree/linked.png)
 
 ### 中序遍历法
 
@@ -425,7 +425,7 @@ func FindParentNode(root, n1, n2 *BNode) (parent *BNode) {
 
 可以把二叉树看成是一棵完全二叉树（不管实际的二叉树是否为完全二叉树，二叉树中的结点都可以按照完全二叉树中对结点编号的方式进行编号）。
 
-![](imgs/parent.png)
+![](../../assets/images/algorithm/structures/tree/parent.png)
 
 ```go
 // 按照完全二叉树中对结点编号的方式进行编号
@@ -780,7 +780,7 @@ func main() {
 
 这种方法的时间复杂度为 O(nLogm)，其中，n 为数组的大小，m 为数组中不同数字的个数，空间复杂度为 O(n)。
 
-![](imgs/unbalanced_avl_trees.jpg)
+![](../../assets/images/algorithm/structures/tree/unbalanced_avl_trees.jpg)
 
 ```
 BalanceFactor = height(left-sutree) − height(right-sutree)
@@ -813,7 +813,7 @@ func GetHeight(n *AVLNode) int {
 
 - Left rotation
 
-![](imgs/avl_left_rotation.jpg)
+![](../../assets/images/algorithm/structures/tree/avl_left_rotation.jpg)
 
 ```go
 func LeftRotate(v *AVLNode) (u *AVLNode) {
@@ -827,7 +827,7 @@ func LeftRotate(v *AVLNode) (u *AVLNode) {
 
 - Right rotation
 
-![](imgs/avl_right_rotation.jpg)
+![](../../assets/images/algorithm/structures/tree/avl_right_rotation.jpg)
 
 ```go
 func RightRotate(v *AVLNode) (u *AVLNode) {
@@ -841,7 +841,7 @@ func RightRotate(v *AVLNode) (u *AVLNode) {
 
 - Left-Right rotation
 
-![](imgs/left_right.png)
+![](../../assets/images/algorithm/structures/tree/left_right.png)
 
 ```go
 func LeftRightRotate(v *AVLNode) (u *AVLNode) {
@@ -852,7 +852,7 @@ func LeftRightRotate(v *AVLNode) (u *AVLNode) {
 
 - Right-Left rotation
 
-![](imgs/right_left.png)
+![](../../assets/images/algorithm/structures/tree/right_left.png)
 
 ```go
 func RightLeftRotate(v *AVLNode) (u *AVLNode) {
