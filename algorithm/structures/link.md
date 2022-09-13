@@ -16,12 +16,8 @@ draft: false  # 草稿
 ---
 
 - [概述](#概述)
+- [源码位置](#源码位置)
 - [链表结点的定义](#链表结点的定义)
-	- [创建空链表](#创建空链表)
-	- [创建自定义链表](#创建自定义链表)
-	- [创建有序链表](#创建有序链表)
-	- [创建无序链表](#创建无序链表)
-	- [打印链表](#打印链表)
 - [实现链表的逆序](#实现链表的逆序)
 	- [就地逆序](#就地逆序)
 	- [递归法](#递归法)
@@ -42,32 +38,35 @@ draft: false  # 草稿
 - [找出单链表中的倒数第 k 个元素](#找出单链表中的倒数第-k-个元素)
 	- [快慢指针法](#快慢指针法)
 - [将单链表向右旋转 k 个位置](#将单链表向右旋转-k-个位置)
+	- [快慢指针法](#快慢指针法-1)
 - [检测一个较大的单链表是否有环](#检测一个较大的单链表是否有环)
 	- [HashSet 法](#hashset-法)
-	- [快慢指针法](#快慢指针法-1)
+	- [快慢指针法](#快慢指针法-2)
 - [找出环的入口点](#找出环的入口点)
 	- [HashSet 法](#hashset-法-1)
-	- [快慢指针法](#快慢指针法-2)
+	- [快慢指针法](#快慢指针法-3)
 - [链表相邻元素翻转](#链表相邻元素翻转)
 	- [交换数据域](#交换数据域)
 	- [交换指针域](#交换指针域)
-- [把链表以k个结点为一组进行翻转](#把链表以k个结点为一组进行翻转)
+- [把链表以 k 个结点为一组进行翻转](#把链表以-k-个结点为一组进行翻转)
 - [合并两个有序链表](#合并两个有序链表)
-	- [普通方法](#普通方法)
+	- [插入排序法](#插入排序法)
 - [归并排序法](#归并排序法)
 - [在只给定单链表中某个结点指针的情况下删除该结点](#在只给定单链表中某个结点指针的情况下删除该结点)
-	- [复制数据域](#复制数据域)
+	- [复制数据域法](#复制数据域法)
 	- [给出链表和被删结点](#给出链表和被删结点)
-- [判断两个单链表（无环）是否交叉](#判断两个单链表无环是否交叉)
+- [判断两个无环单链表是否交叉](#判断两个无环单链表是否交叉)
 	- [HashSet](#hashset)
 	- [首尾相接法](#首尾相接法)
 	- [尾结点法](#尾结点法)
-- [判断两个单链表（有环）是否交叉](#判断两个单链表有环是否交叉)
+- [判断两个有环单链表是否交叉](#判断两个有环单链表是否交叉)
 - [展开二维链表](#展开二维链表)
 
 ## 概述
 
-存储特点为：可以用一组存储单元来存储单链表中的数据元素（存储单元可以是不连续的），而且，除了存储每个数据元素外，还必须存储指示其直接后继元素的信息。这两部分信息组成的数据元素的存储映像称为结点。N 个结点链在一块被称为链表，当结点**只包含其后继结点信息的链表就被称为单链表**，而链表的**第一个结点通常被称为头结点**。
+存储特点为：可以用一组存储单元来存储单链表中的**数据元素**（存储单元可以是不连续的），而且，除了存储每个数据元素外，还必须存储**指示其直接后继元素的信息**。这两部分信息组成的数据元素的存储映像称为结点。
+
+N 个结点链接在一块被称为链表，当结点**只包含其后继结点信息的链表就被称为单链表**，而链表的**第一个结点通常被称为头结点**。
 
 对于单链表，又可以将其分为有头结点的单链表和无头结点的单链表。
 
@@ -77,75 +76,23 @@ draft: false  # 草稿
 
 具体而言，头结点的作用主要有以下两点：
 
-（1）对于带头结点的链表，当在链表的任何结点之前插入新结点或删除链表中任何结点时，所要做的都是修改前一个结点的指针域，因为任何结点都有前驱结点。若链表没有头结点，则首元素结点没有前驱结点，在其前面插入结点或删除该结点时操作会复杂些，需要进行特殊的处理。
+1. 对于带头结点的链表，当在链表的任何结点之前插入新结点或删除链表中任何结点时，所要做的都是修改前一个结点的指针域，因为任何结点都有前驱结点。若链表没有头结点，则首元素结点没有前驱结点，在其前面插入结点或删除该结点时操作会复杂些，需要进行特殊的处理。
 
-（2）对于带头结点的链表，链表的头指针是指向头结点的非空指针，因此，对空链表与非空链表的处理是一样的。
+2. 对于带头结点的链表，链表的头指针是指向头结点的非空指针，因此，对空链表与非空链表的处理是一样的。
+
+## 源码位置
+
+*src/algorithm/structures/link*
 
 ## 链表结点的定义
 
+> 源码位置 *src/algorithm/structures/link/link.go*
+
 ```go
+// LNode 定义链表结点
 type LNode struct {
-	Data interface{}
+	Data int // 默认数组类型
 	Next *LNode
-}
-```
-
-### 创建空链表
-
-```go
-func NewLinkedList() *LNode {
-	return &LNode{}
-}
-```
-
-### 创建自定义链表
-
-```go
-func NewCustomLinkedList(data []int) (head LNode) {
-	cur := &head
-	for d := range data {
-		cur.Next = &LNode{Data: data[d]}
-		cur = cur.Next
-	}
-	return head
-}
-```
-
-### 创建有序链表
-
-```go
-func NewSeqLinkedList(max int) (head LNode){
-	cur := &head
-	for i := 1; i <= max; i++ {
-		cur.Next = &LNode{Data: i}
-		cur = cur.Next
-	}
-	return head
-}
-```
-
-### 创建无序链表
-
-```go
-func NewNoSeqLinkedList(max int) (head LNode){
-	cur := &head
-	rand.Seed(time.Now().Unix())
-	for range make([][]int, max) {
-		cur.Next = &LNode{Data: rand.Intn(max)}
-		cur = cur.Next
-	}
-	return head
-}
-```
-
-### 打印链表
-
-```go
-func PrintLNode(head *LNode) {
-	for cur := head.Next; cur != nil; cur = cur.Next {
-		fmt.Print(cur.Data, " ")
-	}
-	fmt.Println()
 }
 ```
 
@@ -154,6 +101,8 @@ func PrintLNode(head *LNode) {
 题目描述：
 
 给定一个带头结点的单链表，将其逆序。即如果单链表原来为 head->1->2->3->4->5->6->7，则逆序后变为 head->7->6->5->4->3->2->1。
+
+> 源码位置 *src/algorithm/structures/link/reverse.go*
 
 ### 就地逆序
 
@@ -180,25 +129,25 @@ func Reverse(head *LNode) {
 }
 ```
 
-这地方我遇到了一些问题，在这记录下来：
+不同变量创建方式的差异：
 
 ```go
 func main() {
 	var h1 *LNode
 	fmt.Printf("%#v\n", h1)
-	// (*def.LNode)(nil)
+	// (*LNode)(nil)
 
 	var h2 LNode
 	fmt.Printf("%#v\n", &h2)
-	// &def.LNode{Data:interface {}(nil), Next:(*def.LNode)(nil)}
+	// &LNode{Data:interface {}(nil), Next:(*LNode)(nil)}
 
 	h3 := &LNode{}
 	fmt.Printf("%#v\n", h3)
-	// &def.LNode{Data:interface {}(nil), Next:(*def.LNode)(nil)}
+	// &LNode{Data:interface {}(nil), Next:(*LNode)(nil)}
 
 	h4 := new(LNode)
 	fmt.Printf("%#v\n", h4)
-	// &def.LNode{Data:interface {}(nil), Next:(*def.LNode)(nil)}
+	// &LNode{Data:interface {}(nil), Next:(*LNode)(nil)}
 }
 ```
 
@@ -227,10 +176,6 @@ func RecursiveReverse(head *LNode) {
 }
 ```
 
-递归比较难理解。
-
-![](../../assets/images/algorithm/structures/link/rev.png)
-
 ### 插入法
 
 从链表的第二个结点开始，把遍历到的结点插入到头结点的后面，直到遍历结束。
@@ -255,13 +200,15 @@ func InsertReverse(head *LNode) {
 
 与方法一相比，这种方法不需要保存前驱结点的地址，与方法二相比，这种方法不需要递归地调用，效率更高。
 
-对不带头结点的单链表进行逆序，我的看法是自己加一个头结点。
+对于不带头结点的单链表，除了递归法，也可以先加一个头结点，最后再去掉。
 
 ## 逆序输出链表
 
-**递归法**
+> 源码位置 *src/algorithm/structures/link/reverse.go*
 
 ```go
+// ReversePrint 实现链表的逆序打印
+// 递归法
 func ReversePrint(head *LNode) {
 	if head == nil || head.Next == nil {
 		return
@@ -273,9 +220,13 @@ func ReversePrint(head *LNode) {
 
 ## 从无序链表中移除重复项
 
+> 源码位置 *src/algorithm/structures/link/duplicate.go*
+
 ### 顺序删除
 
-通过双重循环直接在链表上进行删除操作。外层循环用一个指针从第一个结点开始遍历整个链表，然后内层循环用另外一个指针遍历其余结点，将与外层循环遍历到的指针所指结点的数据域相同的结点删除。
+通过双重循环直接在链表上进行删除操作。
+
+外层循环用一个指针从第一个结点开始遍历整个链表，然后内层循环用另外一个指针遍历其余结点，将与外层循环遍历到的指针所指结点的数据域相同的结点删除。
 
 ```go
 func RemoveDup(head *LNode) {
@@ -301,7 +252,9 @@ func RemoveDup(head *LNode) {
 
 ### 递归删除
 
-这种方法与方法一类似，从本质上而言，由于这种方法需要对链表进行双重遍历。由于递归法会增加许多额外的函数调用，因此，从理论上讲，该方法效率比方法一低。
+这种方法与方法一类似，从本质上而言，由于这种方法需要对链表进行双重遍历。
+
+由于递归法会增加许多额外的函数调用，因此，从理论上讲，该方法效率比方法一低。
 
 ```go
 func RecursiveRemoveDupChild(node *LNode) *LNode {
@@ -369,6 +322,8 @@ func SetRemoveDup(head *LNode) {
 
 ## 从有序链表中移除重复项
 
+> 源码位置 *src/algorithm/structures/link/duplicate.go*
+
 ```go
 func RemoveDupSeq(head *LNode) {
 	if head == nil || head.Next == nil {
@@ -388,6 +343,8 @@ func RemoveDupSeq(head *LNode) {
 ## 计算两个单链表所代表的数之和
 
 给定两个单链表，链表的每个结点代表一位数，计算两个数的和。例如：输入链表(3->1->5)和链表(5->9->2)，输出：8->0->8，即513+295=808，注意**个位数在链表头**。
+
+> 源码位置 *src/algorithm/structures/link/duplicate.go*
 
 ### 链表相加法
 
@@ -438,12 +395,17 @@ func Sum2LinkedList(head1, head2 *LNode) (head *LNode) {
 
 ## 对链表进行重新排序
 
-给定链表 L0->L1->L2…Ln-1->Ln，把链表重新排序为 L0->Ln->L1->Ln-1->L2->Ln-2…。要求：①在原来链表的基础上进行排序，即不能申请新的结点；②只能修改结点的next域，不能修改数据域。
+给定链表 L0->L1->L2…Ln-1->Ln，把链表重新排序为 L0->Ln->L1->Ln-1->L2->Ln-2…。
+
+1. 在原来链表的基础上进行排序，即不能申请新的结点；
+2. 只能修改结点的 next 域，不能修改数据域。
+
+> 源码位置 *src/algorithm/structures/link/resort.go*
 
 ### 双重循环法
 
 ```go
-// 两层循环，每次都找最后一个结点
+// LoopResort 两层循环，每次都找最后一个结点
 func LoopResort(head *LNode) {
 	if head == nil || head.Next == nil {
 		return
@@ -465,7 +427,10 @@ func LoopResort(head *LNode) {
 
 ### 分割逆序组合法
 
-①首先找到链表的中间结点；②对链表的后半部分子链表进行逆序；③把链表的前半部分子链表与逆序后的后半部分子链表进行合并，合并的思路为：分别从两个链表各取一个结点进行合并。
+1. 首先找到链表的中间结点；
+2. 对链表的后半部分子链表进行逆序；
+3. 把链表的前半部分子链表与逆序后的后半部分子链表进行合并；
+4. 合并的思路为：分别从两个链表各取一个结点进行合并。
 
 #### 查找链表的中间结点
 
@@ -516,7 +481,7 @@ func ReverseResort(head *LNode) {
 	}
 }
 
-// from reverse.go
+// 参考 reverse.go 实现的递归法逆序
 func ReverseChild(node *LNode) *LNode {
 	if node == nil || node.Next == nil {
 		return node
@@ -532,9 +497,11 @@ func ReverseChild(node *LNode) *LNode {
 
 找出单链表中的倒数第 k 个元素，例如给定单链表：1->2->3->4->5->6->7，则单链表的倒数第 k=3 个元素为 5。
 
+> 源码位置 *src/algorithm/structures/link/findk.go*
+
 ### 快慢指针法
 
-在查找过程中，设置两个指针，让其中一个指针比另一个指针先前移k步，然后两个指针同时往前移动。循环直到先行的指针值为 null 时，另一个指针所指的位置就是所要找的位置。
+在查找过程中，设置两个指针，让其中一个指针比另一个指针先前移 k 步，然后两个指针同时往前移动。循环直到先行的指针值为 null 时，另一个指针所指的位置就是所要找的位置。
 
 ```go
 func FindLastK(head *LNode, k int) *LNode {
@@ -560,7 +527,13 @@ func FindLastK(head *LNode, k int) *LNode {
 
 ## 将单链表向右旋转 k 个位置
 
-给定单链表 1->2->3->4->5->6->7，k=3，那么旋转后的单链表变为5->6->7->1->2->3->4。
+给定单链表 1->2->3->4->5->6->7，k=3，那么旋转后的单链表变为 5->6->7->1->2->3->4。
+
+> 源码位置 *src/algorithm/structures/link/findk.go*
+
+### 快慢指针法
+
+原理同上，最后将后半部分放到最前面即可。
 
 ```go
 func SpinLastK(head *LNode, k int) {
@@ -591,6 +564,8 @@ func SpinLastK(head *LNode, k int) {
 ## 检测一个较大的单链表是否有环
 
 单链表有环指的是单链表中某个结点的 next 域指向的是链表中在它之前的某一个结点，这样在链表的尾部形成一个环形结构。
+
+> 源码位置 *src/algorithm/structures/link/ring.go*
 
 ### HashSet 法
 
@@ -643,15 +618,17 @@ func DetectRing2Pointer(head *LNode) (node *LNode, isRing bool) {
 
 当链表有环的时候，如果知道环的入口点，那么在需要遍历链表或释放链表所占的空间的时候方法将会非常简单。
 
+> 源码位置 *src/algorithm/structures/link/ring.go*
+
 ### HashSet 法
 
-重复点即是，与上文同方法。
+第一个重复点，与上文同方法。
 
 ### 快慢指针法
 
 ![](../../assets/images/algorithm/structures/link/ring.gif)
 
-我觉得理解起来很难，简单来说，fast 比 slow 多走了一倍的路程，这一倍路程就是 n 个环的长度。那么 n 个环的长度就就是起始点到相遇点的距离，于是相遇点向后离入口点+(n-1) 个环的长度就是起始点到入口点的距离。
+我觉得理解起来很难，简单来说，**fast 比 slow 多走了一倍的路程**（fast 每次走 2 步，所以路程是 slow 的 2 倍），这一倍路程就是 **n 个环的长度**。那么 **n 个环的长度就就是起始点到相遇点的距离**，于是**相遇点向后离入口点 + (n-1) 个环的长度**就是**起始点到入口点的距离**。
 
 数学证明：
 
@@ -685,6 +662,8 @@ func RingEntryNode(head *LNode) *LNode {
 ## 链表相邻元素翻转
 
 把链表相邻元素翻转，例如给定链表为1->2->3->4->5->6->7，则翻转后的链表变为2->1->4->3->6->5->7。
+
+> 源码位置 *src/algorithm/structures/link/flip.go*
 
 ### 交换数据域
 
@@ -722,9 +701,13 @@ func FlipAdjPointer(head *LNode) {
 }
 ```
 
-## 把链表以k个结点为一组进行翻转
+## 把链表以 k 个结点为一组进行翻转
 
-K链表翻转是指把每k个相邻的结点看成一组进行翻转，如果剩余结点不足k个，则保持不变。假设给定链表1->2->3->4->5->6->7和一个数k，如果k的值为2，那么翻转后的链表为 2->1->4->3->6->5->7。如果 k 的值为 3，那么翻转后的链表为：3->2->1->6->5->4->7。
+K 链表翻转是指把每 k 个相邻的结点看成一组进行翻转，如果剩余结点不足 k 个，则保持不变。
+
+假设给定链表 1->2->3->4->5->6->7 和一个数 k，如果 k 的值为 2，那么翻转后的链表为 2->1->4->3->6->5->7。如果 k 的值为 3，那么翻转后的链表为：3->2->1->6->5->4->7。
+
+> 源码位置 *src/algorithm/structures/link/flip.go*
 
 ```go
 func FlipAdjKNode(head *LNode, k int) {
@@ -743,7 +726,7 @@ func FlipAdjKNode(head *LNode, k int) {
 			suc = cur1.Next // 记住下一段的首结点
 			cur1.Next = nil // 置空便于逆序
 		}
-		pre.Next = RevChild(cur2)
+		pre.Next = RecursiveReverseChild(cur2)
 		if cur1 != nil {
 			cur2.Next = suc // 首尾已交换，连接余下部分
 			cur1 = suc      // 指向下一段的首结点
@@ -755,7 +738,9 @@ func FlipAdjKNode(head *LNode, k int) {
 
 ## 合并两个有序链表
 
-### 普通方法
+> 源码位置 *src/algorithm/structures/link/merge.go*
+
+### 插入排序法
 
 ```go
 func MergeOrderLinkedList(head1, head2 *LNode) (head *LNode) {
@@ -792,6 +777,8 @@ func MergeOrderLinkedList(head1, head2 *LNode) (head *LNode) {
 
 ## 归并排序法
 
+每次链接最小值。
+
 ```go
 // 归并排序法，不带头结点
 func MergeSort(l1, l2 *LNode) (res *LNode) {
@@ -813,7 +800,11 @@ func MergeSort(l1, l2 *LNode) (res *LNode) {
 
 ## 在只给定单链表中某个结点指针的情况下删除该结点
 
-### 复制数据域
+> 源码位置 *src/algorithm/structures/link/merge.go*
+
+### 复制数据域法
+
+这是最方便的方法。
 
 ```go
 func QuickRmNode(node *LNode) {
@@ -835,6 +826,7 @@ func RemoveNode(head *LNode, node *LNode) {
 		return
 	}
 	cur := head.Next
+	// 找到被删结点的前驱
 	for cur != nil && cur.Next != node {
 		cur = cur.Next
 	}
@@ -847,7 +839,7 @@ func RemoveNode(head *LNode, node *LNode) {
 }
 ```
 
-## 判断两个单链表（无环）是否交叉
+## 判断两个无环单链表是否交叉
 
 单链表相交指的是两个链表存在完全重合的部分。
 
@@ -863,13 +855,17 @@ func RemoveNode(head *LNode, node *LNode) {
 
 ### 尾结点法
 
-如果两个链表相交，那么两个链表从相交点到链表结束都是相同的结点，必然是 Y 字形，所以，判断两个链表的最后一个结点是不是相同即可。即先遍历一个链表，直到尾部，再遍历另外一个链表，如果也可以走到同样的结尾点，则两个链表相交，这时记下两个链表的长度n1、n2，再遍历一次，长链表结点先出发前进|n1-n2|步，之后两个链表同时前进，每次一步，相遇的第一点即为两个链表相交的第一个点。
+如果两个链表相交，那么两个链表从相交点到链表结束都是相同的结点，必然是 Y 字形，所以，**判断两个链表的最后一个结点是不是相同**即可。
 
-## 判断两个单链表（有环）是否交叉
+即先遍历一个链表，直到尾部，再遍历另外一个链表，如果也可以走到同样的结尾点，则两个链表相交，这时记下两个链表的长度 n1、n2，再遍历一次，长链表结点先出发前进 `|n1-n2|` 步，之后两个链表同时前进，每次一步，相遇的第一点即为两个链表相交的第一个点（原理与上面的环一样）。
+
+## 判断两个有环单链表是否交叉
 
 1. 如果一个单链表有环，另外一个没环，那么它们肯定不相交。
 
-2. 如果两个单链表都有环并且相交，那么这两个链表一定共享这个环。判断两个有环的链表是否相交的方法为：首先找到链表 head1 中环的入口点 p1，然后遍历链表 head2，判断链表中是否包含结点 p1，如果包含，则这两个链表相交，否则不相交。找相交点的方法为：把结点 p1看作两个链表的尾结点，这样就可以把问题转换为求两个无环链表相交点的问题，可以采用上文求相交点的方法来解决这个问题。
+2. 如果两个单链表都有环并且相交，那么**这两个链表一定共享这个环**。判断两个有环的链表是否相交的方法为：**首先找到链表 head1 中环的入口点 p1**，**然后遍历链表 head2，判断链表中是否包含结点 p1**，**如果包含，则这两个链表相交，否则不相交**。找相交点的方法同上。
+
+不限方法的话，优先用哈希表。
 
 ## 展开二维链表
 
@@ -882,16 +878,13 @@ func RemoveNode(head *LNode, node *LNode) {
 
 ![](../../assets/images/algorithm/structures/link/2dim.png)
 
-实现一个函数 flatten()，该函数用来**将链表扁平化成单个链表**，扁平化的链表也应该被排序。例如，对于上述输入链表，输出链表应为3->6->8->11->15->21->22->30->31->39->40->45->50。
+实现一个函数 flatten()，该函数用来**将链表扁平化成单个链表**，扁平化的链表也应该被排序。
+
+例如，对于上述输入链表，输出链表应为3->6->8->11->15->21->22->30->31->39->40->45->50。
+
+> 源码位置 *src/algorithm/structures/link/flatten.go*
 
 ```go
-func PrintL2Node(head *L2Node) {
-	for cur := head; cur != nil; cur = cur.Down {
-		fmt.Print(cur.Data, " ")
-	}
-	fmt.Println()
-}
-
 func Flatten(head *L2Node) *L2Node {
 	if head == nil || head.Next == nil {
 		return head
@@ -905,38 +898,6 @@ func Flatten(head *L2Node) *L2Node {
 		cur = suc
 	}
 	return res
-}
-
-type L2Node struct {
-	Data int
-	Next *L2Node
-	Down *L2Node
-}
-
-func NewLinked2List(data []int) (head L2Node) {
-	cur := &head
-	for d := range data {
-		cur.Down = &L2Node{Data: data[d]}
-		cur = cur.Down
-	}
-	return *head.Down
-}
-
-func NewLinked2Node() *L2Node {
-	head := &L2Node{}
-	cur := head
-	list1 := NewLinked2List([]int{6, 8, 31})
-	cur.Next = &L2Node{Data: 3, Down: &list1}
-	cur = cur.Next
-	list2 := NewLinked2List([]int{21})
-	cur.Next = &L2Node{Data: 11, Down: &list2}
-	cur = cur.Next
-	list3 := NewLinked2List([]int{22, 50})
-	cur.Next = &L2Node{Data: 15, Down: &list3}
-	cur = cur.Next
-	list4 := NewLinked2List([]int{39, 40, 55})
-	cur.Next = &L2Node{Data: 30, Down: &list4}
-	return head
 }
 
 func Merge(l1, l2 *L2Node) (res *L2Node) {

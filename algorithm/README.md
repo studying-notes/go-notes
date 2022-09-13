@@ -11,6 +11,11 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
+## 数学基础
+
+- [位运算](math/bit_operation.md)
+- [对数运算](math/log_operation.md)
+
 ## 数据结构
 
 - [链表](structures/link.md)
