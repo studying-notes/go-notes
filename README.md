@@ -24,9 +24,9 @@ draft: false  # 草稿
 - `assets`: 存储图片及模板文件
   - `assets/templates`: 笔记模板
 
-- `algorithm`: 数据结构与算法
-  - `algorithm/structures`: [数据结构](algorithm/structures/README.md)
-  - `algorithm/math`: [基础数学](algorithm/math/README.md)
+- `algorithm`: [数据结构与算法](algorithm/README.md)
+  - `algorithm/structures`: [数据结构](algorithm/README.md)
+  - `algorithm/math`: [基础数学](algorithm/README.md)
 
 - `docs`: 基础教程，成体系的，或者分类的文章笔记
   - `docs/grammar`: [语法](docs/grammar/README.md)
