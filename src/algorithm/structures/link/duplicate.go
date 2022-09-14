@@ -1,6 +1,6 @@
 package link
 
-import "algorithm/structures/set"
+import . "algorithm/structures/set"
 
 // RemoveDup 顺序删除
 func RemoveDup(head *LNode) {
@@ -43,7 +43,7 @@ func RecursiveRemoveDupChild(node *LNode) *LNode {
 
 // SetRemoveDup 利用 Set
 func SetRemoveDup(head *LNode) {
-	set := set.NewSet()
+	set := NewSet()
 	cur := head.Next
 	for cur.Next != nil {
 		if set.Contains(cur.Next.Data) {
