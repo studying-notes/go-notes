@@ -3,7 +3,7 @@ date: 2020-10-12T17:08:42+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 title: "数据结构与算法之哈希"  # 文章标题
-url:  "posts/go/algorithm/structures/map"  # 设置网页永久链接
+url:  "posts/go/algorithm/structures/hash"  # 设置网页永久链接
 tags: [ "algorithm", "go" ]  # 标签
 categories: [ "Go 数据结构与算法"]  # 系列
 
@@ -15,6 +15,15 @@ toc: true  # 是否自动生成目录
 draft: false  # 草稿
 ---
 
+- [数据结构](#数据结构)
+- [从给定的车票中找出旅程路线](#从给定的车票中找出旅程路线)
+	- [拓扑排序](#拓扑排序)
+- [从数组中找出满足 `a+b=c+d` 的两个数对](#从数组中找出满足-abcd-的两个数对)
+
+## 数据结构
+
+可以用内部的 map 结构实现。
+
 ## 从给定的车票中找出旅程路线
 
 给定一趟旅途旅程中所有的车票信息，根据这个车票信息找出这趟旅程的路线。
@@ -25,47 +34,51 @@ draft: false  # 草稿
 
 一般而言可以使用拓扑排序进行解答。根据车票信息构建一个图，然后找出这张图的拓扑排序序列，这个序列就是旅程的路线。
 
-### 构建 Map 和逆 Map
+### 拓扑排序
 
 ```go
-func RevTickets(tickets map[int]int) map[int]int {
-	revTickets := make(map[int]int)
+func TicketsReversed(tickets map[int]int) map[int]int {
+	graph := make(map[int]int)
 	for k, v := range tickets {
-		revTickets[v] = k
+		graph[v] = k // 逆映射
 	}
-	return revTickets
+	return graph
 }
 
 func PrintTravel(tickets map[int]int) {
-	revTickets := RevTickets(tickets)
+	graph := TicketsReversed(tickets)
+
 	var next int
+
+	// 找到入口
 	for k := range tickets {
-		_, ok := revTickets[k]
-		if !ok {
+		_, ok := graph[k]
+		if !ok { // 找不到前驱的就是入口
 			next = k
 			break
 		}
 	}
-	fmt.Print(next, " ")
+
+	s := strconv.Itoa(next)
 	for range tickets {
 		next = tickets[next]
-		fmt.Print(next, " ")
+		s += " -> " + strconv.Itoa(next)
 	}
+
+	fmt.Println(s)
 }
 ```
 
 ## 从数组中找出满足 `a+b=c+d` 的两个数对
 
-给定一个数组，找出数组中是否有两个数对 (a, b) 和 (c, d)，使得 a+b=c+d，其中，a、b、c 和 d 是不同的元素。如果有多个答案，打印任意一个即可。例如给定数组：{3, 4, 7, 10, 20, 9, 8}，可以找到两个数对 (3, 8) 和 (4, 7)，使得 3+8=4+7。
+给定一个数组，找出数组中是否有两个数对 (a, b) 和 (c, d)，使得 a+b = c+d，其中，a、b、c 和 d 是不同的元素。如果有多个答案，打印任意一个即可。例如给定数组：{3, 4, 7, 10, 20, 9, 8}，可以找到两个数对 (3, 8) 和 (4, 7)，使得 3+8 = 4+7。
 
 ```go
-func main() {
-	list := []int{3, 4, 7, 10, 2, 9, 8}
-	fmt.Println(FindEquation(list))
-}
-
 func FindEquation(list []int) ([2]int, [2]int) {
+	// 两数和:两数 键值对
 	kv := make(map[int][2]int)
+	
+	// 双重循环
 	for idx, val := range list {
 		for i := idx + 1; i < len(list); i++ {
 			k := val + list[i]

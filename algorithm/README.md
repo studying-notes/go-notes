@@ -21,7 +21,7 @@ draft: true  # 草稿
 - [链表](structures/link.md)
 - [栈](structures/stack.md)
 - [队列](structures/queue.md)
-- [哈希](structures/map.md)
+- [哈希](structures/hash.md)
 - [二叉树](structures/tree.md)
 - [数组](structures/array.md)
 - [字符串](structures/string.md)
