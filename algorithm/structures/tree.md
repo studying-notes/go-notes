@@ -873,7 +873,7 @@ Trie 树，即字典树，又称单词查找树或键树，是一种树形结构
 
 Trie 的核心思想是空间换时间。利用字符串的公共前缀来降低查询时间的开销以达到提高效率的目的。
 
-![img](D:\OneDrive\Repositories\projects\website\content\post\go\algorithm\structures\assets\2012112521092438.png)
+![img](../../assets/images/algorithm/structures/tree/2012112521092438.png)
 
 #### 基本性质
 
@@ -886,7 +886,7 @@ Trie 的核心思想是空间换时间。利用字符串的公共前缀来降低
 - 词频统计。公共前缀可以减少内存。
 - 前缀匹配。
 
-![img](D:\OneDrive\Repositories\projects\website\content\post\go\algorithm\structures\assets\2012112521371883.png)
+![img](../../assets/images/algorithm/structures/tree/2012112521371883.png)
 
 #### 与哈希查询比较
 
@@ -1026,7 +1026,7 @@ func NewNode(value int) *Node {
 
 #### LL 型
 
-![img](D:\OneDrive\Repositories\projects\website\content\post\go\algorithm\structures\assets\v2-58c02894bce9e580481c075efc35f226_r.jpg)
+![img](../../assets/images/algorithm/structures/tree/v2-58c02894bce9e580481c075efc35f226_r.jpg)
 
 所谓 LL 型就是上图左边那种情况，即因为在根节点的左孩子的左子树添加了新节点，导致根节点的平衡因子变为 +2，二叉树失去平衡。对于这种情况，对节点 n 右旋一次即可。
 
@@ -1036,7 +1036,7 @@ RR 型的情况和 LL 型完全对称。只需要对节点 n 进行一次左旋�
 
 #### LR 型
 
-![img](D:\OneDrive\Repositories\projects\website\content\post\go\algorithm\structures\assets\v2-acc2de5f4d30d41a6b39b0c5a9b2dbbe_r.jpg)
+![img](../../assets/images/algorithm/structures/tree/v2-acc2de5f4d30d41a6b39b0c5a9b2dbbe_r.jpg)
 
 ![](../../assets/images/algorithm/structures/tree/left_right.png)
 

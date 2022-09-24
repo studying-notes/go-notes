@@ -13,7 +13,7 @@ draft: true  # 草稿
 
 ## 不同面试阶段参考问题
 
-![图片](D:\OneDrive\Repositories\projects\website\content\post\go\interview\personal\assets\v2-41e47f742be091d40494be53dda319a4_r.jpg)
+![图片](../../assets/images/interview/personal/final/v2-41e47f742be091d40494be53dda319a4_r.jpg)
 
 ## HR 初面
 

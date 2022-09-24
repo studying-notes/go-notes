@@ -1,6 +1,6 @@
 package math
 
-// Pow 快速幂运算
+// Pow 快速幂运算 即求 x 的 n 次方
 func Pow(x, n int) int {
 	ret := 1
 	for n != 0 {
