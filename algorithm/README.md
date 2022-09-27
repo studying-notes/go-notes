@@ -25,6 +25,7 @@ draft: true  # 草稿
 - [二叉树](structures/tree.md)
 - [数组](structures/array.md)
 - [字符串](structures/string.md)
+- [堆](structures/heap.md)
 
 ## 算法
 
