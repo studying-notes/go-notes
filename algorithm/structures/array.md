@@ -62,6 +62,7 @@ draft: false  # 草稿
 	- [求两个有序集合的交集](#求两个有序集合的交集)
 	- [对任务进行调度](#对任务进行调度)
 	- [对磁盘分区](#对磁盘分区)
+	- [合并两个有序数组](#合并两个有序数组)
 
 ## 生成指定范围的整数切片
 
@@ -1262,6 +1263,46 @@ func ExamplePartitionDisk() {
 	// true
 	// false
 }
+```
+
+## 合并两个有序数组
+
+一般是允许申请新的数组空间，如果不允许就是普通的排序，没有任何已排序带来的优势。
+
+```go
+// MergeSortedArrays 允许申请新的数组空间
+func MergeSortedArrays(a, b []int) (result []int) {
+	aLeft, bLeft := 0, 0
+	aRight, bRight := len(a), len(b)
+	result = make([]int, aRight+bRight)
+
+	for aLeft < aRight && bLeft < bRight {
+		if a[aLeft] > b[bLeft] {
+			result[aLeft+bLeft] = b[bLeft]
+			bLeft++
+		} else {
+			result[aLeft+bLeft] = a[aLeft]
+			aLeft++
+		}
+	}
+
+	// 处理多余元素
+	for aLeft < aRight {
+		result[aLeft+bLeft] = a[aLeft]
+		aLeft++
+	}
+
+	for bLeft < bRight {
+		result[aLeft+bLeft] = b[bLeft]
+		bLeft++
+	}
+
+	return
+}
+```
+
+```go
+
 ```
 
 ```go

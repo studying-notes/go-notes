@@ -33,3 +33,9 @@ draft: true  # 草稿
 - [字符串转成字节数组内存拷贝问题](answers/q020.md)
 - [http 包的内存泄漏](questions/q021.md)
 - [sync.Map 的用法](questions/q022.md)
+
+## 语法问题
+
+- [Golang 面试语言问题](language.md)
+
+- [Golang 面试网络问题](network.md)
