@@ -1,42 +1,54 @@
 package set
 
-type Set struct {
-	maps map[interface{}]bool
+// 集合数据结构实现
+
+type Set[T int | string] struct {
+	length int
+	m      map[T]bool
 }
 
-func NewSet() *Set {
-	return &Set{map[interface{}]bool{}}
+func NewSet[T int | string]() *Set[T] {
+	return &Set[T]{m: map[T]bool{}}
 }
 
-func (s *Set) Add(item interface{}) {
-	s.maps[item] = true
+func (s *Set[T]) Add(item T) {
+	if s.Contains(item) {
+		return
+	}
+
+	s.m[item] = true
+	s.length++
 }
 
-func (s *Set) Remove(item interface{}) {
-	delete(s.maps, item)
+func (s *Set[T]) Remove(item T) {
+	if !s.Contains(item) {
+		return
+	}
+
+	delete(s.m, item)
+	s.length--
 }
 
-func (s *Set) Contains(item interface{}) bool {
-	return s.maps[item]
+func (s *Set[T]) Contains(item T) bool {
+	return s.m[item]
 }
 
-// List 转换为无序列表
-func (s *Set) List() (list []interface{}) {
-	for item := range s.maps {
+func (s *Set[T]) ToList() (list []T) {
+	for item := range s.m {
 		list = append(list, item)
 	}
 	return list
 }
 
-func (s *Set) Len() int {
-	return len(s.List())
+func (s *Set[T]) Len() int {
+	return s.length
 }
 
-// IsEmpty 判断是否为空
-func (s *Set) IsEmpty() bool {
-	return s.Len() == 0
+func (s *Set[T]) IsEmpty() bool {
+	return s.length == 0
 }
 
-func (s *Set) Clear() {
-	s.maps = map[interface{}]bool{}
+func (s *Set[T]) Clear() {
+	s.m = map[T]bool{}
+	s.length = 0
 }

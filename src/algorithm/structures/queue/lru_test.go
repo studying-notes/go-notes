@@ -5,7 +5,7 @@ import (
 )
 
 func ExampleLRU() {
-	q := &LRU{size: 3, queue: &Queue{}, set: NewSet()}
+	q := &LRU{size: 3, queue: &Queue{}, set: NewSet[int]()}
 	q.AccessPage(1)
 	q.AccessPage(2)
 	q.AccessPage(3)

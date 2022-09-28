@@ -43,7 +43,7 @@ func RecursiveRemoveDupChild(node *LNode) *LNode {
 
 // SetRemoveDup 利用 Set
 func SetRemoveDup(head *LNode) {
-	set := NewSet()
+	set := NewSet[int]()
 	cur := head.Next
 	for cur.Next != nil {
 		if set.Contains(cur.Next.Data) {

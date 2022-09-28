@@ -11,7 +11,7 @@ import (
 type LRU struct {
 	size  int // 缓存最大值
 	queue *Queue
-	set   *Set
+	set   *Set[int]
 }
 
 // IsFull 判断缓存队列是否已满
@@ -23,7 +23,7 @@ func (q *LRU) IsFull() bool {
 func (q *LRU) EnQueueLeft(page int) {
 	// 队列满了就删除队尾缓存的页
 	if q.IsFull() {
-		q.set.Remove(q.queue.Pop())
+		q.set.Remove(q.queue.Pop().(int))
 	}
 	q.queue.EnQueueLeft(page)
 	// 同时添加到哈希表
