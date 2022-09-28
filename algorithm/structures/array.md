@@ -63,6 +63,8 @@ draft: false  # 草稿
 	- [对任务进行调度](#对任务进行调度)
 	- [对磁盘分区](#对磁盘分区)
 	- [合并两个有序数组](#合并两个有序数组)
+	- [求一个数组的所有排列](#求一个数组的所有排列)
+	- [最长方连续方波信号](#最长方连续方波信号)
 
 ## 生成指定范围的整数切片
 
@@ -1301,8 +1303,144 @@ func MergeSortedArrays(a, b []int) (result []int) {
 }
 ```
 
-```go
+## 求一个数组的所有排列
 
+给定参数 n，从 1 到 n 会有 n 个整数：1,2,3,n，这 n 个数字共有 n！种排列。
+
+按大小顺序升序列出所有排列情况，并一一标记，当= 3 时，所有排列如下：
+
+"123" "132" "213" "231" "312" "321" 
+
+给定 n 和 k，返回第 k 个排列。
+
+> 源码位置 *src/algorithm/structures/array/find_permutation.go*
+
+```go
+// 复制切片
+func deepcopy(src []int) []int {
+	dst := make([]int, len(src))
+	copy(dst, src)
+	return dst
+}
+
+// 比较数组的大小
+func moreThan(left, right []int) bool {
+	leftLength, rightLength := len(left), len(right)
+
+	if leftLength != rightLength {
+		return leftLength > rightLength
+	}
+
+	for i := 0; i < leftLength; i++ {
+		if left[i] != right[i] {
+			return left[i] > right[i]
+		}
+	}
+
+	return false
+}
+
+type Permutation struct {
+	result [][]int
+	array  []int
+}
+
+func NewPermutation(n int) *Permutation {
+	array := make([]int, n)
+	for i := range array {
+		array[i] = i + 1
+	}
+
+	return &Permutation{array: array}
+}
+
+func (p *Permutation) Perform(start int) {
+	if start == len(p.array)-1 {
+		p.result = append(p.result, deepcopy(p.array))
+	} else {
+		for i := start; i < len(p.array); i++ {
+			p.array[start], p.array[i] = p.array[i], p.array[start]
+			p.Perform(start + 1)
+			p.array[start], p.array[i] = p.array[i], p.array[start]
+		}
+	}
+}
+
+func (p *Permutation) Sort() {
+	// 已经基本有序，所以用一遍冒泡排序即可
+	for i := 1; i < len(p.result); i++ {
+		if moreThan(p.result[i-1], p.result[i]) {
+			p.result[i-1], p.result[i] = p.result[i], p.result[i-1]
+		}
+	}
+}
+```
+
+## 最长方连续方波信号
+
+输入一串方波信号，求取最长的完全连续交替方波信号，并将其输出，如果有相同长度的交替方波信号，输出任一即可，方波信号高位用 1 标识，低位用 0 标识，如图：
+
+- 一个完整的信号一定以 0 开始然后以 0 结尾，即 010 是一个完整信号，但 101，1010，0101 不是。
+- 输入的一串方波信号是由一个或多个完整信号组成。
+- 两个相邻信号之间可能有 0 个或多个低位，如 0110010，011000010。
+- 同一个信号中可以有连续的高位，如 01110101011110001010，前 14 位是一个具有连续高位的信号。
+- 完全连续交替方波是指 10 交替，如 01010。
+
+```go
+const (
+	low int = iota
+	high
+)
+
+func FindLongestSquareContinuousSquareWaveSignal(array []int) []int {
+	var (
+		begin, end       int // 当前信号
+		maxBegin, maxEnd int // 最长的信号
+	)
+
+	for i := 1; i < len(array); i++ {
+		if array[i-1] == low && array[i] == low {
+			// 00
+			if begin == 0 || begin == i-1 {
+				begin = i
+			} else if end == 0 {
+				end = i
+			}
+		} else if array[i-1] == high && array[i] == high {
+			// 11
+			begin, end = 0, 0
+		} else if i == len(array)-1 && array[i-1] == high && array[i] == low {
+			// 10
+			end = i
+		}
+
+		if begin != 0 && end != 0 && end-begin > maxEnd-maxBegin {
+			maxBegin, maxEnd = begin, end
+			begin, end = 0, 0
+		}
+	}
+
+	return array[maxBegin:maxEnd]
+}
+```
+
+```go
+func ExampleFindLongestSquareContinuousSquareWaveSignal() {
+	arrays := [][]int{
+		{0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0},
+		{0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0},
+		{0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1},
+	}
+
+	for i := range arrays {
+		fmt.Println(FindLongestSquareContinuousSquareWaveSignal(arrays[i]))
+	}
+
+	// Output:
+	// [0 1 0 1 0]
+	// [0 1 0 1 0 1 0 1 0]
+	// []
+}
 ```
 
 ```go
