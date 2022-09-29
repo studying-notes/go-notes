@@ -32,3 +32,4 @@ draft: true  # 草稿
 - [排序算法](sort.md)
 - [大数据算法](big_data.md)
 - [排列组合](permutation.md)
+- [基本数字运算](math/README.md)

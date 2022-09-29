@@ -1,10 +1,6 @@
-package main
+package math
 
-import "fmt"
-
-func main() {
-	n := 11099
-
+func FindTheSmallestUniqueNumber(n int) (m int) {
 	length := 0
 	array := make([]int, 32)
 
@@ -30,5 +26,9 @@ func main() {
 		}
 	}
 
-	fmt.Println(array)
+	for i := 0; i < length; i++ {
+		m = m*10 + array[i]
+	}
+
+	return m
 }
