@@ -3,32 +3,21 @@ package main
 import "fmt"
 
 func main() {
-	n := 11099
+	m := "abcdxmng"
+	var n []byte
+	var i, j int
 
-	length := 0
-	array := make([]int, 32)
-
-	for n > 0 {
-		array[31-length] = n % 10
-		n = n / 10
-		length++
-	}
-
-	array = array[32-length:]
-
-	for i := 1; i < length; i++ {
-		if array[i-1] == array[i] {
-			array[i]++
-
-			for j := i + 1; j < length; j++ {
-				array[j] = 0
-				if j+1 < length {
-					array[j+1] = 1
-					j++
-				}
+	for i < len(m) {
+		maxIndex := i
+		maxValue := m[i]
+		for j = i + 1; j < len(m); j++ {
+			if m[j] > maxValue {
+				maxIndex, maxValue = j, m[j]
 			}
 		}
+		i = maxIndex + 1
+		n = append(n, maxValue)
 	}
 
-	fmt.Println(array)
+	fmt.Println(string(n))
 }

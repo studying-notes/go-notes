@@ -50,14 +50,15 @@ draft: false  # 草稿
 - [统计字符串中连续重复字符的个数](#统计字符串中连续重复字符的个数)
 - [求最长递增子序列的长度](#求最长递增子序列的长度)
 - [求一个串中出现的第一个最长重复子串](#求一个串中出现的第一个最长重复子串)
+	- [利用求最长公共子序列的思想](#利用求最长公共子序列的思想)
+	- [后缀数组法](#后缀数组法)
 - [求解字符串中字典序最大的子序列](#求解字符串中字典序最大的子序列)
+	- [顺序遍历法](#顺序遍历法)
+	- [逆序遍历法](#逆序遍历法)
+- [判断一个字符串是否由另外一个字符串旋转得到](#判断一个字符串是否由另外一个字符串旋转得到)
 - [求字符串的编辑距离](#求字符串的编辑距离)
-- [在二维数组中寻找最短路线](#在二维数组中寻找最短路线)
-- [截取包含中文的字符串](#截取包含中文的字符串)
 - [求相对路径](#求相对路径)
 - [查找到达目标词的最短链长度](#查找到达目标词的最短链长度)
-- [查找到达目标词的最短链长度](#查找到达目标词的最短链长度-1)
-- [查找到达目标词的最短链长度](#查找到达目标词的最短链长度-2)
 
 ## 求一个字符串的所有排列
 
@@ -781,91 +782,415 @@ func ExampleSortStringSequences() {
 
 给定一个字符串数组，找出数组中最长的字符串，使其能由数组中其他的字符串组成。
 
-例如给定字符串数组 {"test", "tester", "testertest", "testing", "apple", "seattle", "banana", "batting", "ngcat", "batti", "bat", "testingtester", "testbattingcat"}。满足题目要求的字符串为 “testbattingcat”，因为这个字符串可以由数组中的字符串 “test", "batti” 和 “ngcat” 组成。
+例如，给定字符串数组 {"test", "tester", "testertest", "testing", "apple", "seattle", "banana", "batting", "ngcat", "batti", "bat", "testingtester", "testbattingcat"}，满足题目要求的字符串为 “testbattingcat”，因为这个字符串可以由数组中的字符串 “test", "batti” 和 “ngcat” 组成。
 
 既然题目要求找最长的字符串，那么可以采用贪心的方法，首先对字符串按长度由大到小进行排序，从最长的字符串开始查找，如果能由其他字符串组成，就是满足题目要求的字符串。
 
 接下来就需要考虑如何判断一个字符串能否由数组中其他的字符串组成，主要的思路为：找出字符串的所有可能的前缀，判断这个前缀是否在字符数组中，如果在，那么用相同的方法递归地判断除去前缀后的子串是否能由数组中其他的子串组成。
 
-```go
-
-```
+> 源码位置 *src/algorithm/structures/string/find_longest_word.go*
 
 ```go
+type LongestWord struct {
+	words []string
+}
 
+func NewLongestWord(words []string) *LongestWord {
+	w := &LongestWord{words: words}
+	w.sort()
+	return w
+}
+
+func (w *LongestWord) sort() {
+	sort.Slice(w.words, func(i, j int) bool {
+		return len(w.words[i]) > len(w.words[j])
+	})
+}
+
+// 判断字符串是否在字符串数组中
+func (w *LongestWord) find(word string) bool {
+	for i := range w.words {
+		if w.words[i] == word {
+			return true
+		}
+	}
+	return false
+}
+
+func (w *LongestWord) isContains(word string, length int) bool {
+	if word == "" {
+		return true
+	}
+
+	ll := len(word)
+
+	// 循环取前缀
+	for i := 1; i <= ll; i++ {
+		if i == length {
+			return false
+		}
+
+		if w.find(word[0:i]) {
+			if w.isContains(word[i:], length) {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (w *LongestWord) GetLongestWord() string {
+	for i := range w.words {
+		if w.isContains(w.words[i], len(w.words[i])) {
+			return w.words[i]
+		}
+	}
+	return ""
+}
 ```
+
+排序的时间复杂度为 O(nlogn)，假设单词的长度为 m，那么有 m 种前缀，判断一个单词是否在数组中的时间复杂度为 O(mn)，由于总共有 n 个字符串，因此，判断所需的时间复杂度为 `O(m * n ^ 2)`。因此，总的时间复杂度为 `O(nlogn+m * n ^ 2)`。当 n 比较大的时候，时间复杂度为 `O(n ^ 2)`。
+
 
 ## 统计字符串中连续重复字符的个数
 
-```go
+用递归的方式实现一个求字符串中连续出现相同字符的最大值。
 
+例如，字符串 "aaabbcc" 中连续出现字符 'a' 的最大值为 3，字符串“abbc”中连续出现字符 ‘b’的最大值为 2。
+
+```go
+// 用递归的方式实现一个求字符串中连续出现相同字符的最大值
+func getMaxRepeatCountRecursion(s string, start, currentCount, maxCount int) int {
+	chars := []rune(s)
+
+	if start < len(chars) {
+		if chars[start] == chars[start-1] {
+			currentCount++
+		} else {
+			if currentCount > maxCount {
+				maxCount = currentCount
+			}
+			currentCount = 1
+		}
+		return getMaxRepeatCountRecursion(s, start+1, currentCount, maxCount)
+	}
+
+	return maxCount
+}
+```
+
+由于这种方法对字符串进行了一次遍历，因此，算法的时间复杂度为 O(n)。这种方法也没有申请额外的存储空间。
+
+如果不要求采用递归的方法，那么算法的实现就非常简单，只需要在遍历字符串的时候定义两个额外的变量 curMaxLen 与 maxLen，分别记录与当前遍历的字符重复的连续字符的个数和遍历到目前为止找到的最长的连续重复字符的个数。在遍历的时候，如果相邻的字符相等，则执行 curMaxLen+1；否则，更新最长连续重复字符的个数，即 `maxLen=max(curMaxLen, maxLen)` ，由于碰到了新的字符，因此，curMaxLen=1。
+
+```go
+func getMaxRepeatCountLoop(s string) (int, string) {
+	maxCount := 0
+	maxCharIndex := 1
+	currentCount := 1
+	chars := []rune(s)
+
+	for i := 1; i < len(chars); i++ {
+		// fmt.Printf("%s %s %d %d\n", string(chars[i-1]), string(chars[i]), currentCount, maxCount)
+		if chars[i] == chars[i-1] {
+			currentCount++
+		} else {
+			if currentCount > maxCount {
+				maxCount = currentCount
+				maxCharIndex = i - 1
+			}
+			currentCount = 1
+		}
+		// fmt.Printf("%s %s %d %d\n", string(chars[i-1]), string(chars[i]), currentCount, maxCount)
+	}
+
+	return maxCount, string(chars[maxCharIndex])
+}
 ```
 
 ## 求最长递增子序列的长度
 
-```go
+假设 `L=<a1, a2, …, an>` 是 n 个不同的**实数**的序列，L 的递增子序列是这样一个子序列 `Lin=<aK1, ak2, …, akm>`，其中，`k1<k2<…<km且aK1<ak2<…<akm`。求最大的 m 值。
 
+```go
+func getLengthOfLongestIncreasingSubstring(s string) string {
+	maxEnd := 0
+	maxLength := 1
+	currentLength := 1
+
+	for i := 1; i < len(s); i++ {
+		if s[i] > s[i-1] {
+			currentLength++
+		} else {
+			if currentLength > maxLength {
+				maxLength = currentLength
+				maxEnd = i
+			}
+			currentLength = 1
+		}
+	}
+
+	return s[maxEnd-maxLength : maxEnd]
+}
 ```
 
 ## 求一个串中出现的第一个最长重复子串
 
+给定一个字符串，找出这个字符串中最长的重复子串，比如给定字符串“banana”，子字符串“ana”出现 2 次，因此最长的重复子串为“ana”。
+
+### 利用求最长公共子序列的思想
+
 ```go
+func getLongestRepeatingSubstring(s string) string {
+	length := len(s)
+	maxLength := 1
+	maxEnd := 0
+
+	matrix := array.InitMatrix(length+1, length+1)
+
+	for i := 1; i <= length; i++ {
+		for j := 1; j <= length; j++ {
+			if s[i-1] == s[j-1] && i != j {
+				matrix[i][j] = matrix[i-1][j-1] + 1
+				if matrix[i][j] > maxLength {
+					maxLength = matrix[i][j]
+					maxEnd = i
+				}
+			}
+		}
+	}
+
+	// array.PrintMatrix(matrix)
+
+	return s[maxEnd-maxLength : maxEnd]
+}
+```
+
+### 后缀数组法
+
+后缀数组是一个字符串的所有后缀的排序数组。
+
+后缀是指从某个位置 i 开始到整个串末尾结束的一个子串。字符串 r 的从 第 i 个字符开始的后缀表示为 Suffix(i)，也就是 `Suffix(i)=r[i..len(r)]`。
+
+例如：字符串 “banana”的所有后缀如下：
 
 ```
+0 banana
+1 anana
+2 nana
+3 ana
+4 na
+5 a
+```
+
+排序后：
+
+```
+5 a
+3 ana
+1 anana
+0 banana
+4 na
+2 nana
+```
+
+所以“banana” 的后缀数组为： {5, 3, 1, 0, 4, 2} 。
+
+由此可以把找字符串的重复子串的问题转换为从后缀排序数组中，通过对比相邻的两个子串的公共串的长度找出最长的公共串的问题。
+
+在上例中 3:ana 与 1:anana 的最长公共子串为 ana。这也就是这个字符串的最常公共子串。
+
+这种方法在生成后缀数组的复杂度为 O(n)，排序的算法复杂度为 `O(nlogn*n)`，最后比较相邻字符串的操作的时间复杂度为 O(n)，所以，算法的时间复杂度为 `O(nlogn*n)`。此外，由于申请了长度为 n 的额外的存储空间，因此空间复杂度为 O(n)。
 
 ## 求解字符串中字典序最大的子序列
 
-```go
+给定一个字符串，求串中字典序最大的子序列。
 
+字典序最大的子序列是这样构造的：给定字符串 a0a1 … an -1，首先在字符串 a0a1 … an -1 找到值最大的字符 ai，然后在剩余的字符串 ai+1 … an -1 中找到值最大的字符 aj，然后在剩余的 aj+1 … an -1 中找到值最大的字符 ak …直到字符串的长度为 0，则 aiajak …即为答案。
+
+### 顺序遍历法
+
+最直观的思路就是首先遍历一次字符串，找出最大的字符 ai，接着从 ai 开始遍历再找出最大的字符，依此类推直到字符串长度为 0。
+
+```go
+func getLexicographicLongestSubstring(m string) string {
+	var i, j int
+	var n bytes.Buffer
+
+	for i < len(m) {
+		maxIndex, maxValue := i, m[i]
+		for j = i + 1; j < len(m); j++ {
+			if m[j] > maxValue {
+				maxIndex, maxValue = j, m[j]
+			}
+		}
+		i = maxIndex + 1
+		n.WriteByte(maxValue)
+	}
+
+	return n.String()
+}
+```
+
+这种方法在最坏的情况下（字符串中的字符按降序排列），时间复杂度为 O(n^2) ；在最好的情况下（字符串中的字符按升序排列），时间复杂度为 O(n)。此外这种方法需要申请 n+1 个额外的存储空间，因此，空间复杂度为 O(n)。
+
+### 逆序遍历法
+
+通过对上述运行结果进行分析，发现 an -1 一定在所求的子串中，接着逆序遍历字符串，大于或等于 an -1 的字符也一定在子串中，依次类推，一直往前遍历，只要遍历到的字符大于或等于子串首字符时，就把这个字符加到子串首。
+
+由于这种方法首先找到的是子串的最后一个字符，最后找到的是子串的第一个字符，因此，在实现的时候首先按照找到字符的顺序把找到的字符保存到数组中，最后再对字符数组进行逆序从而得到要求的字符。以 "acbdxmng" 为例，首先，字符串的最后一个字符‘ g ’一定在子串中，接着逆向遍历找到大于等于‘ g ’的字符‘ n ’加入到子串中“gn”（子串的首字符为‘ n ’），接着继续逆向遍历找到大于或等于‘ n ’的字符‘ x ’加入到子串中“gnx”，接着继续遍历，没有找到比‘ x ’大的字符。最后对子串“gnx”逆序得到“xng”。
+
+这种方法只需要对字符串遍历一次，因此，时间复杂度为 O(n)。此外，这种方法需要申请 n+1 个额外的存储空间，因此，空间复杂度为 O(n)。
+
+## 判断一个字符串是否由另外一个字符串旋转得到
+
+给定一个能判断一个单词是否为另一个单词的子字符串的方法，记为 isSubstring。如何判断 s2 是否能通过旋转 s1 得到（只能使用一次 isSubstring 方法）。
+
+例如：“waterbottle”可以通过字符串“erbottlewat”旋转得到。
+
+```go
+func isRotatedString(a, b string) bool {
+	al, bl := len(a), len(b)
+	if al != bl {
+		return false
+	}
+
+	var ai, bi int
+
+	for bi < bl && a[ai] != b[bi] {
+		bi++
+	}
+
+	// fmt.Println(a, b[bi:])
+
+	for bi+ai < bl && a[ai] == b[bi+ai] {
+		ai++
+	}
+
+	// fmt.Println(a[ai:], b[:bi])
+
+	return a[ai:] == b[:bi]
+}
 ```
 
 ## 求字符串的编辑距离
 
+编辑距离又称 Levenshtein 距离，是指两个字符串之间，由一个转成另一个所需的最少编辑操作次数。许可的编辑操作包括将一个字符替换成另一个字符、插入一个字符、删除一个字符。
+
+请设计并实现一个算法来计算两个字符串的编辑距离，并计算其复杂度。
+
+在某些应用场景下，替换操作的代价比较高，假设替换操作的代价是插入和删除的两倍，算法该如何调整？
+
+本题可以使用动态规划的方法来解决，具体思路如下：
+
+给定字符串 s1，s2，首先定义一个函数 `D(i,j)(0<=i<=strlen(s1),0<=j<=strlen(s2))`，用来表示第一个字符串 s1 长度为 i 的子串与第二个字符串 s2 长度为 j 的子串的编辑距离。
+
+从 s1 变到 s2 可以通过如下三种操作：
+
+- 添加操作。假设已经计算出 D(i, j -1) 的值（s1[0 … i] 与 s2[0 … j -1] 的编辑距离），则 `D(i, j) = D(i, j -1)+1`（s1 长度为 i 的字串后面添加 s2[j] 即可）。
+- 删除操作。假设已经计算出 D(i -1, j) 的值（s1[0 … i -1] 到 s2[0 … j] 的编辑距离），则 `D(i, j) = D(i -1, j)+1`（s1 长度为 i 的字串删除最后的字符 s1[j] 即可）。
+- 替换操作。假设已经计算出 `D(i -1, j -1)` 的值（s1[0 … i -1] 与 s2[0 … j -1] 的编辑距离），如果 s1[i] = s2[j]，则 `D(i, j) = D(i -1, j -1)`，如果 s1[i] != s2[j]，则 `D(i, j) = D(i -1, j -1)+1`（替换 s1[i] 为 s2[j]，或替换 s2[j] 为 s1[i]）。
+
+此外，D(0，j) = j 且 D(i，0) = i（从一个字符串变成长度为 0 的字符串的代价为这个字符串的长度）。
+
+由此可以得出如下实现方式：对于给定的字符串 s1，s2，定义一个二维数组 D，则有以下几种可能性。
+
+- 如果i==0，那么D[i，j]=j (0<=j<=strlen(s2))。
+- 如果j==0，那么D[i，j]=i (0<=i<=strlen(s1))。
+- 如果i>0且j>0:
+  - 如果s1[i]==s2[j]，那么D (i, j)=min{edit(i-1, j)+1, edit(i, j-1)+1, edit(i-1, j-1)}。
+  - 如果s1[i]!=s2[j]，那么D (i, j)=min{edit(i-1, j)+1, edit(i, j-1)+1, edit(i-1, j-1)+1}。
+
+通过以上分析可以发现，对于第一个问题可以直接采用上述的方法来解决。对于第二个问题，由于替换操作是插入或删除操作的两倍，因此，只需要修改如下条件即可：
+
+如果 s1[i]!=s2[j]，那么 D (i, j)=min{edit(i-1, j)+1, edit(i, j-1)+1, edit(i-1, j-1)+2}。
+
 ```go
+func getStringEditDistance(a, b string) int {
+	al, bl := len(a), len(b)
 
-```
+	if al == 0 || bl == 0 {
+		return al + bl
+	}
 
-## 在二维数组中寻找最短路线
+	matrix := array.InitMatrix(al+1, bl+1)
 
-```go
+	for i := 1; i <= al; i++ {
+		matrix[i][0] = i
+	}
 
-```
+	for j := 1; j <= bl; j++ {
+		matrix[0][j] = j
+	}
 
-## 截取包含中文的字符串
+	// array.PrintMatrix(matrix)
 
-```go
+	for i := 1; i <= al; i++ {
+		for j := 1; j <= bl; j++ {
+			matrix[i][j] = math.MinN(matrix[i][j-1], matrix[i-1][j], matrix[i-1][j-1]) + 1
+			if a[i-1] == b[j-1] {
+				matrix[i][j]--
+			}
+		}
+	}
 
+	// array.PrintMatrix(matrix)
+
+	return math.MinN(matrix[al-1][bl-1])
+}
 ```
 
 ## 求相对路径
 
-```go
+写一个函数，根据两个文件的绝对路径算出其相对路径。
 
+```go
+func findRelativePath(a, b string) string {
+	al, bl := len(a), len(b)
+
+	var i, j int
+	var s = "../"
+
+	for i < al && i < bl && a[i] == b[i] {
+		i++
+	}
+
+	for j = i; j < al; j++ {
+		if a[j] == '/' {
+			s += "../"
+		}
+	}
+
+	return s + b[i:]
+}
 ```
 
 ## 查找到达目标词的最短链长度
 
+给定一个字典和两个长度相同的“开始”和“目标”的单词。找到从“开始”到“目标”最小链的长度，如果它存在，那么这样链中的**相邻单词只有一个字符不同**，而链中的每个单词都是有效的单词，即它存在于字典中。可以假设字典中存在“目标”字，且所有目标字的长度相同。
+
+例如，给定一个单词字典 `{pooN, pbcc, zamc, poIc, pbca, pbIc, poIN}`，start=TooN，target=pbca，输出结果为 7。因为 `TooN(start)-pooN-poIN-poIc-pbIc-pbcc-pbca(target)`。
+
+从给定的字符串开始遍历所有相邻（两个单词只有一个不同的字符）的单词，直到遍历找到目标单词，或者遍历完所有的单词为止。
+
+```go
+func isAdjacent(a, b string) bool {
+	difference := 0
+	for i := range a {
+		if a[i] != b[i] {
+			difference++
+		}
+		if difference > 1 {
+			return false
+		}
+	}
+	return difference == 1
+}
+```
+
+这种方法的时间复杂度为 O(n^2*m)，其中，n 为单词的个数，m 为字符串的长度。
+
 ```go
 
 ```
-
-## 查找到达目标词的最短链长度
-
-```go
-
-```
-
-## 查找到达目标词的最短链长度
-
-```go
-
-```
-
-```go
-
-```
-
-```go
-
-```
-

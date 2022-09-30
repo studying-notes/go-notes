@@ -65,6 +65,7 @@ draft: false  # 草稿
 	- [合并两个有序数组](#合并两个有序数组)
 	- [求一个数组的所有排列](#求一个数组的所有排列)
 	- [最长方连续方波信号](#最长方连续方波信号)
+	- [在二维数组中寻找最短路线](#在二维数组中寻找最短路线)
 
 ## 生成指定范围的整数切片
 
@@ -1442,6 +1443,44 @@ func ExampleFindLongestSquareContinuousSquareWaveSignal() {
 	// []
 }
 ```
+
+## 在二维数组中寻找最短路线
+
+寻找一条从左上角（`arr[0][0]`）到右下角（`arr[m-1][n-1]`）的路线，使得沿途经过的数组中的整数的和最小。
+
+动态规划法：
+
+```go
+const MaxInt32 = 1<<31 - 1
+
+func findShortestRouteIn2dArray(routes [][]int) int {
+	rows, columns := len(routes), len(routes[0])
+
+	matrix := InitMatrix(rows+1, columns+1)
+
+	for i := 2; i <= rows; i++ {
+		matrix[i][0] = MaxInt32
+	}
+
+	for j := 2; j <= columns; j++ {
+		matrix[0][j] = MaxInt32
+	}
+
+	// PrintMatrix(matrix)
+
+	for i := 1; i <= rows; i++ {
+		for j := 1; j <= columns; j++ {
+			matrix[i][j] = math.MinN(matrix[i-1][j], matrix[i][j-1]) + routes[i-1][j-1]
+		}
+	}
+
+	// PrintMatrix(matrix)
+
+	return matrix[rows][columns]
+}
+```
+
+这种方法对二维数组进行了一次遍历，因此，其时间复杂度为 `O(m*n)`。此外由于这种方法同样申请了一个二维数组来保存中间结果，因此，其空间复杂度也为 `O(m*n)`。
 
 ```go
 
