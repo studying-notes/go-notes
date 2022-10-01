@@ -2,7 +2,7 @@
 date: 2022-09-09T09:17:43+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
-title: "Go 内部实现解析目录"  # 文章标题
+title: "Go 语言底层原理剖析"  # 文章标题
 url:  "posts/go/docs/internal/README"  # 设置网页永久链接
 tags: [ "Go", "readme" ]  # 标签
 categories: [ "Go 学习笔记" ]  # 分类
@@ -10,6 +10,14 @@ categories: [ "Go 学习笔记" ]  # 分类
 toc: true  # 目录
 draft: true  # 草稿
 ---
+
+## 编译器
+
+## 浮点数
+
+## 类型推断
+
+## 常量
 
 ## 协程
 
