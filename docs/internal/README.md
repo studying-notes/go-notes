@@ -14,6 +14,7 @@ draft: true  # 草稿
 1. [深入 Go 语言编译器](compiler/README.md)
 2. [浮点数设计原理](float/README.md)
 3. [类型推断](type_inference/README.md)
+4. [常量与隐式类型转换](constant/README.md)
 
 ## 协程
 
