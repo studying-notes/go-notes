@@ -38,10 +38,10 @@ type T struct {
 ```go
 type testContext struct {
     // 匹配器，用于管理测试名称匹配、过滤等
-	match *matcher 
+	match *matcher
 
     // 互斥锁，用于控制 testContext 成员的互斥访问
-	mu sync.Mutex 
+	mu sync.Mutex
 
 	// 用于通知测试可以并发执行的控制管道，测试并发达到最大限制时，需要阻塞等待该管道的通知事件
 	startParallel chan bool

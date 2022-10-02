@@ -32,7 +32,7 @@ fmt.Println(strings.Title("here comes o'brian"))
 在 strings.Title 中提到，可以使用 `golang.org/x/text/cases` 代替 strings.Title，具体来说就是 cases.Title。
 
 ```bash
-go get golang.org/x/text/cases 
+go get golang.org/x/text/cases
 ```
 
 该包提供了通用和特定于语言的 case map，其中有一个 Title 函数，签名如下：

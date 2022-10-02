@@ -50,5 +50,3 @@ https://github.com/pkg/sftp/tree/master/examples
 ```go
 
 ```
-
-

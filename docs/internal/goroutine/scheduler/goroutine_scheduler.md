@@ -101,7 +101,7 @@ ThreadLocal self *m
 //schedule函数实现调度逻辑
 func schedule() {
     // 创建和初始化m结构体对象，并赋值给私有全局变量self
-    self = initm()  
+    self = initm()
     for { //调度循环
           if (self.p.runqueue is empty) {
                  // 根据某种算法从全局运行队列中找出一个需要运行的goroutine
@@ -132,7 +132,7 @@ stack结构体主要用来记录 goroutine 所使用的栈的信息，包括栈�
 // The bounds of the stack are exactly [lo, hi),
 // with no implicit data structures on either side.
 //用于记录goroutine使用的栈的起始和结束位置
-type stack struct {  
+type stack struct {
     lo uintptr    // 栈顶，指向内存低地址
     hi uintptr    // 栈底，指向内存高地址
 }
@@ -160,12 +160,12 @@ type gobuf struct {
     pc   uintptr  // 保存CPU的rip寄存器的值
     g    guintptr // 记录当前这个gobuf对象属于哪个goroutine
     ctxt unsafe.Pointer
- 
+
     // 保存系统调用的返回值，因为从系统调用返回之后如果p被其它工作线程抢占，
     // 则这个goroutine会被放入全局运行队列被其它工作线程调度，其它线程需要知道系统调用的返回值。
-    ret  sys.Uintreg  
+    ret  sys.Uintreg
     lr   uintptr
- 
+
     // 保存CPU的rip寄存器的值
     bp   uintptr // for GOEXPERIMENT=framepointer
 }
@@ -185,7 +185,7 @@ type g struct {
     // stackguard1 is the stack pointer compared in the C stack growth prologue.
     // It is stack.lo+StackGuard on g0 and gsignal stacks.
     // It is ~0 on other goroutine stacks, to trigger a call to morestackc (and crash).
- 
+
     // 记录该goroutine使用的栈
     stack       stack   // offset known to runtime/cgo
     // 下面两个成员用于栈溢出检查，实现栈的自动伸缩，抢占调度也会用到stackguard0
@@ -193,12 +193,12 @@ type g struct {
     stackguard1 uintptr // offset known to liblink
 
     ......
- 
+
     // 此goroutine正在被哪个工作线程执行
     m              *m      // current m; offset known to arm liblink
     // 保存调度信息，主要是几个寄存器的值
     sched          gobuf
- 
+
     ......
     // schedlink字段指向全局运行队列中的下一个g，
     //所有位于全局运行队列中的g形成一个链表
@@ -227,16 +227,16 @@ type m struct {
     mstartfn      func()
     // 指向工作线程正在运行的goroutine的g结构体对象
     curg          *g       // current running goroutine
- 
+
     // 记录与当前工作线程绑定的p结构体对象
     p             puintptr // attached p for executing go code (nil if not executing go code)
     nextp         puintptr
     oldp          puintptr // the p that was attached before executing a syscall
-   
+
     // spinning状态：表示当前工作线程正在试图从其它工作线程的本地运行队列偷取goroutine
     spinning      bool // m is out of work and is actively looking for work
     blocked       bool // m is blocked on a note
-   
+
     // 没有goroutine需要运行时，工作线程睡眠在这个park成员上，
     // 其它线程通过这个park唤醒该工作线程
     park          note
@@ -345,7 +345,7 @@ type schedt struct {
         noStack   gList // Gs without stacks
         n              int32
     }
- 
+
     ......
 }
 ```

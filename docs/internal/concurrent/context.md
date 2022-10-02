@@ -80,7 +80,7 @@ type Context interface {
 
 - 因 deadline 关闭：“context deadline exceeded”
 
-- 因主动关闭："context canceled" 
+- 因主动关闭："context canceled"
 
 - 当 context 关闭后，Err() 返回 context 的关闭原因
 

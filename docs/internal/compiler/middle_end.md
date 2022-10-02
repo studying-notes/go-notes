@@ -162,7 +162,7 @@ func main() {
 在上面的代码中，当在编译时加入 -m=2 标志时，可以打印出函数的内联调试信息。可以看出，small 函数可以被内联，而 fib（斐波那契）函数为递归函数，不能被内联。
 
 ```
-go tool compile -m=2 main.go | grep inline   
+go tool compile -m=2 main.go | grep inline
 ```
 
 ```

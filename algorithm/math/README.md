@@ -543,7 +543,7 @@ func getPower(d, n int) (m int) {
 	}
 
 	m = getPower(d, Abs(n/2))
-	
+
 	if n > 0 {
 		if n%2 == 1 {
 			return m * m * d

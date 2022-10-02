@@ -201,7 +201,7 @@ import (
 func main() {
 	var stringsList []*string
 	var s string
-	
+
     for i := 0; i < 10; i++ {
 		s = fmt.Sprintf("#%s", strconv.Itoa(i))
 		fmt.Println(s)

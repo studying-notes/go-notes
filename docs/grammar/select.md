@@ -67,13 +67,13 @@ selectgo 实现伪代码如下：
 
 ```go
 func selectgo(cas0 *scase, order0 *uint16, ncases int) (int, bool) {
-//1. 锁定 scase 语句中所有的 channel 
+//1. 锁定 scase 语句中所有的 channel
 
- //2. 按照随机顺序检测 scase 中的 channel 是否 ready 
+ //2. 按照随机顺序检测 scase 中的 channel 是否 ready
 
- // # 如果 case 可读，则读取 channel 中数据，解锁所有的 channel，然后返回 (case index, true) 
+ // # 如果 case 可读，则读取 channel 中数据，解锁所有的 channel，然后返回 (case index, true)
 
- // # 如果 case 可写，则将数据写入 channel，解锁所有的 channel，然后返回 (case index, false) 
+ // # 如果 case 可写，则将数据写入 channel，解锁所有的 channel，然后返回 (case index, false)
 
  // # 所有 case 都未 ready，则解锁所有的 channel，然后返回（default index, false）
 
@@ -83,9 +83,9 @@ func selectgo(cas0 *scase, order0 *uint16, ncases int) (int, bool) {
 
  // # 当将协程转入阻塞，等待被唤醒
 
- //4. 唤醒后返回 channel 对应的 case index 
+ //4. 唤醒后返回 channel 对应的 case index
 
- // # 如果是读操作，解锁所有的 channel，然后返回 (case index, true) 
+ // # 如果是读操作，解锁所有的 channel，然后返回 (case index, true)
 
  // # 如果是写操作，解锁所有的 channel，然后返回 (case index, false)
 }

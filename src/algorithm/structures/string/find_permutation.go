@@ -18,4 +18,3 @@ func Permutation(s []rune, start int) {
 		}
 	}
 }
-

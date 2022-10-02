@@ -46,8 +46,8 @@ json 的反序列化在文本解析和网络通信过程中非常常见，当程
 
 ```go
 var studentPool = sync.Pool{
-    New: func() interface{} { 
-        return new(Student) 
+    New: func() interface{} {
+        return new(Student)
     },
 }
 ```

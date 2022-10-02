@@ -52,7 +52,7 @@ func main() {
 	conn, err := ssh.Dial("tcp", addr, &config)
 	if err != nil {
 		log.Fatalf("unable to connect to [%s]: %v", addr, err)
-	}	
+	}
 	defer conn.Close()
 
 	c, err := sftp.NewClient(conn, sftp.MaxPacket(*SIZE))

@@ -99,7 +99,7 @@ M 就是对应操作系统的线程，最多会有 GOMAXPROCS 个活跃线程能
 
 ```go
 type m struct {
-	g0   *g 
+	g0   *g
 	curg *g
 	...
 }

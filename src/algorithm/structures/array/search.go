@@ -25,7 +25,7 @@ func IsContainK(array2d [][]int, k int) bool {
 	if len(array2d) == 0 {
 		return false
 	}
-	
+
 	// 行列
 	rows, columns := len(array2d), len(array2d[0])
 

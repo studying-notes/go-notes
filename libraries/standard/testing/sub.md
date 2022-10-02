@@ -91,7 +91,7 @@ go test main_test.go -v
 === RUN   TestSub/A=1
 === RUN   TestSub/A=2
 === RUN   TestSub/B=1
---- PASS: TestSub (0.00s)        
+--- PASS: TestSub (0.00s)
     --- PASS: TestSub/A=1 (0.00s)
     --- PASS: TestSub/A=2 (0.00s)
     --- PASS: TestSub/B=1 (0.00s)

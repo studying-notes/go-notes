@@ -710,7 +710,7 @@ func findSubArray(array []int) []int {
 ```go
 func findOnce(array []int) int {
 	var s int
-	
+
 	for _, v := range array {
 		s ^= v
 	}
@@ -918,7 +918,7 @@ func IsContainK(array2d [][]int, k int) bool {
 	if len(array2d) == 0 {
 		return false
 	}
-	
+
 	// 行列
 	rows, columns := len(array2d), len(array2d[0])
 
@@ -943,7 +943,7 @@ func IsContainK(array2d [][]int, k int) bool {
 ```
 a[j]-a[i]<=L
 a[j+1]-a[i]>L
-``` 
+```
 
 这两个条件的 `j` 与 `i` 中间的所有点个数中的最大值，即 `j-i+1` 最大。
 
@@ -1310,7 +1310,7 @@ func MergeSortedArrays(a, b []int) (result []int) {
 
 按大小顺序升序列出所有排列情况，并一一标记，当= 3 时，所有排列如下：
 
-"123" "132" "213" "231" "312" "321" 
+"123" "132" "213" "231" "312" "321"
 
 给定 n 和 k，返回第 k 个排列。
 

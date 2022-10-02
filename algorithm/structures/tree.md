@@ -675,7 +675,7 @@ func FindParentNodeByRearOrder(root, node1, node2 *BNode) *BNode {
 
 	lChild := FindParentNodeByRearOrder(root.LeftChild, node1, node2)
 	rChild := FindParentNodeByRearOrder(root.RightChild, node1, node2)
-	
+
 	if lChild == nil {
 		return rChild
 	}
