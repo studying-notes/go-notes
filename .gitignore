@@ -1,3 +1,6 @@
 cutter.yaml
 
 .idea/
+
+*.o
+*.exe
