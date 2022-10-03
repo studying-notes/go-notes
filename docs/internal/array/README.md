@@ -39,7 +39,7 @@ type array struct {
 
 数组的内存结构比较简单。`[4]int{2,3,5,7}` 数组值对应的内存结构如下：
 
-![06toxP.png](../../../assets/images/docs/grammar/array/README/4f15a09ed1eb7745.png)
+![06toxP.png](../../../assets/images/docs/internal/array/README/4f15a09ed1eb7745.png)
 
 Go 语言中数组是值语义。**一个数组变量即表示整个数组**，它并不是隐式地指向第一个元素的指针，而是一个完整的值。**当一个数组变量被赋值或者被传递的时候，实际上会复制整个数组**。如果数组较大的话，数组的赋值也会有较大的开销。为了避免复制数组带来的开销，可以传递一个指向数组的指针，但是数组指针并不是数组。
 
