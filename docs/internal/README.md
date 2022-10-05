@@ -18,6 +18,8 @@ draft: true  # 草稿
 5. [字符串本质与实现](string/README.md)
 6. [数组](array/README.md)
 7. [切片使用方法与底层原理](slice/README.md)
+8. [哈希表](map/README.md)
+9. [函数与栈](function/README.md)
 
 ## 协程
 
