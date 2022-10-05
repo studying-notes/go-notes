@@ -20,6 +20,7 @@ draft: true  # 草稿
 7. [切片使用方法与底层原理](slice/README.md)
 8. [哈希表](map/README.md)
 9. [函数与栈](function/README.md)
+10. [defer延迟调用](defer/README.md)
 
 ## 协程
 
