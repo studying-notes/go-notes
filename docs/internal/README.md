@@ -21,6 +21,7 @@ draft: true  # 草稿
 8. [哈希表](map/README.md)
 9. [函数与栈](function/README.md)
 10. [defer延迟调用](defer/README.md)
+11. [异常与异常捕获](panic/README.md)
 
 ## 协程
 
