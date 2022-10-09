@@ -29,7 +29,7 @@ Go 语言的编译器遵循了主流编译器采用的经典策略及相似的�
 
 ## Go 语言编译器的阶段
 
-![](../../../assets/images/docs/internal/compiler/README/图1-1 三阶段编译器.png)
+![](../../../assets/images/docs/internal/compiler/README/图1-1%20三阶段编译器.png)
 
 如图 1 -1 所示，在经典的编译原理中，一般将编译器分为编译器前端、优化器和编译器后端。这种编译器被称为三阶段编译器（three-phase compiler）。
 
@@ -41,7 +41,7 @@ Go 语言的编译器遵循了主流编译器采用的经典策略及相似的�
 
 Go 语言编译器一般缩写为小写的 gc（go compiler），需要和大写的 GC（垃圾回收）进行区分。Go 语言编译器的执行流程可细化为多个阶段，包括词法解析、语法解析、抽象语法树构建、类型检查、变量捕获、函数内联、逃逸分析、闭包重写、遍历函数、SSA 生成、机器码生成，如图 1 -2 所示。
 
-![](../../../assets/images/docs/internal/compiler/README/图1-2 Go语言编译器执行流程.png)
+![](../../../assets/images/docs/internal/compiler/README/图1-2%20Go语言编译器执行流程.png)
 
 官方文档 `cmd/compile/README.md` 将编译过程分为 7 个阶段：
 

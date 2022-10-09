@@ -157,7 +157,7 @@ str := "Str1" + "Str2" + "Str3"
 
 运行时字符串的拼接原理如图5-1所示，其并不是简单地将一个字符串合并到另一个字符串中，而是找到一个更大的空间，并通过内存复制的形式将字符串复制到其中。
 
-![](../../../assets/images/docs/internal/string/underlying_principle/图5-1 字符串拼接原理.png)
+![](../../../assets/images/docs/internal/string/underlying_principle/图5-1%20字符串拼接原理.png)
 
 运行时具体的拼接代码如下，其实无论使用 concatstring{2, 3, 4, 5} 函数中的哪一个，最终都会调用 runtime.concatstrings 函数。
 

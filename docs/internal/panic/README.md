@@ -381,7 +381,7 @@ func fc() {
 
 当函数 c 发生 panic 后，runtime.addOneOpenDeferFrame 函数会尝试遍历函数帧，当其遍历到 b 函数的函数栈帧时，发现了内联函数，将创建一个新的 _defer 结构体并加入协程 _defer 链表 defer a 函数与 defer c 函数中间，这种顺序保证了之后的 defer 能够按照先入后出的顺序排列，如图 11-1 所示。
 
-![](../../../assets/images/docs/internal/panic/README/图11-1 panic保证defer先入后出的机制.png)
+![](../../../assets/images/docs/internal/panic/README/图11-1%20panic保证defer先入后出的机制.png)
 
 addOneOpenDeferFrame 函数每次只会将扫描到的一个栈帧加入 defer 链表，_defer 结构体中专门有一个字段 fd 存储了栈帧的元数据，用于在运行时查找对应的内联 defer 的一系列函数指针、参数及 defer 位图。当遍历 _defer 链表的过程中发现 d.openDeferw 为 true 时，会调用 runtime.runOpenDeferFrame 方法执行某一个函数中所有需要被执行的 defer 函数，除非在这期间发生了 recovered。
 

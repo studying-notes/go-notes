@@ -31,13 +31,13 @@ Go 语言在编译时对此做出的优化是先将类型与接口中的方法�
 
 经过排序后，接口与类型的方法数量相同，一一对应，如图 12-1 所示。
 
-![](../../../assets/images/docs/internal/interface/underlying_principle/图12-1 接口与类型的方法数量相同，一一对应.png)
+![](../../../assets/images/docs/internal/interface/underlying_principle/图12-1%20接口与类型的方法数量相同，一一对应.png)
 
 有时候类型的方法可能少于或多于接口的方法，如图 12-2 所示。虽然方法可能不会在相应的位置，但是有序规则保证了当 funB 在接口方法列表中的序号为 i 时，其在类型的方法列表中的序号大于或等于 i。
 
 根据接口的有序规则，遍历接口方法列表，并在类型对应方法列表的序号 i 后查找是否存在相同的方法。如果查找不到，则说明类型对应的方法列表中并无此方法，因此在编译时会报错。由于同一个类型或接口的排序在整个编译时只会进行一次，因此排序的消耗可以忽略不计。排序后最坏的时间复杂度仅为 O(m+n)。
 
-![](../../../assets/images/docs/internal/interface/underlying_principle/图12-2 接口与类型的方法数量不同时的对应关系.png)
+![](../../../assets/images/docs/internal/interface/underlying_principle/图12-2%20接口与类型的方法数量不同时的对应关系.png)
 
 在编译时，查找类型是否实现了接口的逻辑位于 implements。通过遍历接口列表，并与类型方法列表中对应的位置进行比较，判断类型是否实现了接口。
 
@@ -178,7 +178,7 @@ func main() {
 
 接口变量 s 在内存中的示意图如图 12-4 所示。从图中可以看出，接口变量中存储了接口本身的类型元数据，动态数据类型的元数据、动态数据类型的值及实现了接口的函数指针。
 
-![](../../../assets/images/docs/internal/interface/underlying_principle/图12-4 接口变量s在内存中的示意图.png)
+![](../../../assets/images/docs/internal/interface/underlying_principle/图12-4%20接口变量s在内存中的示意图.png)
 
 ## 接口内存逃逸分析
 
@@ -299,7 +299,7 @@ getitab 函数先在不加锁的情况下访问全局 hash 表，如果查找不
 
 这里的 hash 表为了解决冲突使用了开放式寻址（Open Addressing）中的二次方探测技术（Quadratic Probing）来解决哈希冲突的问题。二次方探测技术顾名思义是当 hash 出现冲突时，移动的总步长始终是移动次数的二次方。以图 12-6 的 hash 存储为例，当 hash 取模后为第 2 个位置时，先查找数组中的第 2 个位置是否为空。如果不为空，则以步长 1、2、3 进行查找，直到找到一个空位进行插入，在查找时也遵循相同的逻辑。由于 1+2+3...+n = n（n+1）/2，因此这种方式的总步长始终是移动次数的二次方。
 
-![](../../../assets/images/docs/internal/interface/underlying_principle/图12-6 itab哈希表二次方探测技术.png)
+![](../../../assets/images/docs/internal/interface/underlying_principle/图12-6%20itab哈希表二次方探测技术.png)
 
 如下为 hash 表中查找的 find 函数。itabHashFunc 求出 Hash 值，`itabHashFunc(inter, typ)& mask` 对数组的长度取余数，因此 h 的大小为 0 到 t.size-1。通过比对 itab 的 inter 字段和 _type 字段是否相同，最终确定是否找到了相同的 itab 值。
 
@@ -424,7 +424,7 @@ func main() {
 
 图 12-7 显示了上例的内存结构，揭示了接口为 nil 与接口值为 nil 的区别。由于接口 error 具有动态类型 `*os.PathError`，因此 err == nil 为 false。
 
-![](../../../assets/images/docs/internal/interface/underlying_principle/图12-7 接口为nil与接口值为nil的区别.png)
+![](../../../assets/images/docs/internal/interface/underlying_principle/图12-7%20接口为nil与接口值为nil的区别.png)
 
 ```go
 

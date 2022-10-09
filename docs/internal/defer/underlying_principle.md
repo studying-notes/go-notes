@@ -155,7 +155,7 @@ func main() {
 
 当执行到 defer 语句时，调用运行时 deferproc 函数，其在栈中的结构如图 10-1 所示。
 
-![](../../../assets/images/docs/internal/defer/underlying_principle/图10-1 deferproc函数在栈中的结构.png)
+![](../../../assets/images/docs/internal/defer/underlying_principle/图10-1%20deferproc函数在栈中的结构.png)
 
 每个协程都对应着一个结构体 g，deferproc 函数新建的 _defer 结构最终会被放置到当前协程存储 _defer 结构的链表中。
 
@@ -201,11 +201,11 @@ type _defer struct {
 
 新加入的 _defer 结构会被放置到当前链表的头部，从而保证在后续执行 defer 函数时能以先入后出的顺序执行，如图 10-2 所示。
 
-![](../../../assets/images/docs/internal/defer/underlying_principle/图10-2 defer链先入后出的添加顺序.png)
+![](../../../assets/images/docs/internal/defer/underlying_principle/图10-2%20defer链先入后出的添加顺序.png)
 
 runtime.newdefer 在堆中申请具体的 _defer 结构体，每个逻辑处理器 P 中都有局部缓存（deferpool），在全局中也有一个缓存池（schedt.deferpool），图 10-3 显示了 defer 全局与局部缓存池的交互。defer 根据结构的大小分为 5 个等级，以方便快速地找到最适合当前分配的 _defer 结构体。
 
-![](../../../assets/images/docs/internal/defer/underlying_principle/图10-3 defer全局与局部缓存池交互.png)
+![](../../../assets/images/docs/internal/defer/underlying_principle/图10-3%20defer全局与局部缓存池交互.png)
 
 当在全局和局部缓存池中都搜索不到对象时，需要在堆区分配指定大小的 defer。
 
@@ -327,7 +327,7 @@ func main() {
 
 deferreturn 获取需要执行的 defer 函数后，需要将当前 defer 函数的参数重新转移到栈中，调用 freedefer 销毁当前的结构体，并将链表指向下一个 _defer 结构体。
 
-![](../../../assets/images/docs/internal/defer/underlying_principle/图10-4 递归defer调用的栈帧结构.png)
+![](../../../assets/images/docs/internal/defer/underlying_principle/图10-4%20递归defer调用的栈帧结构.png)
 
 ## 栈分配优化
 
@@ -461,7 +461,7 @@ if deferBits & 1<<0 != 0 {
 
 图 10-6 为标记是否需要调用的 deferBits 位图。上例中，由于 defer 函数 f1 一定会执行，因此把 deferBits 的最后 1 位设置为 1。而函数 f2 是否执行需要根据 cond 是否成立判断。如果成立，则需要将 deferBits 的倒数第 2 位设置为 1。
 
-![](../../../assets/images/docs/internal/defer/underlying_principle/图10-6 标记是否需要调用的deferBits位图.png)
+![](../../../assets/images/docs/internal/defer/underlying_principle/图10-6%20标记是否需要调用的deferBits位图.png)
 
 在函数退出（exit）时，从后向前遍历 deferBits，如果当前位为 1，则需要执行对应的函数，如果当前位为 0，则不需要执行任何操作。另外，1 字节的 deferBits 位图以最小的代价满足了大部分情况下的需求。可以通过如下方式对加锁与解锁场景的直接调用与 defer 调用进行性能测试。
 

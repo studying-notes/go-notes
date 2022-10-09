@@ -54,7 +54,7 @@ f(x)
 
 为了解决以上问题，在 SSA 生成阶段需要引入额外的函数Φ接收 x_1 和 x_2 产生新的变量 x_v，x_v 的大小取决于代码运行的路径，如图 1-8 所示。
 
-![](../../../assets/images/docs/internal/compiler/ssa/图1-8 SSA生成阶段处理多分支下的单一变量名.png)
+![](../../../assets/images/docs/internal/compiler/ssa/图1-8%20SSA生成阶段处理多分支下的单一变量名.png)
 
 SSA 生成阶段是编译器进行后续优化的保证，例如常量传播（Constant Propagation）、无效代码清除、消除冗余、强度降低（Strength Reduction）等。
 
@@ -81,7 +81,7 @@ GOSSAFUNC=main GOOS=linux GOARCH=amd64 go tool compile main.go
 
 通过浏览器打开 ssa.html 文件，将看到图 1-9 所示的许多代码片段，其中一些片段是隐藏的。这些是 SSA 的初始阶段、优化阶段、最终阶段的代码片段。
 
-![](../../../assets/images/docs/internal/compiler/ssa/图1-9 SSA所有优化阶段的代码片段.png)
+![](../../../assets/images/docs/internal/compiler/ssa/图1-9%20SSA所有优化阶段的代码片段.png)
 
 以如下最初生成 SSA 代码的初始（start）阶段为例，其中，bN 代表不同的执行分支，例如 b1、b2、b3。vN 代表变量，每个变量只能被分配一次，变量后的 Op 操作代表不同的语义，与特定的机器无关。例如 Addr 代表取值操作，Const8 代表常量，后接要操作的类型； Store 代表赋值是与内存有关的操作。Go 语言编译器采取了特殊的方式处理内存操作，例如 v11 中 Store 的第三个参数代表内存的状态，用于确定内存的依赖关系，从而避免编译器内存的重排。另外，v8 的取值取决于判断语句是否为 true，这就是之前介绍的函数Φ。
 

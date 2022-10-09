@@ -47,7 +47,7 @@ type slice struct {
 }
 ```
 
-![](../../../assets/images/docs/internal/slice/README/图7-1 切片运行时结构.png)
+![](../../../assets/images/docs/internal/slice/README/图7-1%20切片运行时结构.png)
 
 由此可以看出切片的部分定义和字符串是一样的，但是切片多了一个 Cap 成员表示切片指向的内存空间的最大容量（对应元素的个数，而不是字节数）。
 
@@ -141,7 +141,7 @@ func main() {
 
 在 Go 语言中，切片的复制其实也是值复制，但这里的值复制指对于运行时 SliceHeader 结构的复制。如图 7-3 所示，底层指针仍然指向相同的底层数据的数组地址，因此可以理解为数据进行了引用传递。切片的这一特性使得即便切片中有大量数据，在复制时的成本也比较小，这与数组有显著的不同。
 
-![](../../../assets/images/docs/internal/slice/README/图7-3 切片的值复制与数据引用.png)
+![](../../../assets/images/docs/internal/slice/README/图7-3%20切片的值复制与数据引用.png)
 
 ## 切片收缩与扩容
 

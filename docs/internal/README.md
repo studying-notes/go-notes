@@ -24,6 +24,8 @@ draft: true  # 草稿
 11. [异常与异常捕获](panic/README.md)
 12. [接口与程序设计模式](interface/README.md)
 13. [反射](reflect/README.md)
+14. [协程初探](goroutine/README.md)
+15. [深入协程设计与调度原理](goroutine/design/README.md)
 
 ## 协程
 

@@ -206,7 +206,7 @@ c := nil + 1
 
 如果操作符左节点无类型，右节点有类型，则将左边的类型转换为右边的类型。小数的浮点表示法优先级如图 4-1 所示。
 
-![](../../../assets/images/docs/internal/constant/README/图4-1 小数的浮点表示法优先级.png)
+![](../../../assets/images/docs/internal/constant/README/图4-1%20小数的浮点表示法优先级.png)
 
 如果操作符左、右节点都无具体类型，则根据整数(int)< 符文数(rune)< 浮点数(float)< 复数(Imag)的优先级决定类型的转换。
 

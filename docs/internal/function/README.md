@@ -207,7 +207,7 @@ func twice(x IntSliceHeader) {
 
 许多计算机指令集在硬件级别提供了用于管理栈的特殊指令，例如，80x86 指令集提供的 SP 用于管理栈，以 A 函数调用 B 函数为例，普遍的函数栈结构如图 9-1 所示。
 
-![](../../../assets/images/docs/internal/function/README/图9-1 普遍的函数调用栈结构.png)
+![](../../../assets/images/docs/internal/function/README/图9-1%20普遍的函数调用栈结构.png)
 
 ## 栈帧结构
 
@@ -261,13 +261,13 @@ main.main STEXT size=54 args=0x0 locals=0x18 funcid=0x0 align=0x0
 
 第 2 行代码中声明的 $32-0 与函数的栈帧有关，其中， $32 代表当前栈帧会被分配的字节数，后面的 0 代表函数参数与返回值的字节数。由于 main 函数中没有参数也没有返回值，因此为 0。第 3 行代码 SUBQ $32，SP 将当前的 SP 寄存器减去 32 字节，这意味着当前的函数栈增加了 32 字节，图 9-2 描述了该例中 main 函数的栈帧结构。
 
-![](../../../assets/images/docs/internal/function/README/图9-2 main函数的栈帧结构.png)
+![](../../../assets/images/docs/internal/function/README/图9-2%20main函数的栈帧结构.png)
 
 第 4 行的 `MOVQ BP, 24(SP)` 用于将当前 BP 寄存器的值存储到栈帧的顶部。并在第 5 行通过 `LEAQ 24(SP)`，将当前 BP 寄存器的值指向栈基地址。第 6 行和第 7 行将需要调用的函数 mul 的参数存储到栈顶。
 
 调用 mul 函数前，BP 寄存器与函数参数的位置如图 9-3 所示，从图中可以看出，函数调用时参数的压栈操作是从右到左进行的。`mul(3, 4)` 中的第 2 个参数 4 首先压栈，随后第 1 个参数 3 压栈。
 
-![](../../../assets/images/docs/internal/function/README/图9-3 调用mul函数前BP寄存器与函数参数的位置.png)
+![](../../../assets/images/docs/internal/function/README/图9-3%20调用mul函数前BP寄存器与函数参数的位置.png)
 
 ## 函数调用链结构与特性
 
@@ -298,7 +298,7 @@ main.mul STEXT nosplit size=60 args=0x10 locals=0x10 funcid=0x0 align=0x0
 
 在上一小节的汇编代码中，`CALL "".mul(SB)` 用于执行对于 mul 函数的调用，该指令有一个隐含的操作是将 SP 寄存器减 8，并存储其返回地址。该指令是 mul 函数返回后 main 函数执行的下一条指令。当 mul 函数返回时，会执行 RET 指令。该指令暗含着获取存储在栈帧顶部的返回地址，并跳转到该处执行的操作。所以在如图 9-4 所示 mul 函数还未返回时的栈帧结构中，a、b 两个参数分别对应 8(SP)、16(SP) 所在的位置，并且最后将返回值存储在 24(SP) 处。
 
-![](../../../assets/images/docs/internal/function/README/图9-4 调用mul函数还未返回时的栈帧结构.png)
+![](../../../assets/images/docs/internal/function/README/图9-4%20调用mul函数还未返回时的栈帧结构.png)
 
 当 main 函数返回时，MOVQ 24(SP)，BP 指令会还原 main 函数的调用者的 BP 地址，并且 `ADDQ $32`，SP 将为 SP 寄存器加上 32 字节，意味着收缩栈。最后 RET 指令会跳转到调用者函数处继续执行。当然，由于是 main 函数，所以执行程序退出操作。
 
@@ -493,7 +493,7 @@ type g struct {
 
 stackguard0 会在初始化时将 `stack.lo+_StackGuard`，`_StackGuard` 设置为 896 字节，stack.lo 为当前栈的栈顶。如果出现图 9-5 中栈寄存器 SP 小于 stackguard0 的情况，则表明当前栈空间不够，stackguard0 除了用于栈的扩容，还用于协程抢占。
 
-![](../../../assets/images/docs/internal/function/README/图9-5 栈寄存器SP小于stackguard0.png)
+![](../../../assets/images/docs/internal/function/README/图9-5%20栈寄存器SP小于stackguard0.png)
 
 `src/runtime/stack.go`
 
@@ -551,7 +551,7 @@ stackguard0 会在初始化时将 `stack.lo+_StackGuard`，`_StackGuard` 设置�
 
 栈扩容的重要一步是将旧栈的内容转移到新栈中。栈扩容首先将协程的状态设置为 _Gcopystack，以便在垃圾回收状态下不会扫描该协程栈带来错误。栈复制并不像直接复制内存那样简单，如果栈中包含了引用栈中其他地址的指针，那么该指针需要对应到新栈中的地址，copystack 函数会分配一个新栈的内存。为了应对频繁的栈调整，对获取栈的内存进行了许多优化，特别是对小栈。在 Linux 操作系统下，会对 2KB/4KB/8KB/16KB 的小栈进行专门的优化，即在全局及每个逻辑处理器(P)中预先分配这些小栈的缓存池，从而避免频繁地申请堆内存。
 
-![](../../../assets/images/docs/internal/function/README/图9-6 栈的全局与本地缓存池结构.png)
+![](../../../assets/images/docs/internal/function/README/图9-6%20栈的全局与本地缓存池结构.png)
 
 栈的全局与本地缓存池结构如图 9-6 所示，每个逻辑处理器中的缓存池都来自全局缓存池(stackpool)。mcache 有时可能不存在（例如在调整 P 的大小后），这时需要直接从全局缓存池获取栈缓存。对于大栈，其大小不确定，虽然也有一个全局的缓存池，但不会预先放入多个栈，当栈被销毁时，如果被销毁的栈为大栈则放入全局缓存池中。当全局缓存池中找不到对应大小的栈时，会从堆区分配。
 
@@ -559,11 +559,11 @@ stackguard0 会在初始化时将 `stack.lo+_StackGuard`，`_StackGuard` 设置�
 
 内存复制完成后，需要调整当前栈的 SP 寄存器和新的 stackguard0，并记录新的栈顶与栈底。扩容最关键的一步是在新栈中调整指针。因为新栈中的指针可能指向旧栈，旧栈一旦释放就会出现严重的问题。图 9-7 描述了栈扩容的过程，copystack 函数会遍历新栈上所有的栈帧信息，并遍历其中所有可能有指针的位置。一旦发现指针指向旧栈，就会调整当前的指针使其指向新栈。
 
-![](../../../assets/images/docs/internal/function/README/图9-7 栈扩容的过程.png)
+![](../../../assets/images/docs/internal/function/README/图9-7%20栈扩容的过程.png)
 
 栈的转移如图 9-8 所示，调整后，栈指针将指向新栈中的地址。
 
-![](../../../assets/images/docs/internal/function/README/图9-8 栈的转移.png)
+![](../../../assets/images/docs/internal/function/README/图9-8%20栈的转移.png)
 
 ## 栈调试
 

@@ -576,7 +576,7 @@ map 的赋值语法相对简单，例如 hash[key] = value 代表将 value 与 m
 
 新桶一开始来自 map 中 extra 字段初始化时存储的多余溢出桶，只有这些多余的溢出桶都用完才会申请新的内存，如图 8-6 所示，溢出桶可以以链表的形式进行延展。溢出桶并不会无限扩展，因为这会带来效率的下降以及可能的内存泄漏。
 
-![](../../../assets/images/docs/internal/map/operation/图8-6 map溢出桶延展.png)
+![](../../../assets/images/docs/internal/map/operation/图8-6%20map溢出桶延展.png)
 
 ```go
 // Like mapaccess, but allocates a slot for the key if it is not present in the map.
@@ -940,11 +940,11 @@ func overLoadFactor(count int, B uint8) bool {
 
 在双倍重建中，两个新桶的距离值总是与旧桶的数量值相等。例如，在图 8-7 中，旧桶的数量为 2，则转移到新桶的距离也为 2。
 
-![](../../../assets/images/docs/internal/map/operation/图8-7 map双倍重建.png)
+![](../../../assets/images/docs/internal/map/operation/图8-7%20map双倍重建.png)
 
 图 8-8 所示为等量重建，进行简单的直接转移即可。
 
-![](../../../assets/images/docs/internal/map/operation/图8-8 map等量重建.png)
+![](../../../assets/images/docs/internal/map/operation/图8-8%20map等量重建.png)
 
 在 map 双倍重建时，我们还需要解决旧桶中的数据要转移到某一个新桶中的问题。其中有一个非常重要的原则：如果数据的 `hash & bucketMask` 小于或等于旧桶的大小，则此数据必须转移到和旧桶位置完全对应的新桶中去，理由是当前 key 所在新桶的序号与旧桶是完全相同的。
 

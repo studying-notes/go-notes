@@ -75,7 +75,7 @@ reflect.Value 包含了接口中存储的值及类型，除此之外还包含了
 
 如图 13-1 所示，flag 标记以位图的形式存储了反射类型的元数据。
 
-![](../../../assets/images/docs/internal/reflect/underlying_principle/图13-1 反射flag位图.png)
+![](../../../assets/images/docs/internal/reflect/underlying_principle/图13-1%20反射flag位图.png)
 
 其中，flag 的低 5 位存储了类型的标志，利用 flag.kind 方法有助于快速知道反射中存储的类型。
 
@@ -190,7 +190,7 @@ vvv.Index(1).Interface().(int) // 23
 
 但实际上当前 reflect.Value 中存储的是当前数字在切片中的地址。如图 13-2 所示，我们构造的 interface.word 应该是当前的 value.ptr 地址吗？显然不是，因为我们希望返回的类型是一个新的副本，这样不会对原始的切片造成任何干扰。当出现这种情况时，case ifaceIndir(t) 为 true，会生成一个新的值。
 
-![](../../../assets/images/docs/internal/reflect/underlying_principle/图13-2 切片反射示例1.png)
+![](../../../assets/images/docs/internal/reflect/underlying_principle/图13-2%20切片反射示例1.png)
 
 而如果我们面对的是如图13-3所示的情形：
 
@@ -201,7 +201,7 @@ b := reflect.ValueOf(a)
 b.Index(1).Interface()
 ```
 
-![](../../../assets/images/docs/internal/reflect/underlying_principle/图13-3 切片反射示例2.png)
+![](../../../assets/images/docs/internal/reflect/underlying_principle/图13-3%20切片反射示例2.png)
 
 那么构造的 interface.word 应该是当前的 value.ptr 地址吗？显然也不是，而应该是存储在内部的实际指向数据的指针。
 

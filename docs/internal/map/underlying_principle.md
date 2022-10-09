@@ -118,7 +118,7 @@ index = hash % array_size
 
 找到桶的位置后遍历 tophash 数组，如图 8-3 所示，如果在数组中找到了相同的 hash，那么可以接着通过指针的寻址操作找到对应的 key 与 value。
 
-![](../../../assets/images/docs/internal/map/underlying_principle/图8-3 map查找原理.png)
+![](../../../assets/images/docs/internal/map/underlying_principle/图8-3%20map查找原理.png)
 
 在 Go 语言中还有一个溢出桶的概念，在执行 `hash[key] = value` 赋值操作时，当指定桶中的数据超过 8 个时，并不会直接开辟一个新桶，而是将数据放置到溢出桶中，每个桶的最后都存储了 overflow，即溢出桶的指针。在正常情况下，数据是很少会跑到溢出桶里面去的。
 
@@ -173,13 +173,13 @@ type mapextra struct {
 
 Go 语言中的负载因子为 6.5，当超过其大小后，map 会进行扩容，增大到旧表 2 倍的大小，如图 8-4 所示。旧桶的数据会存到 oldbuckets 字段中，并想办法分散转移到新桶中。当旧桶中的数据全部转移到新桶中后，旧桶就会被清空。
 
-![](../../../assets/images/docs/internal/map/underlying_principle/图8-4 map桶扩容原理.png)
+![](../../../assets/images/docs/internal/map/underlying_principle/图8-4%20map桶扩容原理.png)
 
 map 的重建还存在第二种情况，即溢出桶的数量太多，这时 map 只会新建和原来相同大小的桶，目的是防止溢出桶的数量缓慢增长导致的内存泄露。
 
 如图 8-5 所示，当进行 map 的 delete 操作时，和赋值操作类似，delete 操作会根据 key 找到指定的桶，如果存在指定的 key，那么就释放掉 key 与 value 引用的内存。同时 tophash 中的指定位置会存储 emptyOne，代表当前位置是空的。
 
-![](../../../assets/images/docs/internal/map/underlying_principle/图8-5 map删除原理.png)
+![](../../../assets/images/docs/internal/map/underlying_principle/图8-5%20map删除原理.png)
 
 同时，删除操作会探测当前要删除的元素之后是否都是空的。如果是，则 tophash 会存储为 emptyRest。这样做的好处是在做查找操作时，遇到 emptyRest 可以直接退出，因为后面的元素都是空的。
 

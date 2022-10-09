@@ -25,7 +25,7 @@ draft: true  # 草稿
 
 符号化保留了 Go 语言中定义的符号，可以识别出错误的拼写。同时，字符串被转换为整数后，在后续的阶段中能够被更加高效地处理。
 
-![](../../../assets/images/docs/internal/compiler/parsing/图1-3 Go语言编译器词法解析示例.png)
+![](../../../assets/images/docs/internal/compiler/parsing/图1-3%20Go语言编译器词法解析示例.png)
 
 图 1-3 为一个示例，展现了将表达式 a:=b+c(12）符号化之后的情形。代码中声明的标识符、关键字、运算符和分隔符等字符串都可以转化为对应的符号。
 
@@ -84,7 +84,7 @@ func main() {
 
 Go 语言采用了标准的自上而下的递归下降（Top-Down Recursive-Descent）算法，以简单高效的方式完成无须回溯的语法扫描，核心算法位于 syntax/nodes.go 及 syntax/parser.go 中。
 
-![](../../../assets/images/docs/internal/compiler/parsing/图1-4 Go语言编译器对文件进行语法解析的示意图.png)
+![](../../../assets/images/docs/internal/compiler/parsing/图1-4%20Go语言编译器对文件进行语法解析的示意图.png)
 
 图 1-4 为 Go 语言编译器对文件进行语法解析的示意图。在一个 Go 源文件中主要有包导入声明（import）、静态常量（const）、类型声明（type）、变量声明（var）及函数声明。
 
@@ -119,7 +119,7 @@ AssignStmt struct {
 
 图 1-5 为 a:= b+c(12) 语句被语法解析后转换为对应的 syntax.AssignStmt 结构体之后的情形。最顶层的 Op 操作符为 token.Def(:=)。Lhs 表达式类型为标识符 syntax.Name，值为标识符“a”。Rhs 表达式为 syntax.Operator 加法运算。加法运算左边为标识符“b”，右边为函数调用表达式，类型为 CallExpr。其中，函数名 c 的类型为 syntax.Name，参数为常量类型 syntax.BasicLit，代表数字 12。
 
-![](../../../assets/images/docs/internal/compiler/parsing/图1-5 特定表达式的语法解析示例.png)
+![](../../../assets/images/docs/internal/compiler/parsing/图1-5%20特定表达式的语法解析示例.png)
 
 ## 抽象语法树构建
 
@@ -163,7 +163,7 @@ OAS2
 
 以 a:= b+c(12) 为例，该赋值语句最终会变为如图 1-6 所示的抽象语法树。节点之间具有从上到下的层次结构和依赖关系。
 
-![](../../../assets/images/docs/internal/compiler/parsing/图1-6 抽象语法树.png)
+![](../../../assets/images/docs/internal/compiler/parsing/图1-6%20抽象语法树.png)
 
 ```go
 

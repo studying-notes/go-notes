@@ -54,7 +54,7 @@ func (s *scanner) next() {
 
 如图 3-2 所示，整数就是字符中全是 0～9 的数字，浮点数就是字符中有“.”号的数字，字符串的首字符为 " 或 '。
 
-![](../../../assets/images/docs/internal/type_inference/complier/图3-2 词法解析阶段解析未定义的常量示例.png)
+![](../../../assets/images/docs/internal/type_inference/complier/图3-2%20词法解析阶段解析未定义的常量示例.png)
 
 下面列出的 number 函数为语法分析阶段处理数字的具体实现。数字首先会被分为小数部分与整数部分，通过字符. 进行区分。如果整数部分是以 0 开头的，则可能有不同的含义，例如 0x 代表十六进制数、0b 代表二进制数。
 
