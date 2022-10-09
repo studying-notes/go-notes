@@ -26,6 +26,7 @@ draft: true  # 草稿
 13. [反射](reflect/README.md)
 14. [协程初探](goroutine/README.md)
 15. [深入协程设计与调度原理](goroutine/design/README.md)
+16. [通道与协程间通信](goroutine/channel/README.md)
 
 ## 协程
 
