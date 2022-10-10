@@ -20,8 +20,10 @@ draft: true  # 草稿
 - [select 多路复用](#select-多路复用)
   - [随机选择机制](#随机选择机制)
   - [堵塞与控制](#堵塞与控制)
+  - [空语句](#空语句)
   - [循环](#循环)
 - [select 与 nil](#select-与-nil)
+  - [range 读取数据](#range-读取数据)
 
 ## 通道声明与初始化
 
@@ -225,6 +227,8 @@ var c1 chan <- int = c
 
 在实践中使用通道时，更多的时候会与 select 结合，因为时常会出现多个通道与多个协程进行通信的情况，我们当然不希望由于一个通道的读写陷入堵塞，影响其他通道的正常读写。select 正是为了解决这一问题诞生的。
 
+select 是 go 在语言层面提供的多路 IO 复用的机制，其可以检测多个 channel 是否 ready (即是否可读或可写)。
+
 在使用方法上，select 的语法类似 switch，形式如下：
 
 ```go
@@ -293,6 +297,21 @@ select {
         // ...
 }
 ```
+
+### 空语句
+
+```go
+package main
+
+func main() {
+    select {
+    }
+}
+```
+
+上面程序中只有一个空的 select 语句。
+
+对于空的 select 语句，程序会被阻塞，准确的说是当前协程被阻塞，同时 go 自带死锁检测机制，当发现当前协程再也没有机会被唤醒时，则会 panic。所以上述程序会 panic。
 
 ### 循环
 
@@ -374,6 +393,22 @@ func main() {
 ```
 
 上例的协程中，一旦写入通道后，就将该通道置为 nil，导致再也没有机会执行该 case。从而达到交替写入 a、b 通道的目的。
+
+### range 读取数据
+
+通过 range 可以持续从 channel 中读出数据，好像在遍历一个数组一样，当 channel 中没有数据时会阻塞当前 goroutine，与读 channel 时阻塞处理机制一样。
+
+```go
+func chanRange(chanName chan int) {
+    for e := range chanName {
+        fmt.Printf("Get element from chan: %d\n", e)
+    }
+}
+```
+
+如果向此 channel 写数据的 goroutine 退出时，系统检测到这种情况后会 panic，否则 range 将会永久阻塞。
+
+关闭 channel 后，range 会正常退出，不会再阻塞。
 
 ```go
 

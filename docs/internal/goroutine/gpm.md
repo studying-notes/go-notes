@@ -3,7 +3,7 @@ date: 2022-09-08T21:21:13+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
 title: "Go 语言的 GPM 调度器"  # 文章标题
-url:  "posts/go/docs/internal/concurrent/gpm"  # 设置网页永久链接
+url:  "posts/go/docs/internal/goroutine/gpm"  # 设置网页永久链接
 tags: [ "Go", "gpm" ]  # 标签
 categories: [ "Go 学习笔记" ]  # 分类
 
@@ -41,7 +41,7 @@ Go 语言对 **CSP 并发模型的实现**就是 GPM 调度模型。
 
 GPM 代表了三个角色，分别是 Goroutine、Processor、Machine。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/720b3a0baa949e61.png)
+![](../../../assets/images/docs/internal/goroutine/gpm/720b3a0baa949e61.png)
 
 - Goroutine：表示**用 go 关键字创建的执行体**，它对应一个结构体 g，结构体里保存了 goroutine 的堆栈信息。
 - Machine：表示**操作系统的线程**。
@@ -145,45 +145,45 @@ type p struct {
 
 首先，**默认启动四个线程四个处理器，然后互相绑定**。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/07d4337cadb6f67f.webp)
+![](../../../assets/images/docs/internal/goroutine/gpm/07d4337cadb6f67f.webp)
 
 这个时候，一个 Goroutine 结构体被创建，在进行函数体地址、参数起始地址、参数长度等信息以及调度相关属性更新之后，它就要进到一个处理器的队列等待发车。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/e8512a2daa68ea0c.webp)
+![](../../../assets/images/docs/internal/goroutine/gpm/e8512a2daa68ea0c.webp)
 
 如果又创建了一个 G 就轮流往其他 P 里面放。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/8b9a41f1fea2b0b5.webp)
+![](../../../assets/images/docs/internal/goroutine/gpm/8b9a41f1fea2b0b5.webp)
 
 假如有很多 G，都塞满了怎么办呢？那就不把 G 塞到处理器的私有队列里了，而是把它塞到**全局队列**里。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/cc7a55a59cb203b2.webp)
+![](../../../assets/images/docs/internal/goroutine/gpm/cc7a55a59cb203b2.webp)
 
 除了往里塞之外，M 这边还要疯狂往外取，**首先去处理器的私有队列里取 G 执行**，如果取完的话就**去全局队列取**，如果全局队列里也没有的话，就**去其他处理器队列里取**。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/c5839824c8ddd9b3.webp)
+![](../../../assets/images/docs/internal/goroutine/gpm/c5839824c8ddd9b3.webp)
 
 如果哪里都没找到要执行的G，那M就会和P断开关系，然后休眠。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/6d8f9840e9c3d0ac.png)
+![](../../../assets/images/docs/internal/goroutine/gpm/6d8f9840e9c3d0ac.png)
 
 如果两个 Goroutine 因为 channel 而阻塞住了，M 会去找别的 G 执行。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/97f9288cde35b419.png)
+![](../../../assets/images/docs/internal/goroutine/gpm/97f9288cde35b419.png)
 
 ## 系统调用
 
 **如果 G 进行了系统调用 syscall，M 也会跟着进入系统调用状态**，那么这个 P 留在这里就浪费了，怎么办呢？这点精妙之处在于，**P 不会傻傻的等待 G 和 M 系统调用完成，而会去找其他比较闲的 M 执行其他的 G**。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/3fb5391f25858062.webp)
+![](../../../assets/images/docs/internal/goroutine/gpm/3fb5391f25858062.webp)
 
 当 G 完成了系统调用，因为要继续往下执行，所以必须要再找一个空闲的处理器工作。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/d044aa566b591bd2.png)
+![](../../../assets/images/docs/internal/goroutine/gpm/d044aa566b591bd2.png)
 
 如果没有空闲的处理器了，那就只能把 G 放回全局队列当中等待分配。
 
-![](../../../assets/images/docs/internal/concurrent/gpm/b487c30ca4644581.webp)
+![](../../../assets/images/docs/internal/goroutine/gpm/b487c30ca4644581.webp)
 
 ## sysmon
 

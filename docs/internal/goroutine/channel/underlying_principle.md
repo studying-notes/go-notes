@@ -34,11 +34,11 @@ type hchan struct {
 	qcount   uint           // total data in the queue
 	dataqsiz uint           // size of the circular queue
 	buf      unsafe.Pointer // points to an array of dataqsiz elements
-	elemsize uint16
-	closed   uint32
+	elemsize uint16 // 每个元素的大小
+	closed   uint32   // 标识关闭状态
 	elemtype *_type // element type
-	sendx    uint   // send index
-	recvx    uint   // receive index
+	sendx    uint   // send index，指示元素写入时存放到队列中的位置
+	recvx    uint   // receive index，指示元素从队列的该位置读出
 	recvq    waitq  // list of recv waiters
 	sendq    waitq  // list of send waiters
 
@@ -48,7 +48,21 @@ type hchan struct {
 	// Do not change another G's status while holding this lock
 	// (in particular, do not ready a G), as this can deadlock
 	// with stack shrinking.
-	lock mutex
+	lock mutex  // 互斥锁，chan 不允许并发读写
+}
+
+// Mutual exclusion locks.  In the uncontended case,
+// as fast as spin locks (just a few user-level instructions),
+// but on the contention path they sleep in the kernel.
+// A zeroed Mutex is unlocked (no need to initialize each lock).
+// Initialization is helpful for static lock ranking, but not required.
+type mutex struct {
+	// Empty struct if lock ranking is disabled, otherwise includes the lock rank
+	lockRankStruct
+	// Futex-based impl treats it as uint32 key,
+	// while sema-based impl as M* waitm.
+	// Used to be a union, but unions break precise GC.
+	key uintptr
 }
 ```
 
@@ -74,6 +88,16 @@ recvx 可以找到从 buf 哪个位置获取通道中的元素，而 sendx 能�
 			c.sendx = 0
 		}
 ```
+
+下图展示了一个可缓存 6 个元素的 channel 示意图：
+
+![](../../../../assets/images/docs/internal/goroutine/channel/underlying_principle/8ad1fc6e75a555d8.png)
+
+- dataqsiz 指示了队列长度为 6，即可缓存 6 个元素；
+- buf 环形队列指针，指向队列的内存；
+- qcount 表示队列中还有两个元素；
+- sendx 指示后续写入的数据存储的位置，取值[ 0, 6) ；
+- recvx 指示从该位置读取数据, 取值[ 0, 6) ；
 
 ## 通道初始化
 
@@ -514,13 +538,36 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 
 ## select 底层原理
 
-为了管理多个通道，select 的原理要相对复杂很多。能够想到，当 select 足够简单时，编译器将对其进行优化。
+为了管理多个通道，select 的原理要相对复杂很多。但当 select 足够简单时，编译器将对其进行优化。例如，当 select 中只有一个控制通道的 case 语句时，和普通的通道操作是等价的。
 
-例如，当 select 中只有一个控制通道的 case 语句时，和普通的通道操作是等价的。
+go 实现 select 时，定义了一个数据结构表示每个 case 语句(含 defaut, default 实际上是一种特殊的 case)，select 执行过程可以类比成一个函数，函数输入 case 数组，输出选中的 case，然后程序流程转到选中的 case 块。
+
+如图 16-10 所示，select 中的每个 case 在运行时都是一个 scase 结构体，存放了通道和通道中的元素类型等信息。
+
+![](../../../../assets/images/docs/internal/goroutine/channel/underlying_principle/图16-10%20select对应多个scase结构体.png)
+
+源码包 `src/runtime/select.go:scase` 定义了表示 case 语句的数据结构：
+
+```go
+// Select case descriptor.
+// Known to compiler.
+// Changes here must also be made in src/cmd/compile/internal/walk/select.go's scasetype.
+type scase struct {
+	c    *hchan         // chan
+	elem unsafe.Pointer // data element
+}
+```
+
+scase.c 为当前 case 语句所操作的 channel 指针，这也说明了一个 case 语句只能操作一个 channel。
+
+scase.elem 表示缓冲区地址，有不同的用途：
+
+- scase.kind == caseRecv：scase.elem 表示读出 channel 的数据存放地址；
+- scase.kind == caseSend：scase.elem 表示将要写入 channel 的数据存放地址；
 
 select 语句在运行时会调用核心函数 selectgo。
 
-`src/runtime/select.go`
+源码包 `src/runtime/select.go:selectgo()` 定义了 select 选择 case 的函数：
 
 ```go
 // selectgo implements the select statement.
@@ -936,19 +983,18 @@ sclose:
 }
 ```
 
-如图 16-10 所示，select 中的每个 case 在运行时都是一个 scase 结构体，存放了通道和通道中的元素类型等信息。
+函数参数：
 
-```go
-// Select case descriptor.
-// Known to compiler.
-// Changes here must also be made in src/cmd/compile/internal/walk/select.go's scasetype.
-type scase struct {
-	c    *hchan         // chan
-	elem unsafe.Pointer // data element
-}
-```
+- cas0 为 scase 数组的首地址，selectgo() 就是从这些 scase 中找出一个返回。
+- order0 为一个两倍 cas0 数组长度的 buffer，保存 scase 随机序列 pollorder 和 scase 中 channel 地址序列 lockorder
+	 - pollorder：每次 selectgo 执行都会把 scase 序列打乱，以达到随机检测 case 的目的。
+	 - lockorder：所有 case 语句中 channel 序列，以达到去重防止对 channel 加锁时重复加锁的目的。
+- ncases 表示 scase 数组的长度
 
-![](../../../../assets/images/docs/internal/goroutine/channel/underlying_principle/图16-10%20select对应多个scase结构体.png)
+函数返回值：
+
+1. int: 选中 case 的编号，这个 case 编号跟代码一致
+2. bool: 是否成功从 channle 中读取了数据，如果选中的 case 是从 channel 中读数据，则该返回值表示是否读取成功。
 
 在 selectgo 函数中，有两个关键的序列，分别是 pollorder 和 lockorder。pollorder 代表乱序后的 scase 序列，如下所示，这是一种类似洗牌算法的方式，将序列打散。pollorder 通过引入随机数的方式给序列带来了随机性。
 

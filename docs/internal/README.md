@@ -27,6 +27,10 @@ draft: true  # 草稿
 14. [协程初探](goroutine/README.md)
 15. [深入协程设计与调度原理](goroutine/design/README.md)
 16. [通道与协程间通信](goroutine/channel/README.md)
+17. 并发控制
+    1.  [context 处理协程退出](goroutine/context/README.md)
+    2. [数据争用检查](goroutine/race/README.md)
+    3. [锁](goroutine/lock/README.md)
 
 ## 协程
 
