@@ -1251,7 +1251,7 @@ Go 1.14 之后的版本对于长时间执行的协程使用了操作系统的信
 `src/runtime/proc.go`
 
 ```go
-func goschedImpl(gp *g) {    
+func goschedImpl(gp *g) {
 	status := readgstatus(gp) // 获取当前协程的状态
 	if status&^_Gscan != _Grunning { // 如果当前协程不是运行状态，抛出异常
 		dumpgstatus(gp) // 打印当前协程的状态
@@ -1260,7 +1260,7 @@ func goschedImpl(gp *g) {
     // 将当前协程的状态设置为 _Grunnable
 	casgstatus(gp, _Grunning, _Grunnable)
     // 取消 G 与 M 之间的绑定关系
-	dropg() 
+	dropg()
 	lock(&sched.lock)
     // 将 G 放入全局运行队列
 	globrunqput(gp)

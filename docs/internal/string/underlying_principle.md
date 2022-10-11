@@ -261,7 +261,7 @@ rawstring() 源代码如下：
 
 ```go
 // 生成一个新的 string，返回的 string 和切片共享相同的空间
-func rawstring(size int) (s string, b []byte) { 
+func rawstring(size int) (s string, b []byte) {
 	p := mallocgc(uintptr(size), nil, false)
 
 	stringStructOf(&s).str = p

@@ -886,7 +886,7 @@ const (
 	loadFactorNum = 13
 	loadFactorDen = 2
 )
-    
+
 func hashGrow(t *maptype, h *hmap) {
 	// If we've hit the load factor, get bigger.
 	// Otherwise, there are too many overflow buckets,

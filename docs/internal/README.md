@@ -37,4 +37,4 @@ draft: true  # 草稿
     - [Go 垃圾回收](memory/gc.md)
 19. [垃圾回收初探](gc/README.md)
 20. [深入垃圾回收全流程](gc/underlying_principle.md)
-
+21. [特征分析与事件追踪](debug/README.md)
