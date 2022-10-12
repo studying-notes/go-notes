@@ -1,10 +1,9 @@
 package main
 
-func trace(array []int, a int, b int) int {
-	panic("not implemented")
-	return 0
+func mul(a, b int) int {
+	return a * b
 }
 
 func main() {
-	trace([]int{1, 2, 3, 4, 5}, 1, 3)
+	mul(3, 4)
 }
