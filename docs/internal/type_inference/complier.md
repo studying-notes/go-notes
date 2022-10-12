@@ -11,9 +11,7 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
-类型推断依赖编译器的处理能力。
-
-## 词法解析与语法分析阶段
+## 解析阶段
 
 在词法解析阶段，会将赋值语句右边的常量解析为一个未定义的类型，例如，ImagLit 代表复数，FloatLit 代表浮点数，IntLit 代表整数。
 
@@ -96,51 +94,83 @@ func (s *scanner) next() {
 	}
 ```
 
-以赋值语句 a := 333 为例，完成词法解析与语法分析时，此赋值语句将以 AssignStmt 结构表示。
+以赋值语句 `a := 333` 为例，完成词法解析与语法分析时，此赋值语句将以 AssignStmt 结构表示。
+
+`internal/syntax/nodes.go`
 
 ```go
 AssignStmt struct {
-	Op Operator
-	Lhs, Rhs Expr
+	Op       Operator // 0 means no operation
+	Lhs, Rhs Expr     // Rhs == nil means Lhs++ (Op == Add) or Lhs-- (Op == Sub)
 	simpleStmt
 }
 ```
 
 其中 Op 代表操作符，在这里是赋值操作 OAS。Lhs 与 Rhs 分别代表左右两个表达式，左边代表变量 a，右边代表常量 333，此时其类型为 intLit。
 
-## 抽象语法树生成与类型检查
+## 类型检查与构建中间表示
 
-完成语法解析后，进入抽象语法树阶段。在该阶段会将词法解析阶段生成的 AssignStmt 结构解析为一个 Node，Node 结构体是对抽象语法树中节点的抽象。
+完成解析后，进入类型检查与构建中间表示阶段。在该阶段会将解析阶段生成的 AssignStmt 结构解析为一个 Node 接口。
 
 ```go
-type Node struct {
-	Left *Node
-	Right *Node
-	Op Operator
+func (g *irgen) decls(res *ir.Nodes, decls []syntax.Decl) {
+	for _, decl := range decls {
+		switch decl := decl.(type) {
+		case *syntax.ConstDecl:
+			g.constDecl(res, decl)
+		case *syntax.FuncDecl:
+			g.funcDecl(res, decl)
+		case *syntax.TypeDecl:
+			if ir.CurFunc == nil {
+				continue // already handled in irgen.generate
+			}
+			g.typeDecl(res, decl)
+		case *syntax.VarDecl:
+			g.varDecl(res, decl)
+		default:
+			g.unhandled("declaration", decl)
+		}
+	}
 }
 ```
 
-其中，Left（左节点）代表左边的变量 a，Right（右节点）代表整数 333，其 Op 操作为 OLITERAL。Right 的 E 接口字段会存储值 333，如果前一阶段为 IntLit 类型，则需要转换为 Mpint 类型。Mpint 类型用于存储整数常量，具体结构如下所示。
-
 ```go
-// Mpint 代表整数常量
-type Mpint struct {
-	Val big.Int
-	Ovf bool
-	Rune bool
+// An AssignListStmt is an assignment statement with
+// more than one item on at least one side: Lhs = Rhs.
+// If Def is true, the assignment is a :=.
+type AssignListStmt struct {
+	miniStmt
+	Lhs Nodes
+	Def bool
+	Rhs Nodes
+}
+
+// A miniStmt is a miniNode with extra fields common to statements.
+type miniStmt struct {
+	miniNode
+	init Nodes
+}
+
+// A miniNode is a minimal node implementation,
+// meant to be embedded as the first field in a larger node implementation,
+// at a cost of 8 bytes.
+//
+// A miniNode is NOT a valid Node by itself: the embedding struct
+// must at the least provide:
+//
+//	func (n *MyNode) String() string { return fmt.Sprint(n) }
+//	func (n *MyNode) rawCopy() Node { c := *n; return &c }
+//	func (n *MyNode) Format(s fmt.State, verb rune) { FmtNode(n, s, verb) }
+//
+// The embedding struct should also fill in n.op in its constructor,
+// for more useful panic messages when invalid methods are called,
+// instead of implementing Op itself.
+type miniNode struct {
+	pos  src.XPos // uint32
+	op   Op       // uint8
+	bits bitset8
+	esc  uint16
 }
 ```
 
-> 源代码变化很大，最新版已经不是这样了。
-
-从 Mpint 类型的结构可以看到，在编译时 AST 阶段整数通过 math/big.Int 进行高精度存储，浮点数通过 big.Float 进行高精度存储。
-
-在类型检查阶段，右节点中的 Type 字段存储的类型会变为 `types.Types[TINT]`。types.Types 是一个数组（`var Types [NTYPE] * Type`），存储了不同标识对应的 Go 语言中的实际类型，其中，`types.Types[TINT]` 对应 Go 语言内置的 int 类型。
-
-接着完成最终的赋值操作，并将右边常量的类型赋值给左边变量的类型。
-
-在 SSA 阶段，变量 a 中存储的大数类型的 333 最终会调用 big.Int 包中的 Int64 函数并将其转换为 int64 类型的常量，形如：`v4(? )= MOVQconst<int>[333](a[int])`。
-
-```go
-
-```
+AssignListStmt 实现了 Node 接口，其中 Lhs 与 Rhs 分别代表左右两个表达式，左边代表变量 a，右边代表常量 333，此时其类型为 intLit。其中 op 操作为 OLITERAL。
