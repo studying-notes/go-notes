@@ -1,24 +1,19 @@
 package main
 
-import (
-	"fmt"
-	"go/scanner"
-	"go/token"
-)
+import "encoding/json"
+
+type Flags struct {
+	A string "json:\"a\""
+	B string "json:\"b\""
+}
 
 func main() {
-	src := []byte("cos(x) + 2i*sin(x) // Euler")
-
-	var s scanner.Scanner
-	fileSet := token.NewFileSet()
-	file := fileSet.AddFile("", fileSet.Base(), len(src))
-	s.Init(file, src, nil, scanner.ScanComments)
-
-	for {
-		pos, tok, lit := s.Scan()
-		if tok == token.EOF {
-			break
-		}
-		fmt.Printf("%s\t%s\t%q\n", file.Position(pos), tok, lit)
+	f := Flags{}
+	f.A = "a"
+	f.B = "b"
+	bytes, err := json.Marshal(f)
+	if err != nil {
+		return
 	}
+	println(string(bytes))
 }

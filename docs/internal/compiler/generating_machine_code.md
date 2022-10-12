@@ -11,6 +11,10 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
+## 源码分布
+
+这一阶段的相关源码分布在：
+
 * `cmd/compile/internal/ssa` (SSA lowering and arch-specific passes)
 * `cmd/internal/obj` (machine code generation)
 
@@ -136,7 +140,18 @@ cp "$WORK\\b001\\_pkg_.a" "C:\\Users\\Admin\\AppData\\Local\\go-build\\0b\\0b703
 
 因为 ar 文件格式简单，所以 Go 语言编译器直接在函数中实现了 ar 打包过程。其中，startArchiveEntry 用于预留 ar 文件头信息的位置（60 字节），finishArchiveEntry 用于写入文件头信息。因为文件头信息中包含文件大小，在写入完成之前文件大小未知，所以分两步完成。
 
+`internal/gc/obj.go`
+
 ```go
+func dumpobj() {
+	if base.Flag.LinkObj == "" {
+		dumpobj1(base.Flag.LowerO, modeCompilerObj|modeLinkerObj)
+		return
+	}
+	dumpobj1(base.Flag.LowerO, modeCompilerObj)
+	dumpobj1(base.Flag.LinkObj, modeLinkerObj)
+}
+
 func dumpobj1(outfile string, mode int) {
 	bout, err := bio.Create(outfile)
 	if err != nil {

@@ -2,7 +2,7 @@
 date: 2022-10-01T10:47:26+08:00  # 创建日期
 author: "Rustle Karl"  # 作者
 
-title: "编译器中间端"  # 文章标题
+title: "中间端"  # 文章标题
 url:  "posts/go/docs/internal/compiler/middle-end"  # 设置网页永久链接
 tags: [ "Go", "middle-end" ]  # 标签
 categories: [ "Go 学习笔记" ]  # 分类
@@ -11,65 +11,67 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
-## IR 构建中间表示
+## 源码分布
 
-* `cmd/compile/internal/types` (compiler types)
-* `cmd/compile/internal/ir` (compiler AST)
-* `cmd/compile/internal/typecheck` (AST transformations)
-* `cmd/compile/internal/noder` (create compiler AST)
-
-编译器中间端必须用它自己的 AST 定义和从用 C 编写时继承的 Go 类型表示。它的所有代码都是根据这些编写的，所以类型检查之后的下一步是将语法和 types2 表示转换到 ir 和 types。这个过程被称为 "noding"。
-
-类型检查阶段完成后，Go 语言编译器将对抽象语法树进行分析及重构，从而完成一系列优化。
+这一阶段的相关源码分布在：
 
 * `cmd/compile/internal/deadcode` (dead code elimination)
 * `cmd/compile/internal/inline` (function call inlining)
 * `cmd/compile/internal/devirtualize` (devirtualization of known interface method calls)
 * `cmd/compile/internal/escape` (escape analysis)
 
-中间端对 **IR 表示**执行了几个优化过程：死代码消除、（早期）去虚拟化、函数调用内联和逃逸分析。
+中间端对 **IR 表示**执行了几个优化过程：死代码消除、函数调用内联、去虚拟化和逃逸分析。
 
-## 变量捕获
-
-变量捕获主要是针对闭包场景而言的，由于闭包函数中可能引用闭包外的变量，因此变量捕获需要明确在闭包中通过值引用或地址引用的方式来捕获变量。
-
-下面的例子中有一个闭包函数，在闭包内引入了闭包外的 a、b 变量，由于变量 a 在闭包之后进行了其他赋值操作，因此在闭包中，a、b 变量的引用方式会有所不同。在闭包中，必须采取地址引用的方式对变量 a 进行操作，而对变量 b 的引用将通过直接值传递的方式进行。
+## 死代码消除
 
 ```go
-package main
+	// Eliminate some obviously dead code.
+	// Must happen after typechecking.
+	for _, n := range typecheck.Target.Decls {
+		if n.Op() == ir.ODCLFUNC {
+			deadcode.Func(n.(*ir.Func))
+		}
+	}
+```
 
-import "fmt"
+## 函数调用内联
 
-func main() {
-	a := 1
-	b := 2
+```go
+	// Inlining
+	base.Timer.Start("fe", "inlining")
+	if base.Flag.LowerL != 0 {
+		inline.InlinePackage()
+	}
+	noder.MakeWrappers(typecheck.Target) // must happen after inlining
+```
 
-	go func() {
-		fmt.Println(a, b)
-	}()
-
-	a = 3
+```go
+// InlinePackage finds functions that can be inlined and clones them before walk expands them.
+func InlinePackage() {
+	ir.VisitFuncsBottomUp(typecheck.Target.Decls, func(list []*ir.Func, recursive bool) {
+		numfns := numNonClosures(list)
+		for _, n := range list {
+			if !recursive || numfns > 1 {
+				// We allow inlining if there is no
+				// recursion, or the recursion cycle is
+				// across more than one function.
+				CanInline(n)
+			} else {
+				if base.Flag.LowerM > 1 {
+					fmt.Printf("%v: cannot inline %v: recursive\n", ir.Line(n), n.Nname)
+				}
+			}
+			InlineCalls(n)
+		}
+	})
 }
 ```
-
-在 Go 语言编译的过程中，可以通过如下方式查看当前程序闭包变量捕获的情况。从输出中可以看出，a 采取 ref 引用传递的方式，而 b 采取了值传递的方式。assign=true 代表变量 a 在闭包完成后又进行了赋值操作。
-
-```
-go tool compile -m=2 main.go | grep capturing
-```
-
-```
-main.go:6:2: main capturing by ref: a (addr=false assign=true width=8)
-main.go:7:2: main capturing by value: b (addr=false assign=false width=8)
-```
-
-## 函数内联
 
 函数内联指将较小的函数直接组合进调用者的函数。这是现代编译器优化的一种核心技术。函数内联的优势在于，可以减少函数调用带来的开销。
 
 对于 Go 语言来说，函数调用的成本在于参数与返回值栈复制、较小的栈寄存器开销以及函数序言部分的检查栈扩容（Go 语言中的栈是可以动态扩容的）。
 
-同时，函数内联是其他编译器优化（例如无效代码消除）的基础。我们可以通过一段简单的程序衡量函数内联带来的效率提升，如下所示，使用 bench 对 max 函数调用进行测试。当我们在函数的注释前方加上 `//go:noinline` 时，代表当前函数是禁止进行函数内联优化的。取消该注释后，max 函数将会对其进行内联优化。
+同时，函数内联是其他一些编译器优化的基础。我们可以通过一段简单的程序衡量函数内联带来的效率提升，如下所示，使用 bench 对 max 函数调用进行测试。当我们在函数的注释前方加上 `//go:noinline` 时，代表当前函数是禁止进行函数内联优化的。取消该注释后，max 函数将会对其进行内联优化。
 
 ```go
 package main
@@ -196,7 +198,68 @@ end:
   a := b + ~r1
 ```
 
+## 去虚拟化
+
+```go
+	// Devirtualize.
+	for _, n := range typecheck.Target.Decls {
+		if n.Op() == ir.ODCLFUNC {
+			devirtualize.Func(n.(*ir.Func))
+		}
+	}
+	ir.CurFunc = nil
+```
+
 ## 逃逸分析
+
+```go
+	// Escape analysis.
+	// Required for moving heap allocations onto stack,
+	// which in turn is required by the closure implementation,
+	// which stores the addresses of stack variables into the closure.
+	// If the closure does not escape, it needs to be on the stack
+	// or else the stack copier will not update it.
+	// Large values are also moved off stack in escape analysis;
+	// because large values may contain pointers, it must happen early.
+	base.Timer.Start("fe", "escapes")
+	escape.Funcs(typecheck.Target.Decls)
+```
+
+### 变量捕获与逃逸分析
+
+变量捕获主要是针对闭包场景而言的，由于闭包函数中可能引用闭包外的变量，因此变量捕获需要明确在闭包中通过值引用或地址引用的方式来捕获变量。
+
+下面的例子中有一个闭包函数，在闭包内引入了闭包外的 a、b 变量，由于变量 a 在闭包之后进行了其他赋值操作，因此在闭包中，a、b 变量的引用方式会有所不同。在闭包中，必须采取地址引用的方式对变量 a 进行操作，而对变量 b 的引用将通过直接值传递的方式进行。
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	a := 1
+	b := 2
+
+	go func() {
+		fmt.Println(a, b)
+	}()
+
+	a = 3
+}
+```
+
+在 Go 语言编译的过程中，可以通过如下方式查看当前程序闭包变量捕获的情况。从输出中可以看出，a 采取 ref 引用传递的方式，而 b 采取了值传递的方式。assign=true 代表变量 a 在闭包完成后又进行了赋值操作。
+
+```
+go tool compile -m=2 main.go | grep capturing
+```
+
+```
+main.go:6:2: main capturing by ref: a (addr=false assign=true width=8)
+main.go:7:2: main capturing by value: b (addr=false assign=false width=8)
+```
+
+### 逃逸分析
 
 逃逸分析是 Go 语言中重要的优化阶段，用于标识变量内存应该被分配在栈区还是堆区。
 
@@ -348,34 +411,3 @@ func func1(a *int) {
 如果闭包定义后不被立即调用，而是后续调用，那么同一个闭包可能被调用多次，这时需要创建闭包对象。
 
 如果变量是按值引用的，并且该变量占用的存储空间小于 2×sizeof(int)，那么通过在函数体内创建局部变量的形式来产生该变量。如果变量通过指针或值引用，但是占用存储空间较大，那么捕获的变量(var)转换成指针类型的“&var”。这两种方式都需要在函数序言阶段将变量初始化为捕获变量的值。
-
-## 遍历函数
-
-* `cmd/compile/internal/walk` (order of evaluation, desugaring)
-
-The final pass over the IR representation is "walk," which serves two purposes:
-
-1. It decomposes complex statements into individual, simpler statements,
-   introducing temporary variables and respecting order of evaluation. This step
-   is also referred to as "order."
-
-2. It desugars higher-level Go constructs into more primitive ones. For example,
-   `switch` statements are turned into binary search or jump tables, and
-   operations on maps and channels are replaced with runtime calls.
-
-闭包重写后，需要遍历函数。在该阶段会识别出声明但是并未被使用的变量，遍历函数中的声明和表达式，将某些代表操作的节点转换为运行时的具体函数执行。例如，获取 map 中的值会被转换为运行时 mapaccess2_fast64 函数。
-
-```go
-val, ok := m["key"]
-// 转化为
-autotmp_1, ok := runtime.mapaccess2_fast64(typeOf(m), m, "key")
-val := *autotmp_1
-```
-
-字符串变量的拼接会被转换为调用运行时 concatstrings 函数。对于 new 操作，如果变量发生了逃逸，那么最终会调用运行时 newobject 函数将变量分配到堆区。for...range 语句会重写为更简单的 for 语句形式。
-
-在执行 walk 函数遍历之前，编译器还需要对某些表达式和语句进行重新排序，例如将 x/= y 替换为 x = x/y。根据需要引入临时变量，以确保形式简单，例如 x = m[k] 或 m[k] = x，而 k 可以寻址。
-
-```go
-
-```
