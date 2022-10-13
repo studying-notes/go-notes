@@ -1,0 +1,54 @@
+main.main STEXT size=106 args=0x0 locals=0x28 funcid=0x0 align=0x0
+	0x0000 00000 (main.go:3)	TEXT	main.main(SB), ABIInternal, $40-0
+	0x0000 00000 (main.go:3)	CMPQ	SP, 16(R14)
+	0x0004 00004 (main.go:3)	PCDATA	$0, $-2
+	0x0004 00004 (main.go:3)	JLS	99
+	0x0006 00006 (main.go:3)	PCDATA	$0, $-1
+	0x0006 00006 (main.go:3)	SUBQ	$40, SP
+	0x000a 00010 (main.go:3)	MOVQ	BP, 32(SP)
+	0x000f 00015 (main.go:3)	LEAQ	32(SP), BP
+	0x0014 00020 (main.go:3)	FUNCDATA	$0, gclocals·g2BeySu+wFnoycgXfElmcg==(SB)
+	0x0014 00020 (main.go:3)	FUNCDATA	$1, gclocals·g2BeySu+wFnoycgXfElmcg==(SB)
+	0x0014 00020 (main.go:5)	MOVQ	$1, main.a+24(SP)
+	0x001d 00029 (main.go:6)	MOVQ	$2, main.b+16(SP)
+	0x0026 00038 (main.go:7)	MOVQ	$0, main.c+8(SP)
+	0x002f 00047 (main.go:10)	MOVQ	main.a+24(SP), AX
+	0x0034 00052 (main.go:10)	ADDQ	main.b+16(SP), AX
+	0x0039 00057 (main.go:10)	MOVQ	AX, main.c+8(SP)
+	0x003e 00062 (main.go:12)	PCDATA	$1, $0
+	0x003e 00062 (main.go:12)	NOP
+	0x0040 00064 (main.go:12)	CALL	runtime.printlock(SB)
+	0x0045 00069 (main.go:12)	MOVQ	main.c+8(SP), AX
+	0x004a 00074 (main.go:12)	CALL	runtime.printint(SB)
+	0x004f 00079 (main.go:12)	CALL	runtime.printnl(SB)
+	0x0054 00084 (main.go:12)	CALL	runtime.printunlock(SB)
+	0x0059 00089 (main.go:13)	MOVQ	32(SP), BP
+	0x005e 00094 (main.go:13)	ADDQ	$40, SP
+	0x0062 00098 (main.go:13)	RET
+	0x0063 00099 (main.go:13)	NOP
+	0x0063 00099 (main.go:3)	PCDATA	$1, $-1
+	0x0063 00099 (main.go:3)	PCDATA	$0, $-2
+	0x0063 00099 (main.go:3)	CALL	runtime.morestack_noctxt(SB)
+	0x0068 00104 (main.go:3)	PCDATA	$0, $-1
+	0x0068 00104 (main.go:3)	JMP	0
+	0x0000 49 3b 66 10 76 5d 48 83 ec 28 48 89 6c 24 20 48  I;f.v]H..(H.l$ H
+	0x0010 8d 6c 24 20 48 c7 44 24 18 01 00 00 00 48 c7 44  .l$ H.D$.....H.D
+	0x0020 24 10 02 00 00 00 48 c7 44 24 08 00 00 00 00 48  $.....H.D$.....H
+	0x0030 8b 44 24 18 48 03 44 24 10 48 89 44 24 08 66 90  .D$.H.D$.H.D$.f.
+	0x0040 e8 00 00 00 00 48 8b 44 24 08 e8 00 00 00 00 e8  .....H.D$.......
+	0x0050 00 00 00 00 e8 00 00 00 00 48 8b 6c 24 20 48 83  .........H.l$ H.
+	0x0060 c4 28 c3 e8 00 00 00 00 eb 96                    .(........
+	rel 65+4 t=7 runtime.printlock+0
+	rel 75+4 t=7 runtime.printint+0
+	rel 80+4 t=7 runtime.printnl+0
+	rel 85+4 t=7 runtime.printunlock+0
+	rel 100+4 t=7 runtime.morestack_noctxt+0
+go.cuinfo.producer.<unlinkable> SDWARFCUINFO dupok size=0
+	0x0000 2d 4e 20 2d 6c 20 72 65 67 61 62 69              -N -l regabi
+go.cuinfo.packagename.main SDWARFCUINFO dupok size=0
+	0x0000 6d 61 69 6e                                      main
+main..inittask SNOPTRDATA size=24
+	0x0000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+	0x0010 00 00 00 00 00 00 00 00                          ........
+gclocals·g2BeySu+wFnoycgXfElmcg== SRODATA dupok size=8
+	0x0000 01 00 00 00 00 00 00 00                          ........

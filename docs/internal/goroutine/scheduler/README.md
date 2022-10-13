@@ -11,7 +11,6 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
-- [Go 语言调度器源码分析之 CPU 寄存器](cpu_registers.md)
 - [Go 语言调度器源码分析之内存](memory.md)
 - [Go 语言调度器源码分析之函数调用栈](function_call_stack.md)
 - [Go 语言调度器源码分析之汇编指令](assembly_instructions.md)

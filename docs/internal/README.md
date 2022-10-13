@@ -11,6 +11,12 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
+## 计算机基础知识
+
+1. [了解 CPU 寄存器](base/register.md)
+
+## Go 语言底层原理剖析
+
 1. [深入 Go 语言编译器](compiler/README.md)
 2. [浮点数设计原理](float/README.md)
 3. [类型推断](type_inference/README.md)
