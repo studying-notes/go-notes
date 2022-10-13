@@ -28,7 +28,7 @@ draft: true  # 草稿
 
 需要注意的是大小端存储模式与 CPU 相关，而与内存无关，内存只管保存数据而不关心数据是什么以及怎么解释这些数据。下图是大小端存储模式的示意图：
 
-![](../../../assets/images/docs/internal/goroutine/scheduler/memory/44be1f94fd7f673e.png)
+![](../../../assets/images/docs/internal/base/memory/44be1f94fd7f673e.png)
 
 ```go
 

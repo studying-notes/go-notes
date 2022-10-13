@@ -25,7 +25,7 @@ draft: true  # 草稿
 
 程序运行时在内存中的布局图：
 
-![](../../../assets/images/docs/internal/goroutine/scheduler/function_call_stack/141394582f737218.png)
+![](../../../assets/images/docs/internal/function/stack/141394582f737218.png)
 
 进程在内存中的布局主要分为 4 个区域：代码区，数据区，堆和栈。
 
@@ -72,7 +72,7 @@ A()->B()->C()
 
 则函数 ABC 的栈帧以及 rsp/rbp 的状态大致如下图所示：
 
-![image](../../../assets/images/docs/internal/goroutine/scheduler/function_call_stack/5321d64484f5f889.png)
+![image](../../../assets/images/docs/internal/function/stack/5321d64484f5f889.png)
 
 对于上图，有几点需要说明一下：
 
@@ -84,11 +84,11 @@ A()->B()->C()
 
 随着程序的运行，如果 C、B 两个函数都执行完成并返回到了 A 函数继续执行，则栈状态如下图：
 
-![](../../../assets/images/docs/internal/goroutine/scheduler/function_call_stack/c98550de539d27e2.png)
+![](../../../assets/images/docs/internal/function/stack/c98550de539d27e2.png)
 
 因为 C、B 两个函数都已经执行完成并返回到了 A 函数之中，所以 C、B 两个函数的栈帧就已经被 POP 出栈了，也就是说它们所消耗的栈内存被自动回收了。因为现在正在执行 A 函数，所以寄存器 rbp 和 rsp 指向的是 A 函数的栈中的相应位置。如果 A 函数又继续调用了 D 函数的话，则栈又变成下面这个样子：
 
-![](../../../assets/images/docs/internal/goroutine/scheduler/function_call_stack/11e8be87f54160dc.png)
+![](../../../assets/images/docs/internal/function/stack/11e8be87f54160dc.png)
 
 可以看到，现在 D 函数的栈帧其实使用的是之前调用 B、C 两个函数所使用的栈内存，这没有问题，因为 B 和 C 函数已经执行完了，现在 D 函数重用了这块内存，这也是为什么**在 C 语言中绝对不要返回函数局部变量的地址，因为同一个地址的栈内存会被重用**，这就会造成意外的 bug，而 go 语言中没有这个限制，因为 **go 语言的编译器比较智能，当它发现程序返回了某个局部变量的地址，编译器会把这个变量放到堆上去，而不会放在栈上**。同样，这里我们还是需要注意 rbp 和 rsp 这两个寄存器现在指向了 D 函数的栈帧。从上面的分析我们可以看出，**寄存器 rbp 和 rsp 始终指向正在执行的函数的栈帧**。
 
@@ -107,7 +107,7 @@ func f(n int) {
 
 函数 f 是一个递归函数，f 函数会一直递归的调用自己直到参数 n 小于等于 0 为止，如果我们在其它某个函数里调用了 f(10)，而且现在正在执行 f(8) 的话，则其栈状态如下图所示：
 
-![](../../../assets/images/docs/internal/goroutine/scheduler/function_call_stack/09ec60814ecdab98.png)
+![](../../../assets/images/docs/internal/function/stack/09ec60814ecdab98.png)
 
 从上图可以看出，**即使是同一个函数，每次调用都会产生一个不同的栈帧**，因此对于递归函数，**每递归一次都会消耗一定的栈内存**，如果递归层数太多就有导致栈溢出的风险，这也是为什么我们**在实际的开发过程中应该尽量避免使用递归函数**的原因之一，另外一个原因是**递归函数执行效率比较低**，因为它要反复调用函数，而**调用函数有较大的性能开销**。
 
