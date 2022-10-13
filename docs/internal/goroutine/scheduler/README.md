@@ -11,7 +11,6 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
-- [Go 语言调度器源码分析之 Go 汇编](go_assembly.md)
 - [Go 语言调度器源码分析之函数调用过程](function_call.md)
 - [Go 语言调度器源码分析之系统调用](system_call.md)
 - [Go 语言调度器源码分析之系统线程](system_thread.md)

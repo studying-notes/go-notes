@@ -16,6 +16,7 @@ draft: true  # 草稿
 1. [了解 CPU 寄存器](base/register.md)
 2. [了解内存](base/memory.md)
 3. [了解汇编指令](base/assembly.md)
+4. [了解 Plan9 汇编](base/assembly_plan9.md)
 
 ## Go 语言底层原理剖析
 
