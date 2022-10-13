@@ -12,11 +12,6 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
-- [reflect.Type 详解](#reflecttype-详解)
-- [Interface 方法原理](#interface-方法原理)
-- [Elem 方法](#elem-方法)
-- [动态调用剖析](#动态调用剖析)
-
 ## reflect.Type 详解
 
 通过如下 reflect.TypeOf 函数对于 reflect.Type 的构建过程可以发现，其实现原理为将传递进来的接口变量转换为底层的实际空接口 emptyInterface，并获取空接口的类型值。reflect.Type 实质上是空接口结构体中的 typ 字段，其是 rtype 类型，Go 语言中任何具体类型的底层结构都包含这一类型。
@@ -322,7 +317,7 @@ func (v Value) Elem() Value {
 }
 ```
 
-对于指针来说，如果 flag 标识了 reflect.Value 是间接的，则会返回数据真实的地址 ( * unsafe.Pointer)(ptr)，而对于直接的指针，则返回本身即可，并且会将 flag 修改为 flagAddr，即可赋值的。
+对于指针来说，如果 flag 标识了 reflect.Value 是间接的，则会返回数据真实的地址 `(*unsafe.Pointer)(ptr)`，而对于直接的指针，则返回本身即可，并且会将 flag 修改为 flagAddr，即可赋值的。
 
 ## 动态调用剖析
 
@@ -535,7 +530,7 @@ func align(x, n uintptr) uintptr {
 }
 ```
 
-off=(off+a-1)&^(a-1) 是计算内存对齐的标准方式，在结构体内存对齐中使用频繁。
+`off=(off+a-1)&^(a-1)` 是计算内存对齐的标准方式，在结构体内存对齐中使用频繁。
 
 调用 Call 汇编函数完成调用逻辑，Call 函数需要传递内存布局类型(frametype)、函数指针(fn)、内存地址(args)、栈大小(frametype.size)、输入参数与返回值的内存间隔(retOffset)。
 

@@ -11,33 +11,22 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
-- [反射的两种基本类型](#反射的两种基本类型)
-- [反射转换为接口](#反射转换为接口)
-- [Elem() 间接访问](#elem-间接访问)
-- [修改反射的值](#修改反射的值)
-- [结构体与反射](#结构体与反射)
-- [遍历结构体字段](#遍历结构体字段)
-- [修改结构体字段](#修改结构体字段)
-- [嵌套结构体的赋值](#嵌套结构体的赋值)
-- [结构体方法与动态调用](#结构体方法与动态调用)
-- [反射在运行时创建结构体](#反射在运行时创建结构体)
-- [函数与反射](#函数与反射)
-- [反射与其他类型](#反射与其他类型)
+## 两种基本类型
 
-## 反射的两种基本类型
-
-Go语言中提供了两种基本方法可以让我们构建反射的两个基本类型：`reflect.Type` 和 `reflect.Value`。
+Go 语言中提供了两种基本方法可以让我们构建反射的两个基本类型：`reflect.Type` 和 `reflect.Value`。
 
 ```go
 func ValueOf(i interface{}) Value
 func TypeOf(i interface{}) Type
 ```
 
-这两个函数的参数都是空接口 interface{}，内部存储了即将被反射的变量。因此，反射与接口之间存在很强的联系。可以说，不理解接口就无法深入理解反射。
+这两个函数的参数都是空接口 `interface{}`，内部存储了即将被反射的变量。
 
-可以将 reflect.Value 看作反射的值，reflect.Type 看作反射的实际类型。其中，reflect.Type 是一个接口，包含和类型有关的许多方法签名，例如 Align 方法、String 方法等。
+可以将 `reflect.Value` 看作反射的值，`reflect.Type` 看作反射的实际类型。其中，`reflect.Type` 是一个接口，包含和类型有关的许多方法签名，例如 Align 方法、String 方法等。
 
-reflect.Value 是一个结构体，其内部包含了很多方法。可以简单地用 fmt 打印 reflect.TypeOf 与 reflect.ValueOf 函数生成的结果。reflect.ValueOf 将打印出反射内部的值，reflect.TypeOf 会打印出反射的类型。
+`reflect.Value` 是一个结构体，其内部包含了很多方法。
+
+可以简单地用 fmt 打印 reflect.TypeOf 与 reflect.ValueOf 函数生成的结果。reflect.ValueOf 将打印出反射内部的值，reflect.TypeOf 会打印出反射的类型。
 
 ```go
 package main
@@ -61,9 +50,7 @@ reflect.ValueOf(n) = 1.23
 
 reflect.Value 类型中的 Type 方法可以获取当前反射的类型。
 
-因此，reflect.Value 可以转换为 reflect.Type。reflect.Value 与 reflect.Type 都具有 Kind 方法，可以获取标识类型的 Kind，其底层是 unit。
-
-Go 语言中的内置类型都可以用唯一的整数进行标识。
+因此，reflect.Value 可以转换为 reflect.Type。reflect.Value 与 reflect.Type 都具有 Kind 方法，可以获取标识类型的 Kind，其底层是 unit。Go 语言中的内置类型都可以用唯一的整数进行标识。
 
 ```go
 // A Kind represents the specific kind of type that a Type represents.
@@ -116,11 +103,9 @@ func main() {
 }
 ```
 
-## 反射转换为接口
+## 转换为接口
 
-reflect.Value 中的 Interface 方法以空接口的形式返回 reflect.Value 中的值。如果要进一步获取空接口的真实值，可以通过接口的断言语法对接口进行转换。
-
-下例实现了从值到反射，再从反射到值的过程。
+`reflect.Value` 中的 `Interface()` 方法以空接口的形式返回 `reflect.Value` 中的值。如果要进一步获取空接口的真实值，可以通过接口的断言语法对接口进行转换。下例实现了从值到反射，再从反射到值的过程。
 
 ```go
 package main
@@ -175,9 +160,11 @@ func (v Value) Int() int64 {
 }
 ```
 
-## Elem() 间接访问
+## 间接访问
 
-如果反射中存储的是指针或接口，那么如何访问指针指向的数据呢？reflect.Value 提供了 Elem 方法返回指针或接口指向的数据。如果 Value 存储的不是指针或接口，则使用 Elem 方法时会出错。
+如果反射中存储的是指针或接口，那么如何访问指针指向的数据呢？
+
+`reflect.Value` 提供了 `Elem()` 方法返回指针或接口指向的数据。如果 Value 存储的不是指针或接口，则使用 Elem 方法时会出错。
 
 ```go
 package main
@@ -263,9 +250,9 @@ func main() {
 }
 ```
 
-## 修改反射的值
+## 修改值
 
-有多种方式可以修改反射中存储的值，例如 reflect.Value 的 Set 方法：
+有多种方式可以修改反射中存储的值，例如 `reflect.Value` 的 Set 方法：
 
 ```go
 func (v Value) Set(x Value)
@@ -295,9 +282,7 @@ func main() {
 }
 ```
 
-只有当反射中存储的实际值是指针时才能赋值，否则是没有意义的，因为在反射之前，实际值被转换为了空接口，如果空接口中存储的值是一个副本，那么修改它会引起混淆，因此Go语言禁止这样做。
-
-必须使用 Elem 方法才能够让值可以被赋值。可以通过 Elem 方法区分要修改的是指针还是指针指向的数据。
+只有当反射中存储的实际值是指针时才能赋值，否则是没有意义的，因为在反射之前，实际值被转换为了空接口，如果空接口中存储的值是一个副本，那么修改它会引起混淆，因此Go语言禁止这样做。必须使用 Elem 方法才能够让值可以被赋值。可以通过 Elem 方法区分要修改的是指针还是指针指向的数据。
 
 ## 结构体与反射
 
@@ -391,7 +376,7 @@ func main() {
 
 但是只修改为指针还不够，因为在 Field 方法中调用的方法必须为结构体。
 
-因此，需要先通过 Elem 方法获取指针指向的结构体值类型，才能调用 field 方法。正确的使用方式如下所示。同时要注意，未导出的字段 y 是不能被赋值的。
+因此，需要先通过 Elem 方法获取指针指向的结构体值类型，才能调用 field 方法。正确的使用方式如下所示。同时要注意，**未导出的字段 y 是不能被赋值的**。
 
 ```go
 func main() {
@@ -399,6 +384,30 @@ func main() {
 	rValue := reflect.ValueOf(&s).Elem()
 	rValueX := rValue.Field(0)
 	rValueX.SetInt(100)
+}
+```
+
+```go
+// Set assigns x to the value v.
+// It panics if CanSet returns false.
+// As in Go, x's value must be assignable to v's type.
+func (v Value) Set(x Value) {
+	v.mustBeAssignable()
+	x.mustBeExported() // do not let unexported x leak
+	var target unsafe.Pointer
+	if v.kind() == Interface {
+		target = v.ptr
+	}
+	x = x.assignTo("reflect.Set", v.typ, target)
+	if x.flag&flagIndir != 0 {
+		if x.ptr == unsafe.Pointer(&zeroVal[0]) {
+			typedmemclr(v.typ, v.ptr)
+		} else {
+			typedmemmove(v.typ, v.ptr, x.ptr)
+		}
+	} else {
+		*(*unsafe.Pointer)(v.ptr) = x.ptr
+	}
 }
 ```
 
@@ -420,6 +429,28 @@ func (v Value) SetInt(x int64) {
 		*(*int32)(v.ptr) = int32(x)
 	case Int64:
 		*(*int64)(v.ptr) = x
+	}
+}
+
+// mustBeAssignable panics if f records that the value is not assignable,
+// which is to say that either it was obtained using an unexported field
+// or it is not addressable.
+func (f flag) mustBeAssignable() {
+	if f&flagRO != 0 || f&flagAddr == 0 {
+		f.mustBeAssignableSlow()
+	}
+}
+
+func (f flag) mustBeAssignableSlow() {
+	if f == 0 {
+		panic(&ValueError{valueMethodName(), Invalid})
+	}
+	// Assignable if addressable and not read-only.
+	if f&flagRO != 0 {
+		panic("reflect: " + valueMethodName() + " using value obtained using unexported field")
+	}
+	if f&flagAddr == 0 {
+		panic("reflect: " + valueMethodName() + " using unaddressable value")
 	}
 }
 ```

@@ -1,23 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"reflect"
 )
 
+type User struct {
+	X int
+	y float64
+}
+
 func main() {
-	ta := reflect.ArrayOf(10, reflect.TypeOf(0))
-	tc := reflect.ChanOf(reflect.BothDir, reflect.TypeOf(0))
-	tp := reflect.PtrTo(reflect.TypeOf(0))
-	ts := reflect.SliceOf(reflect.TypeOf(0))
-	tm := reflect.MapOf(reflect.TypeOf(0), reflect.TypeOf(0))
-	tf := reflect.FuncOf([]reflect.Type{reflect.TypeOf(0)}, []reflect.Type{reflect.TypeOf(0)}, false)
-	tt := reflect.StructOf([]reflect.StructField{
-		{Name: "A", Type: reflect.TypeOf(0)},
-		{Name: "B", Type: reflect.TypeOf(0)},
-	})
-
-	reflect.MakeChan(tc, 5)
-
-	fmt.Println(ta, tc, tp, ts, tm, tf, tt)
+	var s = User{X: 1, y: 2.0}
+	rValue := reflect.ValueOf(&s).Elem()
+	rValueX := rValue.Field(0)
+	rValueX.SetInt(100)
+	rValueY := rValue.FieldByName("y")
+	rValueY.SetFloat(200.0)
+	println(s.X, s.y)
 }
