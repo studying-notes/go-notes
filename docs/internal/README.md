@@ -11,9 +11,10 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
-## 计算机基础知识
+## 基础知识
 
 1. [了解 CPU 寄存器](base/register.md)
+2. [了解内存](base/memory.md)
 
 ## Go 语言底层原理剖析
 
