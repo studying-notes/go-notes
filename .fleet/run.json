@@ -1,9 +1,0 @@
-{
-    "configurations": [
-            "type": "command",
-            "name": "run",
-            "program": "go",
-        },
-
-    ]
-}

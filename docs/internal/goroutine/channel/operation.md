@@ -337,7 +337,7 @@ func main() {
 
 ## select 与 nil
 
-一个为 nil 的通道，不管是读取还是写入都将陷入堵塞状态。当 select 语句的 case 对 nil 通道进行操作时，case 分支将永远得不到执行。
+**一个为 nil 的通道，不管是读取还是写入都将陷入堵塞状态**。当 select 语句的 case 对 nil 通道进行操作时，case 分支将永远得不到执行。
 
 nil 通道的这种特性，可以用于设计一些特别的模式。例如，假设有 a、b 两个通道，我们希望交替地向 a、b 通道中发送消息，那么可以用如下方式：
 
@@ -375,6 +375,65 @@ func main() {
 ```
 
 上例的协程中，一旦写入通道后，就将该通道置为 nil，导致再也没有机会执行该 case。从而达到交替写入 a、b 通道的目的。
+
+这里是交替写入两个通道，不是用两个协程交替打印。下面的例子中，我们用两个协程交替打印。
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	a := make(chan bool)
+	b := make(chan bool)
+	c := make(chan bool)
+
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+
+	n := 0
+
+	go func() {
+		for {
+			<-a
+
+			for i := 0; i < 5; i++ {
+				n++
+				fmt.Println("a:", n)
+			}
+
+			if n == 100 {
+				close(c)
+			} else {
+				b <- true
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			<-b
+
+			for i := 0; i < 5; i++ {
+				n++
+				fmt.Println("b:", n)
+			}
+
+			if n == 100 {
+				close(c)
+			} else {
+				a <- true
+			}
+		}
+	}()
+
+	a <- true
+	<-c
+}
+```
 
 ### range 读取数据
 

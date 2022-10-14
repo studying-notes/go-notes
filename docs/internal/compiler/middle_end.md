@@ -212,20 +212,9 @@ end:
 
 ## 逃逸分析
 
-```go
-	// Escape analysis.
-	// Required for moving heap allocations onto stack,
-	// which in turn is required by the closure implementation,
-	// which stores the addresses of stack variables into the closure.
-	// If the closure does not escape, it needs to be on the stack
-	// or else the stack copier will not update it.
-	// Large values are also moved off stack in escape analysis;
-	// because large values may contain pointers, it must happen early.
-	base.Timer.Start("fe", "escapes")
-	escape.Funcs(typecheck.Target.Decls)
-```
+[逃逸分析](escape.md)
 
-### 变量捕获与逃逸分析
+## 变量捕获
 
 变量捕获主要是针对闭包场景而言的，由于闭包函数中可能引用闭包外的变量，因此变量捕获需要明确在闭包中通过值引用或地址引用的方式来捕获变量。
 
@@ -258,125 +247,6 @@ go tool compile -m=2 main.go | grep capturing
 main.go:6:2: main capturing by ref: a (addr=false assign=true width=8)
 main.go:7:2: main capturing by value: b (addr=false assign=false width=8)
 ```
-
-### 逃逸分析
-
-逃逸分析是 Go 语言中重要的优化阶段，用于标识变量内存应该被分配在栈区还是堆区。
-
-在传统的 C 或 C++ 语言中，开发者经常会犯的错误是函数返回了一个栈上的对象指针，在函数执行完成，栈被销毁后，继续访问被销毁栈上的对象指针，导致出现问题。
-
-Go 语言能够通过编译时的逃逸分析识别这种问题，自动将该变量放置到堆区，并借助 Go 运行时的垃圾回收机制自动释放内存。编译器会尽可能地将变量放置到栈中，因为栈中的对象随着函数调用结束会被自动销毁，减轻运行时分配和垃圾回收的负担。
-
-在 Go 语言中，开发者模糊了栈区与堆区的差别，不管是字符串、数组字面量，还是通过 new、make 标识符创建的对象，都既可能被分配到栈中，也可能被分配到堆中。
-
-分配时，遵循以下两个原则：
-
-- 原则 1：指向栈上对象的指针不能被存储到堆中
-- 原则 2：指向栈上对象的指针不能超过该栈对象的生命周期
-
-Go 语言通过对抽象语法树的静态数据流分析（static data-flow analysis）来实现逃逸分析，这种方式构建了带权重的有向图。
-
-简单的逃逸现象举例如下：
-
-```go
-var z *int
-
-func escape() {
-    a := 1
-    z = &a
-}
-```
-
-在上例中，变量 z 为全局变量，是一个指针。在函数中，变量 z 引用了变量 a 的地址。如果变量 a 被分配到栈中，那么最终程序将违背原则 2，即变量 z 超过了变量 a 的生命周期，因此变量 a 最终将被分配到堆中。
-
-可以通过在编译时加入 -m=2 标志打印出编译时的逃逸分析信息。
-
-如下所示，表明变量 a 将被放置到堆中。
-
-```
-go tool compile -m=2 main.go
-```
-
-```
-main.go:5:6: can inline escape with cost 9 as: func() { a := 1; z = &a }
-main.go:10:6: can inline main with cost 0 as: func() {  }
-main.go:6:2: a escapes to heap:
-main.go:6:2:   flow: {heap} = &a:
-main.go:6:2:     from &a (address-of) at main.go:7:6
-main.go:6:2:     from z = &a (assign) at main.go:7:4
-main.go:6:2: moved to heap: a
-```
-
-Go 语言在编译时构建了带权重的有向图，其中权重可以表明当前变量引用与解引用的数量。
-
-下例为 p 引用 q 时的权重，当权重大于 0 时，代表存在 * 解引用操作。当权重为 -1 时，代表存在 & 引用操作。
-
-```go
-p = &q // -1
-p = q // 0
-p = *q // 1
-p = **q // 2
-p = **&**&q // 2
-```
-
-并不是权重为 -1 就一定要逃逸，例如在下例中，虽然 z 引用了变量 a 的地址，但是由于变量 z 并没有超过变量 a 的声明周期，因此变量 a 与变量 z 都不需要逃逸。
-
-```go
-func f() int {
-	a := 1
-	z := &a
-	return *z
-}
-```
-
-为了理解编译器带权重的有向图，再来看一个更加复杂的例子。在该案例中有多次的引用与解引用过程。
-
-```go
-package main
-
-var o *int
-
-func main() {
-	l := new(int)
-	*l = 42
-	m := &l
-	n := &m // &&l
-	o = **n // l
-}
-```
-
-最终编译器在逃逸分析中的数据流分析，会被解析成如图 1-7 所示的带权重的有向图。
-
-![](../../../assets/images/docs/internal/compiler/middle_end/图1-7%20逃逸分析带权重的有向图.png)
-
-其中，节点代表变量，边代表变量之间的赋值，箭头代表赋值的方向，边上的数字代表当前赋值的引用或解引用的个数。节点的权重=前一个节点的权重 + 箭头上的数字，例如节点 m 的权重为 2-1 = 1，而节点 l 的权重为 1-1 = 0。
-
-遍历和计算有向权重图的目的是找到权重为 -1 的节点，例如图 1-7 中的 new(int) 节点，它的节点变量地址会被传递到根节点 o 中，这时还需要考虑逃逸分析的分配原则，o 节点为全局变量，不能被分配在栈中，因此，new(int) 节点创建的变量会被分配到堆中。
-
-```
-go tool compile -m=2 main.go
-```
-
-```
-main.go:5:6: can inline main with cost 27 as: func() { l := new(int); *l = 42; m := &l; n := &m; o = *(*n) }
-main.go:6:10: new(int) escapes to heap:
-main.go:6:10:   flow: l = &{storage for new(int)}:
-main.go:6:10:     from new(int) (spill) at main.go:6:10
-main.go:6:10:     from l := new(int) (assign) at main.go:6:4
-main.go:6:10:   flow: m = &l:
-main.go:6:10:     from &l (address-of) at main.go:8:7
-main.go:6:10:     from m := &l (assign) at main.go:8:4
-main.go:6:10:   flow: n = &m:
-main.go:6:10:     from &m (address-of) at main.go:9:7
-main.go:6:10:     from n := &m (assign) at main.go:9:4
-main.go:6:10:   flow: {heap} = **n:
-main.go:6:10:     from *n (indirection) at main.go:10:7
-main.go:6:10:     from *(*n) (indirection) at main.go:10:6
-main.go:6:10:     from o = *(*n) (assign) at main.go:10:4
-main.go:6:10: new(int) escapes to heap
-```
-
-实际的情况更加复杂，因为一个节点可能拥有多条边（例如结构体），而节点之间可能出现环。Go 语言采用 Bellman Ford 算法遍历查找有向图中权重小于 0 的节点，核心逻辑位于 escape/escape.go 中。
 
 ## 闭包重写
 
