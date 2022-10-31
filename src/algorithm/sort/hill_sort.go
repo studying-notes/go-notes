@@ -1,18 +1,15 @@
 package sort
 
-import "fmt"
-
 // HillSort 希尔排序
-func HillSort(array []int) {
-	length := len(array)
-
-	for h := length / 2; h > 0; h /= 2 {
-		for i := h; i < length; i++ {
-			for j := i - h; j >= 0 && array[j] > array[j+h]; j -= h {
-				array[j], array[j+h] = array[j+h], array[j]
+func HillSort(array []int, length int) {
+	for step := length / 2; step > 0; step /= 2 {
+		for i := step; i < length; i += step {
+			for j := i; j > step-1; j -= step {
+				if array[j] >= array[j-step] {
+					break
+				}
+				swap(array, j, j-step)
 			}
 		}
-
-		fmt.Println(array)
 	}
 }

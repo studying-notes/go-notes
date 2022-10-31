@@ -2,32 +2,33 @@ package sort
 
 // MergeSort 归并排序
 func MergeSort(array []int, begin, end int) {
+	// begin 表示开始索引 end 表示结束索引，可以取到
 	if begin < end {
-		q := (begin + end) / 2
-		MergeSort(array, begin, q)
-		MergeSort(array, q+1, end)
-		merge(array, begin, q, end)
+		mid := (begin + end) / 2
+		MergeSort(array, begin, mid)
+		MergeSort(array, mid+1, end)
+		merge(array, begin, mid, end)
 	}
 }
 
 // 合并两个有序数组
-func merge(array []int, begin, middle, end int) {
-	n1 := middle - begin + 1
-	n2 := end - middle
+func merge(array []int, begin, mid, end int) {
+	leftLength := mid - begin + 1
+	rightLength := end - mid
 
-	left := make([]int, n1)
-	right := make([]int, n2)
+	left := make([]int, leftLength)
+	right := make([]int, rightLength)
 
-	for i, k := 0, begin; i < n1; i, k = i+1, k+1 {
-		left[i] = array[k]
+	for i := 0; i < leftLength; i++ {
+		left[i] = array[begin+i]
 	}
 
-	for i, k := 0, middle+1; i < n2; i, k = i+1, k+1 {
-		right[i] = array[k]
+	for j := 0; j < rightLength; j++ {
+		right[j] = array[mid+j+1]
 	}
 
 	var i, j int
-	for i < n1 && j < n2 {
+	for i < leftLength && j < rightLength {
 		if left[i] < right[j] {
 			array[begin+i+j] = left[i]
 			i++
@@ -37,12 +38,12 @@ func merge(array []int, begin, middle, end int) {
 		}
 	}
 
-	for i < n1 {
+	for i < leftLength {
 		array[begin+i+j] = left[i]
 		i++
 	}
 
-	for j < n2 {
+	for j < rightLength {
 		array[begin+i+j] = right[j]
 		j++
 	}

@@ -11,7 +11,17 @@ toc: true  # 目录
 draft: true  # 草稿
 ---
 
-排序问题一直是计算机技术研究的重要问题，排序算法的好坏直接影响程序的执行速度和辅助存储空间的占有量。
+## 交换数组元素
+
+Go 语言自带交换数组元素的方法：
+
+```go
+func swap(array []int, i, j int) {
+	array[i], array[j] = array[j], array[i]
+}
+```
+
+内部实现是临时变量法。
 
 ## 选择排序
 
@@ -29,18 +39,15 @@ draft: true  # 草稿
 
 ```go
 // SelectionSort 选择排序
-func SelectionSort(array []int) {
-	length := len(array)
-	for i := 0; i < length; i++ {
-		// 记录最小值及其索引
-		m, n := array[i], i
+func SelectionSort(array []int, length int) {
+	for i := 0; i < length-1; i++ {
+		k := i // 记录最小值索引
 		for j := i + 1; j < length; j++ {
-			if array[j] < m {
-				m, n = array[j], j
+			if array[j] < array[k] {
+				k = j
 			}
 		}
-		// 交换最小值
-		array[i], array[n] = array[n], array[i]
+		swap(array, i, k) // 交换最小值
 	}
 }
 ```
@@ -61,12 +68,14 @@ func SelectionSort(array []int) {
 
 ```go
 // InsertionSort 插入排序
-func InsertionSort(array []int) {
-	length := len(array)
+func InsertionSort(array []int, length int) {
 	for i := 0; i < length-1; i++ {
-		for j := i + 1; j > 0 && array[j] < array[j-1]; j-- {
+		for j := i + 1; j > 0; j-- {
+			if array[j] < array[j-1] {
+				break // 已经有序则中断
+			}
 			// 从后往前遍历有序序列，后移比它大的元素
-			array[j], array[j-1] = array[j-1], array[j]
+			swap(array, j, j-1)
 		}
 	}
 }
@@ -100,14 +109,29 @@ func InsertionSort(array []int) {
 - 6趟排序：[12 25] 25 36 43 48 57 65
 - 7趟排序：[12] 25 25 36 43 48 57 65
 
+从前往后冒泡，每次冒泡都会将最大的元素冒泡到最后。
+
+```go
+func BubbleSort(array []int, length int) {
+	for i := 0; i < length-1; i++ {
+		for j := 1; j < length-i; j++ {
+			if array[j-1] > array[j] {
+				swap(array, j, j-1)
+			}
+		}
+	}
+}
+```
+
+从后往前冒泡，每次冒泡都会将最小的元素冒泡到最前。
+
 ```go
 // BubbleSort 冒泡排序
-func BubbleSort(array []int) {
-	length := len(array)
-	for i := 1; i < length; i++ {
-		for j := 0; j < length-i; j++ {
-			if array[j] > array[j+1] {
-				array[j], array[j+1] = array[j+1], array[j]
+func BubbleSort(array []int, length int) {
+	for i := 0; i < length-1; i++ {
+		for j := length - 1; j > i; j-- {
+			if array[j] < array[j-1] {
+				swap(array, j, j-1)
 			}
 		}
 	}
@@ -122,39 +146,44 @@ func BubbleSort(array []int) {
 
 具体而言，归并排序算法的原理如下：对于给定的一组记录（假设共有 n 个记录），首先将每两个相邻的长度为 1 的子序列进行归并，得到 n/2（向上取整）个长度为 2 或 1 的有序子序列，再将其两两归并，反复执行此过程，直到得到一个有序序列为止。
 
-所以，归并排序的关键就是两步：第一步，**划分子表**；第二步，**合并半子表，即合并左右有序数组**。以数组 {49, 38, 65, 97, 76, 13, 27} 为例，排序过程如下：
+所以，归并排序的关键就是两步：第一步，**划分子表**；第二步，**合并半子表，即合并左右有序数组**。
+
+其中的核心算法就是合并两个有序数组，即合并两个有序子序列。需借助一个临时数组，将两个有序子序列中的较小值依次放入临时数组中，直到其中一个子序列中的所有元素都放入临时数组中，然后将另一个子序列中的所有元素依次放入临时数组中。
+
+以数组 {49, 38, 65, 97, 76, 13, 27} 为例，排序过程如下：
 
 ![归并排序](../assets/images/algorithm/sort/归并排序.png)
 
 ```go
 // MergeSort 归并排序
 func MergeSort(array []int, begin, end int) {
+	// begin 表示开始索引 end 表示结束索引，可以取到
 	if begin < end {
-		q := (begin + end) / 2
-		MergeSort(array, begin, q)
-		MergeSort(array, q+1, end)
-		merge(array, begin, q, end)
+		mid := (begin + end) / 2
+		MergeSort(array, begin, mid)
+		MergeSort(array, mid+1, end)
+		merge(array, begin, mid, end)
 	}
 }
 
 // 合并两个有序数组
-func merge(array []int, begin, middle, end int) {
-	n1 := middle - begin + 1
-	n2 := end - middle
+func merge(array []int, begin, mid, end int) {
+	leftLength := mid - begin + 1
+	rightLength := end - mid
 
-	left := make([]int, n1)
-	right := make([]int, n2)
+	left := make([]int, leftLength)
+	right := make([]int, rightLength)
 
-	for i, k := 0, begin; i < n1; i, k = i+1, k+1 {
-		left[i] = array[k]
+	for i := 0; i < leftLength; i++ {
+		left[i] = array[begin+i]
 	}
 
-	for i, k := 0, middle+1; i < n2; i, k = i+1, k+1 {
-		right[i] = array[k]
+	for j := 0; j < rightLength; j++ {
+		right[j] = array[mid+j+1]
 	}
 
 	var i, j int
-	for i < n1 && j < n2 {
+	for i < leftLength && j < rightLength {
 		if left[i] < right[j] {
 			array[begin+i+j] = left[i]
 			i++
@@ -164,19 +193,19 @@ func merge(array []int, begin, middle, end int) {
 		}
 	}
 
-	for i < n1 {
+	for i < leftLength {
 		array[begin+i+j] = left[i]
 		i++
 	}
 
-	for j < n2 {
+	for j < rightLength {
 		array[begin+i+j] = right[j]
 		j++
 	}
 }
 ```
 
-二路归并排序的过程需要进行 log(n) 趟。每一趟归并排序的操作，就是将两个有序子序列进行归并，而每一对有序子序列归并时，记录的比较次数均小于等于记录的移动次数，记录移动的次数均等于文件中记录的个数 n，即每一趟归并的时间复杂度为 O(n)。因此，二路归并排序的时间复杂度为 O(nlogn)。
+二路归并排序的过程需要进行 log(n) 趟。每一趟归并排序的操作，就是将两个有序子序列进行归并，而每一对有序子序列归并时，记录的比较次数均小于等于记录的移动次数，记录移动的次数均等于文件中记录的个数 n，即每一趟归并的时间复杂度为 O(n)。因此，二路归并排序的时间复杂度为 O(nlogn)，空间复杂度为 O(n)。
 
 ## 快速排序
 
@@ -209,17 +238,17 @@ func merge(array []int, begin, middle, end int) {
 
 ```go
 // Partition 用于快速排序中的分割
-func Partition(array []int, low, high int) int {
-	pos, val := low, array[low]
-	low++
-	for low <= high {
-		if array[low] < val {
-			array[low], array[pos] = array[pos], array[low]
-			low++
+func Partition(array []int, begin, end int) int {
+	pos, val := begin, array[begin]
+	begin++
+	for begin <= end {
+		if array[begin] < val {
+			array[begin], array[pos] = array[pos], array[begin]
+			begin++
 			pos++
 		} else {
-			array[high], array[low] = array[low], array[high]
-			high--
+			array[end], array[begin] = array[begin], array[end]
+			end--
 		}
 	}
 	array[pos] = val
@@ -227,13 +256,33 @@ func Partition(array []int, low, high int) int {
 }
 
 // QuickSort 快速排序
-func QuickSort(array []int, low, high int) {
-	if low > high {
-		return
+func QuickSort(array []int, begin, end int) {
+	if begin < end {
+		mid := Partition(array, begin, end)
+		QuickSort(array, begin, mid-1)
+		QuickSort(array, mid+1, end)
 	}
-	pos := Partition(array, low, high)
-	QuickSort(array, low, pos-1)
-	QuickSort(array, pos+1, high)
+}
+```
+
+上面的分割算法个人认为不太容易理解，而且位置交换太频繁了。
+
+下面是另一种更容易理解的算法，一个指针从左向右扫描，一个指针从右向左扫描，当左指针指向的元素大于基准元素时，右指针指向的元素小于基准元素时，交换两个元素的位置，直到两个指针相遇，然后把基准元素和相遇位置的元素交换位置，这样基准元素左边的元素都小于它，右边的元素都大于它。
+
+```go
+func Partition(array []int, begin, end int) int {
+	pivot := array[begin]
+	for begin < end {
+		for begin < end && array[begin] < pivot {
+			begin++
+		}
+		for begin < end && array[end] > pivot {
+			end--
+		}
+		swap(array, begin, end)
+	}
+	array[begin] = pivot
+	return begin
 }
 ```
 
@@ -270,7 +319,7 @@ func QuickSort(array []int, low, high int) {
 
 ## 希尔排序
 
-希尔排序也称为“缩小增量排序”，它的基本原理如下：首先将待排序的数组元素分成多个子序列（一般采用减半法），使得每个子序列的元素个数相对较少，然后对各个子序列分别进行直接插入排序，待整个待排序序列“基本有序”后，最后再对所有元素进行一次直接插入排序。
+希尔排序也称为“缩小增量排序”，它的基本原理如下：首先将待排序的数组元素分成多个子序列（一般采用减半法），使得每个子序列的元素个数相对较少，然后对各个子序列分别进行直接插入排序，待整个待排序序列“基本有序”后，最后再对所有元素进行一次直接**插入排序**。
 
 具体步骤如下：
 
@@ -288,30 +337,17 @@ func QuickSort(array []int, low, high int) {
 
 ```go
 // HillSort 希尔排序
-func HillSort(array []int) {
-	length := len(array)
-
-	for h := length / 2; h > 0; h /= 2 {
-		for i := h; i < length; i++ {
-			for j := i - h; j >= 0 && array[j] > array[j+h]; j -= h {
-				array[j], array[j+h] = array[j+h], array[j]
+func HillSort(array []int, length int) {
+	for step := length / 2; step > 0; step /= 2 {
+		for i := step; i < length; i += step {
+			for j := i; j > step-1; j -= step {
+				if array[j] >= array[j-step] {
+					break
+				}
+				swap(array, j, j-step)
 			}
 		}
-
-		fmt.Println(array)
 	}
-}
-
-func ExampleHillSort() {
-	array := []int{26, 53, 67, 48, 57, 13, 48, 32, 60, 50}
-	fmt.Println(array)
-	HillSort(array)
-
-	// Output:
-	// [26 53 67 48 57 13 48 32 60 50]
-	// [13 48 32 48 50 26 53 67 60 57]
-	// [13 26 32 48 50 48 53 57 60 67]
-	// [13 26 32 48 48 50 53 57 60 67]
 }
 ```
 
@@ -319,59 +355,8 @@ func ExampleHillSort() {
 
 ## 堆排序
 
-堆是一种特殊的树形数据结构，其每个结点都有一个值，通常提到的堆都是指**一棵完全二叉树**，根结点的值小于（或大于）两个子结点的值，同时，根结点的两个子树也分别是一个堆。
-
-堆排序是一树形选择排序，在排序过程中，将 `R[1 … n]` 看成是一颗完全二叉树的**顺序存储**结构，利用完全二叉树中双亲结点和孩子结点之间的内在关系来选择最小的元素。
-
-堆一般分为大顶堆(最大堆)和小顶堆(最小堆)两种不同的类型。
-
-对于给定 n 个记录的序列 (r(1)，r(2)，…，r(n))，当且仅当满足条件 (r(i)> = r(2i)，i = 1，2，…，n) 时称之为大顶堆，此时，**堆顶元素比为最大值**。
-
-对于给定 n 个记录的序列 (r(1)，r(2)，…，r(n)) ，当且仅当满足条件 (r(i)< = r(2i+1)，i = 1，2，…，n) 时称之为小顶堆，此时，**堆顶元素必为最小值**。
-
-堆排序的思想是对于给定的 n 个记录，初始时把这些记录**看作一棵顺序存储的二叉树**，然后将其调整为一个大顶堆，将堆的最后一个元素与堆顶元素（即二叉树的根结点）进行交换后，堆的最后一个元素即为最大记录；接着将前 (n -1) 个元素（即不包括最大记录）重新调整为一个大顶堆，再将堆顶元素与当前堆的最后一个元素进行交换后得到次大的记录，重复该过程直到调整的堆中只剩一个元素时为止，该元素即为最小记录，此时可得到一个有序序列。
-
-堆排序主要包括两个过程：一是构建堆；二是不断交换堆顶元素与最后一个元素的位置。
-
-```go
-func MaxHeapSort(array []int) {
-	length := len(array)
-
-	// 建立最大堆
-	ConvertArrayToMaxHeap(array)
-
-	for i := length - 1; i >= 0; i-- {
-		// 顶部元素一定是最大的，所以每次都将其放到最后
-		array[0], array[i] = array[i], array[0]
-		// 交换堆顶元素和最后一个元素，然后调整剩余堆
-		// 在调整时排除已经排序的元素，所以将 i 作为长度传入
-		AdjustToMaxHeap(array, 0, i)
-	}
-}
-```
-
-最大堆排序可获得从小到大序列，最小堆排序可获得从大到小序列。
-
-堆排序方法对记录较少的文件效果一般，但对于记录较多的文件还是很有效的，其运行时间主要耗费在创建堆和反复调整堆上。堆排序即使在最坏情况下，其时间复杂度也为 O(n * logn)。
+[堆](structures/heap.md)
 
 ## 排序算法性能对比
 
 ![排序算法性能对比](../assets/images/algorithm/sort/排序算法性能对比.png)
-
-## 位图排序
-
-```go
-
-```
-
-## 桶排序
-
-```go
-
-```
-
-## 基数排序
-
-```go
-
-```

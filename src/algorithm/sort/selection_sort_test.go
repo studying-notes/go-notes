@@ -4,7 +4,7 @@ import "fmt"
 
 func ExampleSelectionSort() {
 	array := []int{10, 3, 8, 7, 0, 5, 4, 9, 2, 1, 6}
-	SelectionSort(array)
+	SelectionSort(array, len(array))
 	fmt.Println(array)
 
 	// Output:

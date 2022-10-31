@@ -4,3 +4,4 @@ cutter.yaml
 
 *.o
 *.exe
+.obsidian

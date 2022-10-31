@@ -4,7 +4,7 @@ import "fmt"
 
 func ExampleInsertionSort() {
 	array := []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}
-	InsertionSort(array)
+	InsertionSort(array, len(array))
 	fmt.Println(array)
 
 	// Output:

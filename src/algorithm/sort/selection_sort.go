@@ -1,17 +1,14 @@
 package sort
 
 // SelectionSort 选择排序
-func SelectionSort(array []int) {
-	length := len(array)
-	for i := 0; i < length; i++ {
-		// 记录最小值及其索引
-		m, n := array[i], i
+func SelectionSort(array []int, length int) {
+	for i := 0; i < length-1; i++ {
+		k := i // 记录最小值索引
 		for j := i + 1; j < length; j++ {
-			if array[j] < m {
-				m, n = array[j], j
+			if array[j] < array[k] {
+				k = j
 			}
 		}
-		// 交换最小值
-		array[i], array[n] = array[n], array[i]
+		swap(array, i, k) // 交换最小值
 	}
 }

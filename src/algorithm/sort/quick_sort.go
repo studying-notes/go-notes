@@ -1,31 +1,28 @@
 package sort
 
 // Partition 用于快速排序中的分割
-func Partition(array []int, low, high int) int {
-	pos, val := low, array[low]
-	low++
-	for low <= high {
-		if array[low] < val {
-			array[low], array[pos] = array[pos], array[low]
-			low++
-			pos++
-		} else {
-			array[high], array[low] = array[low], array[high]
-			high--
+func Partition(array []int, begin, end int) int {
+	pivot := array[begin]
+	for begin < end {
+		for begin < end && array[begin] < pivot {
+			begin++
 		}
+		for begin < end && array[end] > pivot {
+			end--
+		}
+		swap(array, begin, end)
 	}
-	array[pos] = val
-	return pos
+	array[begin] = pivot
+	return begin
 }
 
 // QuickSort 快速排序
-func QuickSort(array []int, low, high int) {
-	if low > high {
-		return
+func QuickSort(array []int, begin, end int) {
+	if begin < end {
+		mid := Partition(array, begin, end)
+		QuickSort(array, begin, mid-1)
+		QuickSort(array, mid+1, end)
 	}
-	pos := Partition(array, low, high)
-	QuickSort(array, low, pos-1)
-	QuickSort(array, pos+1, high)
 }
 
 // QuickSelectMedian 基于快速选择的中位数查找
