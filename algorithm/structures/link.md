@@ -86,7 +86,6 @@ N 个结点链接在一块被称为链表，当结点**只包含其后继结点�
 
 ## 链表结点的定义
 
-> 源码位置 *src/algorithm/structures/link/link.go*
 
 ```go
 // LNode 定义链表结点
@@ -102,7 +101,6 @@ type LNode struct {
 
 给定一个带头结点的单链表，将其逆序。即如果单链表原来为 head->1->2->3->4->5->6->7，则逆序后变为 head->7->6->5->4->3->2->1。
 
-> 源码位置 *src/algorithm/structures/link/reverse.go*
 
 ### 就地逆序
 
@@ -204,7 +202,6 @@ func InsertReverse(head *LNode) {
 
 ## 逆序输出链表
 
-> 源码位置 *src/algorithm/structures/link/reverse.go*
 
 ```go
 // ReversePrint 实现链表的逆序打印
@@ -220,7 +217,6 @@ func ReversePrint(head *LNode) {
 
 ## 从无序链表中移除重复项
 
-> 源码位置 *src/algorithm/structures/link/duplicate.go*
 
 ### 顺序删除
 
@@ -322,7 +318,6 @@ func SetRemoveDup(head *LNode) {
 
 ## 从有序链表中移除重复项
 
-> 源码位置 *src/algorithm/structures/link/duplicate.go*
 
 ```go
 func RemoveDupSeq(head *LNode) {
@@ -344,7 +339,6 @@ func RemoveDupSeq(head *LNode) {
 
 给定两个单链表，链表的每个结点代表一位数，计算两个数的和。例如：输入链表(3->1->5)和链表(5->9->2)，输出：8->0->8，即513+295=808，注意**个位数在链表头**。
 
-> 源码位置 *src/algorithm/structures/link/duplicate.go*
 
 ### 链表相加法
 
@@ -400,7 +394,6 @@ func Sum2LinkedList(head1, head2 *LNode) (head *LNode) {
 1. 在原来链表的基础上进行排序，即不能申请新的结点；
 2. 只能修改结点的 next 域，不能修改数据域。
 
-> 源码位置 *src/algorithm/structures/link/resort.go*
 
 ### 双重循环法
 
@@ -497,7 +490,6 @@ func ReverseChild(node *LNode) *LNode {
 
 找出单链表中的倒数第 k 个元素，例如给定单链表：1->2->3->4->5->6->7，则单链表的倒数第 k=3 个元素为 5。
 
-> 源码位置 *src/algorithm/structures/link/findk.go*
 
 ### 快慢指针法
 
@@ -529,7 +521,6 @@ func FindLastK(head *LNode, k int) *LNode {
 
 给定单链表 1->2->3->4->5->6->7，k=3，那么旋转后的单链表变为 5->6->7->1->2->3->4。
 
-> 源码位置 *src/algorithm/structures/link/findk.go*
 
 ### 快慢指针法
 
@@ -565,7 +556,6 @@ func SpinLastK(head *LNode, k int) {
 
 单链表有环指的是单链表中某个结点的 next 域指向的是链表中在它之前的某一个结点，这样在链表的尾部形成一个环形结构。
 
-> 源码位置 *src/algorithm/structures/link/ring.go*
 
 ### HashSet 法
 
@@ -618,7 +608,6 @@ func DetectRing2Pointer(head *LNode) (node *LNode, isRing bool) {
 
 当链表有环的时候，如果知道环的入口点，那么在需要遍历链表或释放链表所占的空间的时候方法将会非常简单。
 
-> 源码位置 *src/algorithm/structures/link/ring.go*
 
 ### HashSet 法
 
@@ -663,7 +652,6 @@ func RingEntryNode(head *LNode) *LNode {
 
 把链表相邻元素翻转，例如给定链表为1->2->3->4->5->6->7，则翻转后的链表变为2->1->4->3->6->5->7。
 
-> 源码位置 *src/algorithm/structures/link/flip.go*
 
 ### 交换数据域
 
@@ -707,7 +695,6 @@ K 链表翻转是指把每 k 个相邻的结点看成一组进行翻转，如果
 
 假设给定链表 1->2->3->4->5->6->7 和一个数 k，如果 k 的值为 2，那么翻转后的链表为 2->1->4->3->6->5->7。如果 k 的值为 3，那么翻转后的链表为：3->2->1->6->5->4->7。
 
-> 源码位置 *src/algorithm/structures/link/flip.go*
 
 ```go
 func FlipAdjKNode(head *LNode, k int) {
@@ -738,7 +725,6 @@ func FlipAdjKNode(head *LNode, k int) {
 
 ## 合并两个有序链表
 
-> 源码位置 *src/algorithm/structures/link/merge.go*
 
 ### 插入排序法
 
@@ -800,7 +786,6 @@ func MergeSort(l1, l2 *LNode) (res *LNode) {
 
 ## 在只给定单链表中某个结点指针的情况下删除该结点
 
-> 源码位置 *src/algorithm/structures/link/merge.go*
 
 ### 复制数据域法
 
@@ -882,7 +867,6 @@ func RemoveNode(head *LNode, node *LNode) {
 
 例如，对于上述输入链表，输出链表应为3->6->8->11->15->21->22->30->31->39->40->45->50。
 
-> 源码位置 *src/algorithm/structures/link/flatten.go*
 
 ```go
 func Flatten(head *L2Node) *L2Node {

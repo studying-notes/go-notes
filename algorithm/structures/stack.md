@@ -42,7 +42,6 @@ draft: false  # 草稿
 
 实现一个栈的数据结构，使其具有以下方法：压栈、弹栈、取栈顶元素、判断栈是否为空以及获取栈中元素个数。
 
-> 源码位置 *src/algorithm/structures/stack/stack.go*
 
 ### 基于数组实现
 
@@ -187,7 +186,6 @@ func (s *Stack) String() string {
 
 例如输入栈 {1， 2， 3， 4， 5}，其中，1 处在栈顶，翻转之后的栈为 {5， 4， 3， 2， 1}，其中，5 处在栈顶。
 
-> 源码位置 *src/algorithm/structures/stack/reverse.go*
 
 ### 通过队列
 
@@ -239,7 +237,6 @@ func MoveBottom2Top(s *Stack) {
 
 ## 栈排序
 
-> 源码位置 *src/algorithm/structures/stack/sort.go*
 
 ### 冒泡排序
 
@@ -285,7 +282,6 @@ func ExchangeSort(s *Stack) {
 
 > 可以边 Push 边 Pop。
 
-> 源码位置 *src/algorithm/structures/stack/order.go*
 
 ### 模拟入栈顺序
 
@@ -363,7 +359,6 @@ func IsPopOrder(pushOrder, popOrder []int) bool {
 
 ## 求栈中最小元素
 
-> 源码位置 *src/algorithm/structures/stack/sort.go*
 
 ### 冒泡排序法
 
@@ -440,7 +435,6 @@ func (s *ExtStack) Min() int {
 1. 如果栈 B 不为空，则直接弹出栈 B 的数据。
 2. 如果栈 B 为空，则依次弹出栈 A 的数据，放入栈 B 中，再弹出栈 B 的数据。
 
-> 源码位置 *src/algorithm/structures/stack/queue.go*
 
 ```go
 type QueueOver2Stack struct {

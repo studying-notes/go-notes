@@ -24,7 +24,6 @@ draft: false  # 草稿
 
 ## 数据结构
 
-> 源码位置 *src/algorithm/structures/queue/queue.go*
 
 ### 数组实现的队列
 
@@ -185,7 +184,6 @@ func (q *Queue) Size() int {
 
 设计一个排队系统，能够让每个进入队伍的用户都能看到自己在队列中所处的位置和变化，队伍可能随时有人加入和退出，加入必须在队尾，但是退出可以在任意位置；当有人退出影响到用户的位置排名时需要及时反馈到用户。
 
-> 源码位置 *src/algorithm/structures/queue/wait.go*
 
 ```go
 func NewSeqQueue(max int) *WaitQueue {

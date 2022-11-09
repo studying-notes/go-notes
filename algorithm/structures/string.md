@@ -72,7 +72,6 @@ draft: false  # 草稿
 
 ![](../../assets/images/algorithm/structures/string/permutation.png)
 
-> 源码位置 *src/algorithm/structures/string/find_permutation.go*
 
 ```go
 // 保存结果列表
@@ -99,7 +98,6 @@ func Permutation(s []rune, start int) {
 
 找出两个字符串的最长公共子串，例如字符串 “abccade” 与字符串 “dgcadde” 的最长公共子串为 “cad”。
 
-> 源码位置 *src/algorithm/structures/string/find_longest_common_substring.go*
 
 ### 动态规划法
 
@@ -183,7 +181,6 @@ func LongestSubString(s1, s2 []rune) (sub []rune) {
 
 ## 对字符串进行反转
 
-> 源码位置 *src/algorithm/structures/string/reverse_string.go*
 
 ### 临时变量交换
 
@@ -223,7 +220,6 @@ func ReverseStringXOR(s string) string {
 
 对字符串进行两次反转操作，第一次对整个字符串中的字符进行反转，通过这一次的反转已经实现了单词顺序的反转，只不过每个单词中字符的顺序反了，接下来只需要对每个单词进行字符反转即可得到想要的结果。
 
-> 源码位置 *src/algorithm/structures/string/reverse_words.go*
 
 ```go
 // ReverseStringXORInPlace 字符串原地逆序
@@ -260,7 +256,6 @@ func ReverseWords(words string) string {
 
 例如，字符串“aaaabbc”与字符串“abcbaaa”就是由相同的字符所组成的，因此，它们是换位字符。
 
-> 源码位置 *src/algorithm/structures/string/compare_string.go*
 
 ```go
 // Compare 判断组成字符串的字符是否相同
@@ -788,7 +783,6 @@ func ExampleSortStringSequences() {
 
 接下来就需要考虑如何判断一个字符串能否由数组中其他的字符串组成，主要的思路为：找出字符串的所有可能的前缀，判断这个前缀是否在字符数组中，如果在，那么用相同的方法递归地判断除去前缀后的子串是否能由数组中其他的子串组成。
 
-> 源码位置 *src/algorithm/structures/string/find_longest_word.go*
 
 ```go
 type LongestWord struct {

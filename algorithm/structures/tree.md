@@ -157,7 +157,6 @@ draft: false  # 草稿
 
 ## 数据结构
 
-> 源码位置 *src/algorithm/structures/tree/tree.go*
 
 ```go
 // BNode 二叉树定义
@@ -310,7 +309,6 @@ func PrintLevel(root *BNode) {
 
 ![](../../assets/images/algorithm/structures/tree/a2t.png)
 
-> 源码位置 *src/algorithm/structures/tree/array.go*
 
 ```go
 func ConvertArrayToTree(array []int, start, end int) *BNode {
@@ -335,7 +333,6 @@ func ConvertArrayToTree(array []int, start, end int) *BNode {
 
 子树和即节点的值加上其左右节点的子树和的结果。
 
-> 源码位置 *src/algorithm/structures/tree/sum.go*
 
 ### 后序遍历法
 
@@ -390,7 +387,6 @@ func ExampleSumRearOrder() {
 
 给定一棵二叉树，求各个路径的最大和，即路径上所有节点的值的和，这里的路径不是上面定义的路径，而是任意可以连通两个节点的，路径可以**以任意结点作为起点和终点**。
 
-> 源码位置 *src/algorithm/structures/tree/road.go*
 
 ### 后序遍历法
 
@@ -441,7 +437,6 @@ func MaxRoad(root *BNode) (val int) {
 
 两棵二叉树相等是指这两棵二叉树有着相同的结构，并且在相同位置上的结点有相同的值。
 
-> 源码位置 *src/algorithm/structures/tree/equal.go*
 
 ```go
 func IsEqual(root1, root2 *BNode) bool {
@@ -493,7 +488,6 @@ func ConvertToLinkedListByFrontOrder(root *BNode) {
 
 根据它的这个特点以及二元查找树后序遍历的特点，可以看出，**这个序列的最后一个元素一定是树的根结点**，然后在数组中找到第一个大于根结点的值，那么该结点之前的序列对应的结点一定位于根结点的左子树上，该结点后面的序列一定位于根结点的右子树上，然后递归判断左右子树。
 
-> 源码位置 *src/algorithm/structures/tree/bst.go*
 
 ### 未指定是某棵二元查找树
 
@@ -559,7 +553,6 @@ func VerifyArrayOfBST(root *BNode, array []int) bool {
 
 ## 找出排序二叉树上任意两个结点的最近共同父结点
 
-> 源码位置 *src/algorithm/structures/tree/parent.go*
 
 ### 路径对比法
 
@@ -690,7 +683,6 @@ func FindParentNodeByRearOrder(root, node1, node2 *BNode) *BNode {
 
 给定一个二叉树根结点，复制该树，返回新建树的根结点。
 
-> 源码位置 *src/algorithm/structures/tree/copy.go*
 
 ```go
 // Copy1 复制二叉树
@@ -727,7 +719,6 @@ func Copy2(root, cp *BNode) {
 
 找出所有的这些路径，使其满足**这条路径上所有结点数据的和等于给定的整数**。
 
-> 源码位置 *src/algorithm/structures/tree/path.go*
 
 ```go
 func FindPath1(root *BNode, sum int) bool {
@@ -775,7 +766,6 @@ func FindPath2(root *BNode, num, sum int, v []int) {
 
 二叉树的镜像就是二叉树对称的二叉树，就是交换每一个非叶子结点的左子树指针和右子树指针。
 
-> 源码位置 *src/algorithm/structures/tree/mirror.go*
 
 ```go
 func Mirror(root *BNode) {
@@ -794,7 +784,6 @@ func Mirror(root *BNode) {
 
 找到最大值和最小值，然后比较即可。
 
-> 源码位置 *src/algorithm/structures/tree/find_node.go*
 
 ```go
 // 找到最小值
@@ -908,7 +897,6 @@ hash 表，通过 hash 函数把所有的单词分别 hash 成 key 值，查询�
 - Trie 树可以实现前缀搜索，对于有相同前缀的 IP 地址，可以寻找所有的 URL；
 - 最大的缺点是耗费更多的内存。
 
-> 源码位置 *src/algorithm/structures/tree/trie/dns.go*
 
 ```go
 type Node struct {
@@ -1048,4 +1036,3 @@ LR 就是将新的节点插入到了 n 的左孩子的右子树上导致的不�
 
 RL 就是将新的节点插入到了 n 的右孩子的左子树上导致的不平衡的情况。这时我们需要的是先对 i 进行一次右旋再对 n 进行一次左旋。
 
-> 源码位置 *src/algorithm/structures/tree/avl/avl.go*
